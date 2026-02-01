@@ -1,0 +1,35 @@
+{
+  "id": "article_header",
+  "type": "SharedSlice",
+  "name": "ArticleHeader",
+  "description": "Project/article title and description header",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "title": {
+          "type": "Text",
+          "config": {
+            "label": "Title",
+            "placeholder": "Project title - displays as main heading in article header"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Long-form project description - supports bold, italic, and links",
+            "allowTargetBlank": true,
+            "single": "paragraph, strong, em, hyperlink"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

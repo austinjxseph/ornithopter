@@ -1,0 +1,33 @@
+{
+  "id": "article_full_bleed",
+  "type": "SharedSlice",
+  "name": "ArticleFullBleed",
+  "description": "Full-width hero image",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "image": {
+          "type": "Image",
+          "config": {
+            "label": "Image",
+            "thumbnails": []
+          }
+        },
+        "caption": {
+          "type": "Text",
+          "config": {
+            "label": "Caption (optional)",
+            "placeholder": "Image caption or description"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "id": "article_text_block",
+  "type": "SharedSlice",
+  "name": "ArticleTextBlock",
+  "description": "Flexible multi-column text content",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "columns": {
+          "type": "Select",
+          "config": {
+            "label": "Number of Columns",
+            "placeholder": "",
+            "options": ["1", "2", "3", "4"],
+            "default_value": "2"
+          }
+        }
+      },
+      "items": {
+        "content": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Text Content",
+            "placeholder": "Enter your text content here...",
+            "allowTargetBlank": true,
+            "single": "paragraph, strong, em, hyperlink"
+          }
+        }
+      }
+    }
+  ]
+}

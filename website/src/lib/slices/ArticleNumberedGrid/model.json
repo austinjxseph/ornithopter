@@ -1,0 +1,54 @@
+{
+  "id": "article_numbered_grid",
+  "type": "SharedSlice",
+  "name": "ArticleNumberedGrid",
+  "description": "Flexible numbered grid with auto-numbering",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "docURL": "...",
+      "version": "initial",
+      "description": "Default",
+      "imageUrl": "",
+      "primary": {
+        "columns": {
+          "type": "Select",
+          "config": {
+            "label": "Number of Columns",
+            "placeholder": "",
+            "options": ["2", "3", "4"],
+            "default_value": "4"
+          }
+        },
+        "show_numbers": {
+          "type": "Boolean",
+          "config": {
+            "label": "Show Numbered Headings",
+            "placeholder_false": "Use custom headings",
+            "placeholder_true": "Auto-number (01, 02, 03...)",
+            "default_value": true
+          }
+        }
+      },
+      "items": {
+        "heading": {
+          "type": "Text",
+          "config": {
+            "label": "Custom Heading (optional)",
+            "placeholder": "Only used if 'Show Numbered Headings' is off"
+          }
+        },
+        "description": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Description",
+            "placeholder": "Enter description text...",
+            "allowTargetBlank": true,
+            "single": "paragraph"
+          }
+        }
+      }
+    }
+  ]
+}
