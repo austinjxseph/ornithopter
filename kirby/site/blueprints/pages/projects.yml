@@ -1,0 +1,31 @@
+title: Projects
+
+options:
+  changeSlug: false
+  changeStatus: false
+  delete: false
+
+columns:
+  - width: 1/1
+    sections:
+      drafts:
+        type: pages
+        label: Draft Projects
+        status: draft
+        template: project
+        sortBy: sort asc
+        info: "{{ page.tags }}"
+        image:
+          cover: true
+          ratio: 1/1
+
+      listed:
+        type: pages
+        label: Published Projects
+        status: listed
+        template: project
+        sortBy: sort asc
+        info: "{{ page.tags }}"
+        image:
+          cover: true
+          ratio: 1/1

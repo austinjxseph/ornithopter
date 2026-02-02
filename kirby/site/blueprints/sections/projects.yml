@@ -1,0 +1,14 @@
+# Projects section - reusable across blueprints
+# Shows project children with card layout
+type: pages
+label: Projects
+parent: kirby.page("projects")
+size: small
+info: "{{ page.tags }}"
+layout: cards
+template: project
+empty: No projects yet
+image:
+  query: page.thumbnail_base.toFile
+  cover: true
+  ratio: 1/1

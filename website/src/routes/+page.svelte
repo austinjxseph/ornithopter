@@ -1,7 +1,11 @@
-<script>
+<script lang="ts">
   import Index from "$lib/components/pages/Index.svelte";
+  import type { KirbyHome, KirbyProject } from "$lib/kirby";
 
-  export let data;
+  export let data: {
+    home: KirbyHome;
+    projects: KirbyProject[];
+  };
 </script>
 
 <svelte:head>
@@ -10,12 +14,6 @@
     name="description"
     content="Design Engineer focused on brand and web, obsessed with building experiences bridging engineering and design."
   />
-  <script
-    src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=67a7f3d67329e4f8c06e55ab"
-    type="text/javascript"
-    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-    crossorigin="anonymous"
-  ></script>
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
   ></script>
@@ -28,4 +26,4 @@
   <script src="/js/motion.js"></script>
 </svelte:head>
 
-<Index projects={data.projects} />
+<Index home={data.home} projects={data.projects} />

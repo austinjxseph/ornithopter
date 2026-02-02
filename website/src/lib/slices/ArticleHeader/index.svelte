@@ -9,20 +9,28 @@
 -->
 
 <script lang="ts">
-  import { PrismicRichText } from "@prismicio/svelte";
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      title: string;
+      description: string;
+    };
+    items?: any[];
+  };
 
-  export let slice;
+  $: title = slice.primary.title || '';
+  $: description = slice.primary.description || '';
 </script>
 
 <header class="u-layout-vflex header">
   <div class="u-layout-vflex heading u-span-2">
-    <h2>{slice.primary.title}</h2>
+    <h2>{title}</h2>
   </div>
   <div class="u-layout-vflex text gap-lg">
     <div class="u-layout-hflex row">
       <div class="u-layout-vflex col gap-xxs">
         <div class="text-md">
-          <PrismicRichText field={slice.primary.description} />
+          {@html description}
         </div>
       </div>
     </div>

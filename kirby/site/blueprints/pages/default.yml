@@ -1,0 +1,42 @@
+title: Page
+
+tabs:
+  content:
+    label: Content
+    fields:
+      title:
+        type: text
+        label: Title
+        required: true
+
+      blocks:
+        type: blocks
+        label: Content
+        fieldsets:
+          - article-header
+          - article-image-block
+          - article-text-block
+          - article-numbered-grid
+          - article-full-bleed
+          - static-bio-block
+
+  seo:
+    label: SEO
+    fields:
+      meta_title:
+        type: text
+        label: Meta Title
+        help: Leave empty to use page title
+
+      meta_description:
+        type: textarea
+        label: Meta Description
+        maxlength: 160
+
+      meta_image:
+        type: files
+        label: OG Image
+        max: 1
+        uploads:
+          template: image
+        help: Recommended size 1200x630px

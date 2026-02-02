@@ -1,0 +1,31 @@
+title: Thought
+num: '{{ page.date.toDate("Ymd") }}'
+
+status:
+  draft:
+    label: Draft
+    text: Not published
+  listed:
+    label: Published
+    text: Visible on site
+
+fields:
+  title:
+    type: text
+    label: Title
+    required: true
+
+  date:
+    type: date
+    label: Date
+    default: today
+    required: true
+
+  content:
+    type: textarea
+    label: Content
+    size: large
+    buttons:
+      - bold
+      - italic
+      - link

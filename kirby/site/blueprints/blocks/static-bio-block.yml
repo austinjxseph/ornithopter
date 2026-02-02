@@ -1,0 +1,65 @@
+name: Bio Block
+icon: user
+preview: fields
+
+fields:
+  heading:
+    type: writer
+    label: Heading
+    marks:
+      - italic
+    help: Use italic for emphasis
+
+  content:
+    type: writer
+    label: Intro Content
+    marks:
+      - bold
+      - italic
+      - link
+
+  images:
+    type: files
+    label: Staggered Images
+    max: 3
+    uploads:
+      template: image
+    help: Images displayed in staggered layout on the left
+
+  items:
+    type: structure
+    label: Bio Items
+    help: Grouped content sections
+    fields:
+      type:
+        type: select
+        label: Type
+        default: row
+        options:
+          header: Header (starts a new group)
+          row: Row/Cell
+        width: 1/4
+
+      heading:
+        type: text
+        label: Heading
+        width: 1/4
+
+      subtitle:
+        type: text
+        label: Subtitle
+        width: 1/4
+
+      index:
+        type: text
+        label: Index
+        help: Right-aligned text
+        width: 1/4
+
+      description:
+        type: writer
+        label: Description
+        marks:
+          - bold
+          - italic
+          - link

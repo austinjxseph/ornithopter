@@ -8,39 +8,74 @@
 -->
 
 <script lang="ts">
-  import { PrismicRichText, PrismicImage } from "@prismicio/svelte";
+  import type { KirbyImage } from "$lib/kirby";
 
-  export let slice;
-
-  // Debug logging
-  console.log("StaticBioBlock slice data:", slice);
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      heading?: string;
+      content?: string;
+      images?: KirbyImage[];
+      items?: Array<{
+        type: 'header' | 'row';
+        heading: string;
+        subtitle: string;
+        index: string;
+        description: string;
+      }>;
+      // Legacy Prismic fields
+      bio_heading?: any;
+      bio_content?: any;
+      bio_images?: Array<{ image: any }>;
+      bio_items?: Array<{
+        item_type: string;
+        item_heading: string;
+        item_subtitle: string;
+        item_index: string;
+        item_description: any;
+      }>;
+    };
+    items?: any[];
+  };
 
   const primary = slice?.primary || {};
-  const images = primary.bio_images || [];
-  const items = primary.bio_items || [];
+
+  // Support both Kirby format and legacy Prismic format
+  $: heading = primary.heading || '';
+  $: content = primary.content || '';
+  $: images = primary.images || (primary.bio_images?.map((i: any) => i.image ? { url: i.image.url, alt: i.image.alt } : null).filter(Boolean)) || [];
+
+  // Normalize items from either format
+  $: rawItems = primary.items || primary.bio_items?.map((item: any) => ({
+    type: item.item_type === 'header' ? 'header' : 'row',
+    heading: item.item_heading || '',
+    subtitle: item.item_subtitle || '',
+    index: item.item_index || '',
+    description: item.item_description || '',
+  })) || [];
 
   // Group items by section (header starts a new group)
   type ItemGroup = {
     heading: string;
-    description: any;
-    rows: typeof items;
+    description: string;
+    rows: typeof rawItems;
   };
 
-  function groupItems(items: typeof primary.bio_items): ItemGroup[] {
+  function groupItems(items: typeof rawItems): ItemGroup[] {
     const groups: ItemGroup[] = [];
     let currentGroup: ItemGroup | null = null;
 
     for (const item of items) {
-      if (item.item_type === "header") {
+      if (item.type === 'header') {
         if (currentGroup) {
           groups.push(currentGroup);
         }
         currentGroup = {
-          heading: item.item_heading || "",
-          description: item.item_description || null,
+          heading: item.heading || '',
+          description: item.description || '',
           rows: [],
         };
-      } else if (item.item_type === "cell" && currentGroup) {
+      } else if (currentGroup) {
         currentGroup.rows.push(item);
       }
     }
@@ -52,7 +87,7 @@
     return groups;
   }
 
-  const groupedItems = groupItems(items);
+  $: groupedItems = groupItems(rawItems);
 </script>
 
 <section class="u-layout-vflex section">
@@ -60,11 +95,11 @@
     <div class="u-layout-hflex inner">
       <!-- Left Panel: Staggered Images -->
       <div class="u-layout-vflex col img">
-        {#each images as item, i}
-          <div class="u-layout-hflex {i + 1}">
+        {#each images as image, i}
+          <div class="u-layout-hflex img-row">
             <div class="image">
-              {#if item.image?.url}
-                <img src={item.image.url.split('?')[0]} alt={item.image.alt || ""} loading="lazy" />
+              {#if image?.url}
+                <img src={image.url} alt={image.alt || ""} loading="lazy" />
               {/if}
             </div>
           </div>
@@ -75,15 +110,15 @@
       <div class="u-layout-vflex col body">
         <!-- Bio Heading + Content -->
         <div class="u-layout-vflex page-header">
-          {#if primary.bio_heading}
+          {#if heading}
             <div class="heading">
-              <PrismicRichText field={primary.bio_heading} />
+              {@html heading}
             </div>
           {/if}
 
-          {#if primary.bio_content}
+          {#if content}
             <div class="u-layout-vflex content">
-              <PrismicRichText field={primary.bio_content} />
+              {@html content}
             </div>
           {/if}
         </div>
@@ -92,31 +127,31 @@
         {#each groupedItems as group}
           <div class="u-layout-vflex group">
             <h3 class="u-font-accent group-heading">{group.heading}</h3>
-            {#if group.description && group.description.length > 0}
+            {#if group.description}
               <div class="group-description">
-                <PrismicRichText field={group.description} />
+                {@html group.description}
               </div>
             {/if}
             {#each group.rows as row}
               <div class="u-layout-vflex item">
                 <div class="u-layout-vflex item-header">
-                  {#if row.item_index}
+                  {#if row.index}
                     <!-- Education-style: heading + index on same line -->
                     <div class="u-layout-hflex item-row-between">
-                      <p class="item-heading">{row.item_heading}</p>
-                      <p class="item-index">{row.item_index}</p>
+                      <p class="item-heading">{row.heading}</p>
+                      <p class="item-index">{row.index}</p>
                     </div>
-                  {:else if row.item_heading}
-                    <p class="item-heading">{row.item_heading}</p>
+                  {:else if row.heading}
+                    <p class="item-heading">{row.heading}</p>
                   {/if}
-                  {#if row.item_subtitle}
-                    <p class="item-subtitle">{row.item_subtitle}</p>
+                  {#if row.subtitle}
+                    <p class="item-subtitle">{row.subtitle}</p>
                   {/if}
                 </div>
-                {#if row.item_description && row.item_description.length > 0}
+                {#if row.description}
                   <div class="u-layout-hflex item-row">
                     <div class="item-description">
-                      <PrismicRichText field={row.item_description} />
+                      {@html row.description}
                     </div>
                   </div>
                 {/if}
@@ -175,7 +210,7 @@
     }
   }
 
-  .col.img > div {
+  .img-row {
     flex: 1;
     min-height: 1px;
     min-width: 1px;
@@ -183,21 +218,21 @@
     width: 100%;
   }
 
-  .col.img > div:nth-child(1) {
+  .img-row:nth-child(1) {
     padding-right: 0;
   }
 
-  .col.img > div:nth-child(2) {
+  .img-row:nth-child(2) {
     padding-right: 80px;
   }
 
-  .col.img > div:nth-child(3) {
+  .img-row:nth-child(3) {
     padding-right: 160px;
   }
 
   @media screen and (max-width: 991px) {
-    .col.img > div:nth-child(2),
-    .col.img > div:nth-child(3) {
+    .img-row:nth-child(2),
+    .img-row:nth-child(3) {
       padding-right: 0;
     }
   }

@@ -1,25 +1,28 @@
-import { createClient } from "$lib/prismicio";
-import { filter } from "@prismicio/client";
+import { kirby } from "$lib/kirby";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ fetch, cookies }) => {
-  const client = createClient({ fetch, cookies });
-
+export const load: PageServerLoad = async () => {
   try {
-    // Fetch all showcase projects
-    const projects = await client.getAllByType("project", {
-      filters: [filter.at("my.project.showcase", true)],
-      orderings: [{ field: "my.project.project_index", direction: "asc" }],
-      limit: 4,
-    });
+    // Fetch homepage content and showcase projects in parallel
+    const [home, projects] = await Promise.all([
+      kirby.getHome(),
+      kirby.getProjects({ showcase: true, limit: 4 }),
+    ]);
 
     return {
+      home,
       projects,
     };
   } catch (error) {
-    console.error("Failed to fetch projects from Prismic:", error);
-    // Return empty array if Prismic fetch fails
+    console.error("Failed to fetch from Kirby:", error);
+    // Return empty/default data if Kirby fetch fails
     return {
+      home: {
+        hero_eyebrow: "Available for freelance work",
+        hero_title: "Digital Designer and Creative Developer",
+        hero_button_label: "Information",
+        hero_button_link: "/about",
+      },
       projects: [],
     };
   }

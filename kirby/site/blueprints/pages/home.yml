@@ -1,0 +1,34 @@
+title: Home
+
+options:
+  changeSlug: false
+  changeStatus: false
+  delete: false
+
+fields:
+  hero_eyebrow:
+    type: text
+    label: Eyebrow Text
+    default: Available for freelance work
+    help: Small text above the main heading
+    width: 1/2
+
+  hero_button_label:
+    type: text
+    label: Button Label
+    default: Information
+    width: 1/2
+
+  hero_title:
+    type: writer
+    label: Hero Title
+    marks:
+      - italic
+    help: Use italic for accent text (e.g. "design engineer")
+
+  hero_button_link:
+    type: link
+    label: Button Link
+    options:
+      - page
+      - url

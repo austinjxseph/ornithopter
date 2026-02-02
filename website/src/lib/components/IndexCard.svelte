@@ -9,14 +9,13 @@
   <IndexCard
     href="/work/nuro"
     title="Designing an app for language therapy of children with Autism Spectrum Disorder."
-    backgroundImage={project.data.thumbnail_base}
-    overlayImage={project.data.thumbnail_overlay}
+    backgroundImage={project.thumbnail_base}
+    overlayImage={project.thumbnail_overlay}
   />
 -->
 
 <script lang="ts">
-  import { PrismicImage } from "@prismicio/svelte";
-  import type { ImageField } from "@prismicio/client";
+  import type { KirbyImage } from "$lib/kirby";
 
   /**
    * Link destination for the project
@@ -29,14 +28,14 @@
   export let title: string;
 
   /**
-   * Main card background image field from Prismic
+   * Main card background image from Kirby
    */
-  export let backgroundImage: ImageField;
+  export let backgroundImage: KirbyImage | null;
 
   /**
-   * Overlay image field from Prismic
+   * Overlay image from Kirby
    */
-  export let overlayImage: ImageField;
+  export let overlayImage: KirbyImage | null;
 </script>
 
 <a {href} class="card u-inline-block">

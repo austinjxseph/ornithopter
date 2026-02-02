@@ -1,0 +1,25 @@
+title: Thoughts
+
+options:
+  changeSlug: false
+  changeStatus: false
+  delete: false
+
+columns:
+  - width: 1/1
+    sections:
+      drafts:
+        type: pages
+        label: Drafts
+        status: draft
+        template: thought
+        sortBy: date desc
+        info: "{{ page.date.toDate('d M Y') }}"
+
+      listed:
+        type: pages
+        label: Published
+        status: listed
+        template: thought
+        sortBy: date desc
+        info: "{{ page.date.toDate('d M Y') }}"

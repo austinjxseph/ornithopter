@@ -1,33 +1,32 @@
 <script lang="ts">
-  import { SliceZone } from "@prismicio/svelte";
-  import { components } from "$lib/slices";
+  import BlockRenderer from "$lib/components/BlockRenderer.svelte";
+  import type { KirbyPage } from "$lib/kirby";
 
-  export let data;
-  const { page } = data;
+  export let data: {
+    page: KirbyPage;
+  };
 
-  // Debug logging
-  console.log("About page data:", page);
-  console.log("About page slices:", page?.data?.slices);
+  $: page = data.page;
 </script>
 
 <svelte:head>
-  <title>{page.data.meta_title || "About | Austin Joseph"}</title>
+  <title>{page.meta?.title || "About | Austin Joseph"}</title>
   <meta
     name="description"
-    content={page.data.meta_description ||
+    content={page.meta?.description ||
       "I'm a software designer & creative developer currently in London, with a strong focus on Visual & Motion Design."}
   />
-  {#if page.data.meta_image?.url}
-    <meta property="og:image" content={page.data.meta_image.url} />
-    <meta property="twitter:image" content={page.data.meta_image.url} />
+  {#if page.meta?.image}
+    <meta property="og:image" content={page.meta.image} />
+    <meta property="twitter:image" content={page.meta.image} />
   {/if}
   <meta
     property="og:title"
-    content={page.data.meta_title || "About | Austin Joseph"}
+    content={page.meta?.title || "About | Austin Joseph"}
   />
   <meta
     property="og:description"
-    content={page.data.meta_description ||
+    content={page.meta?.description ||
       "I'm a software designer & creative developer currently in London, with a strong focus on Visual & Motion Design."}
   />
   <meta property="og:type" content="website" />
@@ -37,7 +36,7 @@
 <main class="u-layout-vflex main">
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
-      <SliceZone slices={page.data.slices} {components} />
+      <BlockRenderer blocks={page.blocks} />
     </div>
   </div>
 </main>

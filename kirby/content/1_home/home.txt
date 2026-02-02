@@ -1,0 +1,21 @@
+Title: Home
+
+----
+
+Hero-eyebrow: Available for freelance work
+
+----
+
+Hero-title: Digital Designer and Creative Developer, <em>obsessed</em> with building products bridging engineering and design. Avid <em>Garamond</em> lover and passionate Times New Roman hater.
+
+----
+
+Hero-button-label: Information
+
+----
+
+Hero-button-link: /about
+
+----
+
+Uuid: IsRRaX9xShu6pOqQ

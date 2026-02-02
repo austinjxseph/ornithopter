@@ -10,9 +10,11 @@
 <script lang="ts">
   import Button from "$lib/components/Button.svelte";
   import IndexCard from "$lib/components/IndexCard.svelte";
+  import type { KirbyHome, KirbyProject } from "$lib/kirby";
 
-  // Receive projects from Prismic via parent +page.svelte
-  export let projects = [];
+  // Receive data from Kirby via parent +page.svelte
+  export let home: KirbyHome;
+  export let projects: KirbyProject[] = [];
 </script>
 
 <main class="u-layout-vflex main">
@@ -25,16 +27,12 @@
             <div class="u-layout-vflex heading gap-md">
               <div class="u-layout-hflex eyebrow">
                 <div class="marker"></div>
-                <div class="text-lg">Available for freelance work</div>
+                <div class="text-lg">{home.hero_eyebrow}</div>
               </div>
               <h1>
-                Digital Designer and Creative Developer,
-                <span class="u-font-accent">obsessed</span>
-                with building products bridging engineering and design. Avid
-                <span class="u-font-accent">Garamond</span>
-                lover and passionate Times New Roman hater.
+                {@html home.hero_title}
               </h1>
-              <Button active={true} buttonText="Information" />
+              <Button active={true} buttonText={home.hero_button_label} />
             </div>
           </div>
         </div>
@@ -44,9 +42,9 @@
           {#each projects as project}
             <IndexCard
               href="/work/{project.uid}"
-              title={project.data.project_title}
-              backgroundImage={project.data.thumbnail_base}
-              overlayImage={project.data.thumbnail_overlay}
+              title={project.title}
+              backgroundImage={project.thumbnail_base}
+              overlayImage={project.thumbnail_overlay}
             />
           {/each}
         </div>

@@ -1,0 +1,83 @@
+# Site blueprint - Dashboard layout
+# Two-column layout with settings on left, projects on right
+
+columns:
+  # Left column: Global settings (1/3 width)
+  - width: 1/3
+    sections:
+      # Main pages
+      pages:
+        type: pages
+        label: Pages
+        create: default
+        info: "{{ page.template }}"
+        templates:
+          - home
+          - default
+
+      # Site Settings
+      site_settings:
+        type: fields
+        label: Site Settings
+        fields:
+          title:
+            type: text
+            label: Site Title
+            required: true
+
+          description:
+            type: textarea
+            label: Meta Description
+            help: Used for SEO
+
+      # Header
+      header:
+        type: fields
+        label: Header
+        fields:
+          header_links:
+            type: structure
+            label: Header
+            fields:
+              link_label:
+                type: text
+                label: Label
+                required: true
+                width: 1/2
+              link_href:
+                type: url
+                label: URL
+                required: true
+                width: 1/2
+
+      # Footer
+      footer:
+        type: fields
+        label: Footer
+        fields:
+          footer_links:
+            type: structure
+            label: Footer
+            fields:
+              link_icon:
+                type: files
+                label: Icon
+                max: 1
+                uploads:
+                  template: image
+              link_label:
+                type: text
+                label: Label
+                required: true
+                width: 1/2
+              link_href:
+                type: url
+                label: URL
+                required: true
+                width: 1/2
+
+  # Right column: Projects & Thoughts (2/3 width)
+  - width: 2/3
+    sections:
+      projects: sections/projects
+      thoughts: sections/thoughts

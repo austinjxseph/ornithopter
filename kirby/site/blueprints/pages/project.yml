@@ -1,0 +1,141 @@
+title: Project
+num: "{{ page.sort }}"
+
+status:
+  draft:
+    label: Draft
+    text: Project is not visible
+  listed:
+    label: Published
+    text: Project is visible
+
+columns:
+  # Left column - Main content (2/3 width)
+  - width: 2/3
+    sections:
+      content:
+        type: fields
+        fields:
+          blocks:
+            type: blocks
+            label: Article Content
+            fieldsets:
+              - article-header
+              - article-image-block
+              - article-text-block
+              - article-numbered-grid
+              - article-full-bleed
+
+  # Right column - Sidebar (1/3 width)
+  - width: 1/3
+    sections:
+      # Main info
+      main:
+        type: fields
+        label: Main
+        fields:
+          name:
+            type: text
+            label: Project Name
+            help: Short name for cards
+            required: true
+
+          project_title:
+            type: text
+            label: Project Title
+            help: Full title for detail page
+            required: true
+
+          description:
+            type: writer
+            label: Description
+            marks:
+              - bold
+              - italic
+              - link
+
+          tags:
+            type: tags
+            label: Tags
+            options:
+              - Web Design
+              - Branding & Identity
+              - Front-end Development
+              - Product Design
+              - Social Media
+              - DevOps
+
+          showcase:
+            type: toggle
+            label: Show on Homepage
+            default: true
+            width: 1/2
+
+          published:
+            type: date
+            label: Published Date
+            width: 1/2
+
+      # Images
+      images:
+        type: fields
+        label: Images
+        fields:
+          thumbnail_base:
+            type: files
+            label: Thumbnail (Base Layer)
+            help: Background image for project card
+            max: 1
+            uploads:
+              template: image
+
+          thumbnail_overlay:
+            type: files
+            label: Thumbnail (Overlay Layer)
+            help: Foreground image for project card
+            max: 1
+            uploads:
+              template: image
+
+      # Metadata
+      metadata:
+        type: fields
+        label: Metadata
+        fields:
+          project_metadata:
+            type: structure
+            label: Metadata Items
+            help: Additional info like Client, Year, Role
+            fields:
+              label:
+                type: text
+                label: Label
+                placeholder: e.g. Client
+                width: 1/2
+              content:
+                type: text
+                label: Content
+                placeholder: e.g. Acme Corp
+                width: 1/2
+
+      # SEO
+      seo:
+        type: fields
+        label: SEO
+        fields:
+          meta_title:
+            type: text
+            label: Meta Title
+            help: Leave empty to use project title
+
+          meta_description:
+            type: textarea
+            label: Meta Description
+            maxlength: 160
+
+          meta_image:
+            type: files
+            label: OG Image
+            max: 1
+            uploads:
+              template: image

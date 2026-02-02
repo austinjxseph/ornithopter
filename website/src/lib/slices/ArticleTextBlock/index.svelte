@@ -10,11 +10,21 @@
 -->
 
 <script lang="ts">
-  import { PrismicRichText } from "@prismicio/svelte";
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      columns?: string;
+      items?: Array<{
+        content: string;
+      }>;
+    };
+    items?: Array<{
+      content: string;
+    }>;
+  };
 
-  export let slice;
-
-  const items = slice.items || [];
+  // Support both primary.items and top-level items
+  $: items = slice.primary.items || slice.items || [];
 </script>
 
 <section class="u-layout-vflex section">
@@ -24,7 +34,7 @@
         {#each items as item}
           <div class="u-layout-vflex col gap-xxs">
             <div class="text-md">
-              <PrismicRichText field={item.content} />
+              {@html item.content}
             </div>
           </div>
         {/each}

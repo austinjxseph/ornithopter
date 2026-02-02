@@ -1,0 +1,5 @@
+Uuid: 1xcnlqjx01jggt1b
+
+----
+
+Template: image

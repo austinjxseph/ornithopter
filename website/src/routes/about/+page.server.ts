@@ -1,21 +1,19 @@
-import { createClient } from '$lib/prismicio';
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { kirby } from "$lib/kirby";
+import { error } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ fetch, cookies }) => {
-  const client = createClient({ fetch, cookies });
-
+export const load: PageServerLoad = async () => {
   try {
-    // Fetch the about page by UID
-    const page = await client.getByUID('page', 'about');
+    // Fetch the about page from Kirby
+    const page = await kirby.getPage("about");
 
     return {
-      page
+      page,
     };
   } catch (err) {
     // Page not found
     throw error(404, {
-      message: 'About page not found'
+      message: "About page not found",
     });
   }
 };

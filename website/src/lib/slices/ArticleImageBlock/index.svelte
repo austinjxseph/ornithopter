@@ -9,12 +9,26 @@
 -->
 
 <script lang="ts">
-  import { PrismicImage } from "@prismicio/svelte";
+  import type { KirbyImage } from "$lib/kirby";
 
-  export let slice;
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      columns: string;
+      images?: Array<{
+        image: KirbyImage | null;
+        caption: string;
+      }>;
+    };
+    items?: Array<{
+      image: KirbyImage | null;
+      caption: string;
+    }>;
+  };
 
-  const columns = slice.primary.columns || "2";
-  const items = slice.items || [];
+  $: columns = slice.primary.columns || "2";
+  // Support both primary.images and items for flexibility
+  $: items = slice.primary.images || slice.items || [];
 </script>
 
 <section class="u-layout-vflex section">
@@ -24,7 +38,7 @@
         <div class="u-layout-vflex img-container">
           <div class="u-layout-vflex img">
             {#if item.image?.url}
-              <img src={item.image.url.split('?')[0]} alt={item.image.alt || ""} loading="lazy" />
+              <img src={item.image.url} alt={item.image.alt || ""} loading="lazy" />
             {/if}
           </div>
           {#if item.caption}
@@ -42,7 +56,6 @@
     gap: var(--gap--md);
     grid-template-columns: repeat(var(--cols), 1fr);
     align-self: stretch;
-    /* Padding removed - .section handles global margins */
   }
 
   .grid-cols-1 {

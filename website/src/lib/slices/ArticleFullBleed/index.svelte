@@ -8,20 +8,30 @@
 -->
 
 <script lang="ts">
-  import { PrismicImage } from "@prismicio/svelte";
+  import type { KirbyImage } from "$lib/kirby";
 
-  export let slice;
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      image: KirbyImage | null;
+      caption?: string;
+    };
+    items?: any[];
+  };
+
+  $: image = slice.primary.image;
+  $: caption = slice.primary.caption || '';
 </script>
 
 <section class="u-layout-vflex section">
   <div class="u-layout-vflex container-fw">
     <div class="u-layout-vflex img">
-      {#if slice.primary.image?.url}
-        <img src={slice.primary.image.url.split('?')[0]} alt={slice.primary.image.alt || ""} loading="lazy" />
+      {#if image?.url}
+        <img src={image.url} alt={image.alt || ""} loading="lazy" />
       {/if}
     </div>
-    {#if slice.primary.caption}
-      <figcaption class="text-sm caption">{slice.primary.caption}</figcaption>
+    {#if caption}
+      <figcaption class="text-sm caption">{caption}</figcaption>
     {/if}
   </div>
 </section>

@@ -1,0 +1,11 @@
+title: Image
+
+accept:
+  extension: jpg, jpeg, png, gif, webp, avif, svg
+  mime: image/jpeg, image/png, image/gif, image/webp, image/avif, image/svg+xml
+
+fields:
+  alt:
+    type: text
+    label: Alt Text
+    placeholder: Describe this image for accessibility

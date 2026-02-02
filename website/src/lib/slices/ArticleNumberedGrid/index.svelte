@@ -9,13 +9,26 @@
 -->
 
 <script lang="ts">
-  import { PrismicRichText } from "@prismicio/svelte";
+  // Accepts slice prop from BlockRenderer (Kirby format)
+  export let slice: {
+    primary: {
+      columns?: string;
+      show_numbers?: boolean;
+      items?: Array<{
+        heading: string;
+        description: string;
+      }>;
+    };
+    items?: Array<{
+      heading: string;
+      description: string;
+    }>;
+  };
 
-  export let slice;
-
-  const columns = slice.primary.columns || "4";
-  const showNumbers = slice.primary.show_numbers ?? true;
-  const items = slice.items || [];
+  $: columns = slice.primary.columns || "4";
+  $: showNumbers = slice.primary.show_numbers ?? true;
+  // Support both primary.items and top-level items
+  $: items = slice.primary.items || slice.items || [];
 </script>
 
 <section class="u-layout-vflex section">
@@ -30,7 +43,7 @@
               <h5>{item.heading}</h5>
             {/if}
             <div class="text-md">
-              <PrismicRichText field={item.description} />
+              {@html item.description}
             </div>
           </div>
         {/each}

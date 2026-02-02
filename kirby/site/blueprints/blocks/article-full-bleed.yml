@@ -1,0 +1,17 @@
+name: Full Bleed Image
+icon: crop
+preview: image
+
+fields:
+  image:
+    type: files
+    label: Image
+    max: 1
+    required: true
+    uploads:
+      template: image
+
+  caption:
+    type: text
+    label: Caption
+    placeholder: Optional image caption

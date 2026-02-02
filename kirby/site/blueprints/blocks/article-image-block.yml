@@ -1,0 +1,22 @@
+name: Image Block
+icon: image
+
+fields:
+  images:
+    type: structure
+    label: Images
+    fields:
+      image:
+        type: files
+        label: Image
+        max: 1
+        layout: cards
+        size: medium
+        image:
+          cover: true
+        uploads:
+          template: image
+      caption:
+        type: text
+        label: Caption
+        placeholder: Optional image caption

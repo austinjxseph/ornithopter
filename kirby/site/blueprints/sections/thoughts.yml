@@ -1,0 +1,10 @@
+# Thoughts section - reusable across blueprints
+type: pages
+label: Thoughts
+parent: kirby.page("thoughts")
+size: small
+info: "{{ page.date.toDate('d M Y') }}"
+layout: list
+template: thought
+empty: No thoughts yet
+sortBy: date desc
