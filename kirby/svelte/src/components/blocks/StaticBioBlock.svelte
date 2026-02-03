@@ -1,32 +1,37 @@
-<svelte:options customElement={{ tag: "s-bio", shadow: "none" }} />
+<script lang="ts">
+    type BioItem = {
+        type: string;
+        heading?: string;
+        subtitle?: string;
+        index?: string;
+        description?: string;
+    };
 
-<script>
-    export let heading = "";
-    export let content = "";
-    export let images = "[]";
-    export let items = "[]";
+    let {
+        heading = "",
+        content = "",
+        images = [],
+        items = [],
+    }: {
+        heading?: string;
+        content?: string;
+        images?: Array<{ url: string; alt?: string }>;
+        items?: BioItem[];
+    } = $props();
 
-    let parsedImages = [];
-    let parsedItems = [];
-    let groupedItems = [];
+    let groupedItems = $derived(groupItems(items));
 
-    $: {
-        try {
-            parsedImages = JSON.parse(images);
-        } catch (e) {
-            parsedImages = [];
-        }
-        try {
-            parsedItems = JSON.parse(items);
-        } catch (e) {
-            parsedItems = [];
-        }
-        groupedItems = groupItems(parsedItems);
-    }
-
-    function groupItems(items) {
-        const groups = [];
-        let currentGroup = null;
+    function groupItems(items: BioItem[]) {
+        const groups: {
+            heading: string;
+            description: string;
+            rows: BioItem[];
+        }[] = [];
+        let currentGroup: {
+            heading: string;
+            description: string;
+            rows: BioItem[];
+        } | null = null;
 
         for (const item of items) {
             if (item.type === "header") {
@@ -56,7 +61,7 @@
         <div class="s-ab_inner">
             <!-- Left Panel: Staggered Images -->
             <div class="s-ab_col-img">
-                {#each parsedImages as image, i}
+                {#each images as image, i}
                     <div class="s-ab_img-row s-ab_img-row-{i + 1}">
                         <div class="s-ab_image">
                             {#if image?.url}
@@ -257,7 +262,7 @@
         max-width: 480px;
     }
 
-    .s-ab_heading p {
+    .s-ab_heading :global(p) {
         font-family: var(--typeface--primary);
         font-size: var(--h3--font-size);
         line-height: var(--h3--line-height);
@@ -266,7 +271,7 @@
         text-shadow: 4px 4px 60px black;
     }
 
-    .s-ab_heading em {
+    .s-ab_heading :global(em) {
         font-family: var(--typeface--secondary);
         font-style: normal;
     }
@@ -277,7 +282,7 @@
         gap: var(--gap--md);
     }
 
-    .s-ab_content p {
+    .s-ab_content :global(p) {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -304,7 +309,7 @@
         font-style: normal;
     }
 
-    .s-ab_group-description p {
+    .s-ab_group-description :global(p) {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -356,7 +361,7 @@
         flex: 1;
     }
 
-    .s-ab_item-description p {
+    .s-ab_item-description :global(p) {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);

@@ -13,18 +13,21 @@
             $page->children()->listed()->sortBy("sort", "asc")
             as $project
         ): ?>
-          <c-indexcard
-            href="<?= $project->url() ?>"
-            title="<?= $project->project_title()->html() ?>"
-            backgroundimage="<?= $project
-                ->thumbnail_base()
-                ->toFile()
-                ?->url() ?>"
-            overlayimage="<?= $project
-                ->thumbnail_overlay()
-                ->toFile()
-                ?->url() ?>"
-          ></c-indexcard>
+          <?php
+          $cardId = "card-" . $project->id();
+          $cardProps = [
+              "href" => $project->url(),
+              "title" => $project->project_title()->value(),
+              "backgroundimage" =>
+                  $project->thumbnail_base()->toFile()?->url() ?? "",
+              "overlayimage" =>
+                  $project->thumbnail_overlay()->toFile()?->url() ?? "",
+          ];
+          ?>
+          <c-indexcard id="<?= $cardId ?>"></c-indexcard>
+          <script type="application/json" data-for="<?= $cardId ?>">
+          <?= json_encode($cardProps, JSON_UNESCAPED_SLASHES) ?>
+          </script>
         <?php endforeach; ?>
       </div>
     </div>

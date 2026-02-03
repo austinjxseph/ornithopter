@@ -1,5 +1,5 @@
 <?php
-// Build header links JSON
+// Build header links
 $headerLinks = [];
 foreach ($site->header_links()->toStructure() as $link) {
     $headerLinks[] = [
@@ -7,10 +7,14 @@ foreach ($site->header_links()->toStructure() as $link) {
         "href" => $link->link_href()->value(),
     ];
 }
-$headerLinksJson = json_encode($headerLinks);
+
+$props = [
+    "rootpath" => "/",
+    "links" => $headerLinks,
+];
 ?>
 
-<c-header
-  rootpath="/"
-  links='<?= $headerLinksJson ?>'
-></c-header>
+<c-header id="site-header"></c-header>
+<script type="application/json" data-for="site-header">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

@@ -28,10 +28,13 @@ if (empty($images)) {
     }
 }
 
-$imagesJson = json_encode($images);
+$blockId = "ar-img-" . $block->id();
+$props = [
+    "images" => $images,
+];
 ?>
 
-<ar-img
-  columns="<?= $block->columns()->value() ?>"
-  images='<?= htmlspecialchars($imagesJson) ?>'
-></ar-img>
+<ar-img id="<?= $blockId ?>"></ar-img>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

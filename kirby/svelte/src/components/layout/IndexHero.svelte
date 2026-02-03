@@ -1,20 +1,22 @@
-<svelte:options customElement={{ tag: "c-indexhero", shadow: "none" }} />
-
-<script>
-    export let eyebrow = "Available for freelance work";
-    export let title = "";
-    export let buttonlabel = "Get in touch";
-    export let buttonhref = "#";
-    export let projects = "[]"; // JSON string of projects array
-
-    // Parse projects JSON
-    $: projectList = (() => {
-        try {
-            return JSON.parse(projects);
-        } catch {
-            return [];
-        }
-    })();
+<script lang="ts">
+    let {
+        eyebrow = "Available for freelance work",
+        title = "",
+        buttonlabel = "Get in touch",
+        buttonhref = "#",
+        projects = [],
+    }: {
+        eyebrow?: string;
+        title?: string;
+        buttonlabel?: string;
+        buttonhref?: string;
+        projects?: Array<{
+            url: string;
+            title: string;
+            thumbnail_base: string;
+            thumbnail_overlay: string;
+        }>;
+    } = $props();
 </script>
 
 <main class="main">
@@ -41,7 +43,7 @@
                 </div>
 
                 <div class="track">
-                    {#each projectList as project}
+                    {#each projects as project}
                         <c-indexcard
                             href={project.url}
                             title={project.title}

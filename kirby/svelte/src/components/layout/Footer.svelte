@@ -1,26 +1,16 @@
-<svelte:options customElement={{ tag: "c-footer", shadow: "none" }} />
-
 <script lang="ts">
-    export let fixed: string | boolean | null = null;
-    export let links = "[]";
+    let {
+        fixed = false,
+        links = [],
+    }: {
+        fixed?: boolean;
+        links?: Array<{ icon?: string; label?: string; href?: string }>;
+    } = $props();
 
-    let parsedLinks: Array<{ icon?: string; label?: string; href?: string }> =
-        [];
     const currentYear = new Date().getFullYear();
-
-    // Handle boolean attribute - presence of attribute means true
-    $: isFixed = fixed !== null && fixed !== false && fixed !== "false";
-
-    $: {
-        try {
-            parsedLinks = JSON.parse(links);
-        } catch (e) {
-            parsedLinks = [];
-        }
-    }
 </script>
 
-<footer class="c-footer" class:abs={isFixed}>
+<footer class="c-footer" class:abs={fixed}>
     <div class="c-footer_vignette"></div>
     <div class="c-footer_component">
         <div class="c-footer_inner">
@@ -32,7 +22,7 @@
                 </div>
             </div>
             <ul role="list" class="c-footer_row">
-                {#each parsedLinks as link}
+                {#each links as link}
                     <li>
                         <a
                             href={link.href}

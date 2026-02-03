@@ -1,508 +1,352 @@
-# Current Architecture Context
+# Architecture Context
 
-This document captures the existing Prismic + SvelteKit setup before migrating to Kirby.
+This document captures the current Kirby CMS + Svelte web components architecture.
 
 ---
 
 ## Overview
 
-| Aspect | Current Setup |
-|--------|---------------|
-| **CMS** | Prismic (repository: `vitruvian`) |
-| **Frontend** | SvelteKit 2.x with Svelte 5 |
-| **Hosting** | TBD (migrating to Railway) |
-| **Content Types** | Page, Project |
-| **Slices** | 6 custom slices |
+| Aspect | Setup |
+|--------|-------|
+| **CMS** | Kirby 4.x |
+| **Frontend** | Svelte 5 web components |
+| **Build** | Vite (IIFE bundle) |
+| **Pattern** | Islands architecture |
 
 ---
 
 ## Project Structure
 
 ```
-website/
-├── src/
-│   ├── lib/
-│   │   ├── components/        # Reusable Svelte components
-│   │   ├── slices/            # Prismic slice components
-│   │   ├── styles/            # Global CSS
-│   │   ├── scripts/           # Utilities (motion.js)
-│   │   ├── assets/icons/      # SVG icons
-│   │   └── prismicio.ts       # Prismic client
-│   ├── routes/                # SvelteKit pages
-│   └── prismicio-types.d.ts   # Generated TypeScript types
-├── customtypes/               # Prismic custom type definitions
-│   ├── page/index.json
-│   └── project/index.json
-├── slicemachine.config.json
-└── package.json
+kirby/
+├── assets/
+│   ├── css/
+│   │   ├── normalize.css
+│   │   ├── variables.css
+│   │   ├── styles.css
+│   │   ├── keyframes.css
+│   │   └── svelte.css          # Svelte component styles (built)
+│   └── js/
+│       └── components.js        # Svelte components bundle (built)
+├── site/
+│   ├── blueprints/             # Kirby field definitions
+│   ├── snippets/
+│   │   ├── blocks/             # Block snippet PHP files
+│   │   ├── head.php
+│   │   ├── header.php
+│   │   ├── footer.php
+│   │   └── scripts.php
+│   └── templates/              # Page templates
+└── svelte/
+    ├── src/
+    │   ├── register.ts         # Custom element factory
+    │   ├── main.ts             # Entry point, registers all components
+    │   └── components/
+    │       ├── layout/         # Header, Footer, IndexHero
+    │       ├── ui/             # Button, IndexCard
+    │       └── blocks/         # Article blocks, StaticBioBlock
+    ├── vite.config.ts
+    ├── tsconfig.json
+    └── package.json
 ```
 
 ---
 
-## Content Types
+## Svelte Web Components Architecture
 
-### 1. Page
+### Why Not Native `<svelte:options customElement>`
 
-General-purpose page type used for static pages like About.
+Svelte's built-in custom element compilation (`customElement: true` in Vite config + `<svelte:options customElement={{ tag, shadow: "none" }}>`) causes issues:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `uid` | UID | URL slug |
-| `title` | Rich Text | Page title (heading1 only) |
-| `slices` | Slice Zone | Content blocks |
-| `meta_title` | Text | SEO title |
-| `meta_description` | Text | SEO description |
-| `meta_image` | Image | OG image (2400x1260) |
+1. **Duplicate content** - Data appears in both attributes AND rendered output
+2. **Timing issues** - `shadow: "none"` causes incomplete renders
+3. **Race conditions** - Attribute parsing vs component mounting conflicts
 
-**Allowed slices:** `static_bio_block`
+### Manual Wrapper Pattern
 
-**Used by:** `/about`
+Instead, we use a manual factory pattern with two files:
 
----
-
-### 2. Project
-
-Portfolio project entries with metadata, thumbnails, and content.
-
-#### Main Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `uid` | UID | URL slug |
-| `project_index` | Number | Sort order |
-| `project_name` | Text | Short name |
-| `project_title` | Text | Full title |
-| `tags` | Group | Repeatable tag list |
-| `project_description` | Rich Text | Brief description |
-| `showcase` | Boolean | Show on homepage (default: true) |
-| `thumbnail_base` | Image | Card background image |
-| `thumbnail_overlay` | Image | Card overlay image |
-| `published` | Date | Publication date |
-
-#### Tag Options
-- Web Design
-- Branding & Identity
-- Front-end Development
-- Product Design
-- Social Media
-- DevOps
-
-#### Metadata Group (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `metadata_label` | Text | Label (e.g., "Client", "Year") |
-| `metadata_content` | Text | Value |
-
-#### Content Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `slices2` | Slice Zone | Article content blocks |
-
-**Allowed slices:** All article slices
-
-#### SEO Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `meta_title` | Text | SEO title |
-| `meta_description` | Text | SEO description |
-| `meta_image` | Image | OG image (1200x800) |
-
-**Used by:** `/work/[uid]`
-
----
-
-## Slices
-
-### 1. ArticleHeader
-
-Project/article title and description header.
-
-**Location:** `src/lib/slices/ArticleHeader/`
-
-#### Primary Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `title` | Text | Main heading |
-| `description` | Rich Text | Supports bold, italic, links |
-
-#### Layout
-- 4-column grid
-- Title spans 2 columns
-- Description fills remaining space
-- Collapses to single column on mobile
-
----
-
-### 2. ArticleImageBlock
-
-Flexible multi-column image grid.
-
-**Location:** `src/lib/slices/ArticleImageBlock/`
-
-#### Primary Fields
-
-| Field | Type | Options |
-|-------|------|---------|
-| `columns` | Select | 1, 2, 3, 4 (default: 1) |
-
-#### Items (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `image` | Image | The image |
-| `caption` | Text | Optional caption |
-
-#### Features
-- Lazy loading
-- 16:9 aspect ratio
-- Responsive (2 cols tablet, 1 col mobile)
-
----
-
-### 3. ArticleTextBlock
-
-Multi-column text content.
-
-**Location:** `src/lib/slices/ArticleTextBlock/`
-
-#### Primary Fields
-
-| Field | Type | Options |
-|-------|------|---------|
-| `columns` | Select | 1, 2, 3, 4 (default: 2) |
-
-#### Items (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `content` | Rich Text | Paragraph with formatting |
-
-#### Features
-- RTL grid layout (fills from right)
-- Responsive column collapse
-
----
-
-### 4. ArticleNumberedGrid
-
-Auto-numbered grid items.
-
-**Location:** `src/lib/slices/ArticleNumberedGrid/`
-
-#### Primary Fields
-
-| Field | Type | Options |
-|-------|------|---------|
-| `columns` | Select | 2, 3, 4 (default: 4) |
-| `show_numbers` | Boolean | Auto-number items (default: true) |
-
-#### Items (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `heading` | Text | Custom heading (if show_numbers false) |
-| `description` | Rich Text | Item content |
-
-#### Features
-- Auto-generates 01, 02, 03... numbers
-- Optional custom headings
-- Responsive grid
-
----
-
-### 5. ArticleFullBleed
-
-Full-width hero image.
-
-**Location:** `src/lib/slices/ArticleFullBleed/`
-
-#### Primary Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `image` | Image | Full-width image |
-| `caption` | Text | Optional caption |
-
-#### Features
-- 16:9 aspect ratio
-- Edge-to-edge display
-
----
-
-### 6. StaticBioBlock
-
-Bio section with staggered images and content.
-
-**Location:** `src/lib/slices/StaticBioBlock/`
-
-#### Primary Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `bio_heading` | Rich Text | Section heading with optional emphasis |
-| `bio_content` | Rich Text | Intro paragraph |
-
-#### Bio Images Group (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `image` | Image | Staggered image |
-
-#### Bio Items Group (repeatable)
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `item_type` | Select | "header" or "row/cell" |
-| `item_heading` | Text | Section/item heading |
-| `item_subtitle` | Text | Subtitle |
-| `item_index` | Text | Right-aligned index |
-| `item_description` | Rich Text | Content |
-
-#### Layout
-- Two-column: images (left, staggered), content (right)
-- Items grouped by headers
-- Collapses to single column on tablet
-
----
-
-## Svelte Components
-
-### Layout Components
-
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `Header` | `components/Header.svelte` | Navigation bar + mobile menu |
-| `Footer` | `components/Footer.svelte` | Footer with social links |
-| `+layout.svelte` | `routes/+layout.svelte` | Root layout wrapper |
-
-### Page Components
-
-| Component | Location | Purpose |
-|-----------|----------|---------|
-| `Index` | `components/pages/Index.svelte` | Homepage layout |
-| `IndexCard` | `components/IndexCard.svelte` | Project card with layered images |
-| `Button` | `components/Button.svelte` | Animated button with rotating border |
-| `Sidebar` | `components/Sidebar.svelte` | Article metadata sidebar |
-
----
-
-## Routes
-
-| Route | Data Source | Description |
-|-------|-------------|-------------|
-| `/` | `client.getAllByType('project')` | Homepage with 4 showcase projects |
-| `/about` | `client.getByUID('page', 'about')` | About page |
-| `/work` | — | Work listing (empty) |
-| `/work/[uid]` | `client.getByUID('project', uid)` | Project detail |
-| `/slice-simulator` | — | Prismic Slice Machine preview |
-| `/api/preview` | — | Prismic preview webhook |
-
----
-
-## Data Fetching
-
-All data fetching happens server-side via `+page.server.ts` files.
-
-### Homepage Example
+#### `src/register.ts` - Custom Element Factory
 
 ```typescript
-import { createClient, filter } from '$lib/prismicio';
+import { mount, unmount } from 'svelte';
+import type { Component } from 'svelte';
 
-export const load = async ({ fetch, cookies }) => {
-  const client = createClient({ fetch, cookies });
+export function registerSvelteElement(
+  tag: string,
+  ComponentClass: Component<any>,
+  propNames: string[] = []
+) {
+  class SvelteElement extends HTMLElement {
+    private _component: Record<string, any> | null = null;
 
-  const projects = await client.getAllByType('project', {
-    filters: [filter.at('my.project.showcase', true)],
-    orderings: [{ field: 'my.project.project_index', direction: 'asc' }],
-    limit: 4
-  });
+    connectedCallback() {
+      if (this._component) return;  // Guard against double-mounting
+      this.innerHTML = '';           // Clear existing content
 
-  return { projects };
-};
-```
+      // Get props from sibling script tag
+      let props: Record<string, any> = {};
+      const id = this.getAttribute('id');
+      if (id) {
+        const script = document.querySelector(`script[data-for="${id}"]`);
+        if (script) {
+          props = JSON.parse(script.textContent || '{}');
+          script.remove();
+        }
+      }
 
-### Project Detail Example
+      // Mount Svelte 5 component
+      this._component = mount(ComponentClass, { target: this, props });
+    }
 
-```typescript
-import { createClient } from '$lib/prismicio';
-import { error } from '@sveltejs/kit';
-
-export const load = async ({ params, fetch, cookies }) => {
-  const client = createClient({ fetch, cookies });
-
-  try {
-    const project = await client.getByUID('project', params.uid);
-    return { project };
-  } catch (e) {
-    throw error(404, 'Project not found');
+    disconnectedCallback() {
+      if (this._component) {
+        unmount(this._component);
+        this._component = null;
+      }
+    }
   }
-};
+
+  customElements.define(tag, SvelteElement);
+}
 ```
 
----
+#### `src/main.ts` - Registration Entry Point
 
-## Styling
+```typescript
+import { registerSvelteElement } from './register';
+import Header from './components/layout/Header.svelte';
+import Footer from './components/layout/Footer.svelte';
+// ... other imports
 
-### CSS Architecture
-
-| File | Purpose |
-|------|---------|
-| `styles/normalize.css` | Reset/normalize |
-| `styles/variables.css` | CSS custom properties |
-| `styles/styles.css` | Global component styles |
-| `styles/keyframes.css` | Animation definitions |
-
-### Breakpoints
-
-| Name | Width |
-|------|-------|
-| Desktop | 992px+ |
-| Tablet | 480px - 991px |
-| Mobile | < 480px |
-
-### Utility Classes
-
-- `u-layout-vflex` - Vertical flexbox
-- `u-layout-hflex` - Horizontal flexbox
-- `u-span-2` - Grid column span
-- `u-font-accent` - Accent font
-- `gap-*` - Gap utilities
-
----
-
-## Dependencies
-
-### Runtime
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `@prismicio/client` | ^7.20.1 | Prismic API client |
-| `@prismicio/svelte` | ^2.0.0 | Prismic Svelte components |
-| `lenis` | ^1.3.17 | Smooth scrolling |
-| `dotenv` | ^17.2.3 | Environment variables |
-
-### Development
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `@sveltejs/kit` | ^2.22.0 | Framework |
-| `svelte` | ^5.0.0 | UI library |
-| `vite` | ^7.0.4 | Build tool |
-| `typescript` | ^5.0.0 | Type checking |
-| `slice-machine-ui` | ^2.18.1 | Slice Machine editor |
-
----
-
-## Environment Variables
-
-```env
-PRISMIC_WRITE_TOKEN=""   # For Slice Machine write access
+registerSvelteElement('c-header', Header, ['rootpath', 'links']);
+registerSvelteElement('c-footer', Footer, ['fixed', 'links']);
+// ... other registrations
 ```
 
+### Benefits
+
+1. **No duplicate content** - Data only in script tags, not attributes
+2. **No timing issues** - Clean mount/unmount lifecycle
+3. **Centralized registration** - One line per component
+4. **Clean Svelte files** - No web component config in .svelte files
+5. **Automatic JSON parsing** - Script tag data already parsed
+
 ---
 
-## Kirby Block Rendering Troubleshooting (2026-02-03)
+## Data Passing: PHP to Svelte
 
-### Issue: Blocks rendering as invisible on project pages
+Data is passed via sibling `<script type="application/json">` tags, NOT attributes.
 
-**Symptoms:**
-- Article header and first image rendered correctly
-- Subsequent image blocks and all text blocks appeared invisible
-- No JavaScript errors in console
+### PHP Pattern
 
-**Root Causes Found:**
-
-#### 1. Image Block: Blueprint/Snippet Field Mismatch
-- **Blueprint** defined a single `image` field (type: files, multiple: false)
-- **PHP snippet** expected `$block->images()->toStructure()` (a structure with multiple images)
-- **Content data** had a mix: some blocks had `images` array populated, others only had `image` (singular)
-
-**Fix:** Updated `article-image-block.php` to check for both:
 ```php
-// First check for structure field 'images' (multi-image support)
-$imagesStructure = $block->images()->toStructure();
-if ($imagesStructure->isNotEmpty()) {
-    // ... handle structure
-}
+<?php
+$blockId = "ar-header-" . $block->id();
+$props = [
+    "title" => $block->title()->value(),
+    "description" => (string) $block->description()->kt(),  // Cast to string!
+];
+?>
 
-// Fallback: check for single 'image' field (legacy/simple blocks)
-if (empty($images)) {
-    $file = $block->image()->toFile();
-    // ... handle single image
-}
+<ar-header id="<?= $blockId ?>"></ar-header>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>
 ```
 
-#### 2. Text Block: Reserved Method Name Conflict
-- **Blueprint** used a field named `content` inside a structure
-- **Problem:** `content` is a reserved method name in Kirby's StructureObject class
-- **Effect:** `$item->content()` returned the Content container object, not the field value
-- **Result:** Text content was always empty strings in the JSON
+### Critical: Cast Kirby Field Objects to Strings
 
-**Fix:** Updated `article-text-block.php` to use `toArray()` instead:
+Kirby methods like `->kt()`, `->kti()`, `->kirbytext()` return Field objects, not strings. When passed to `json_encode()`, they become `[object Object]`.
+
+**Always cast to string:**
+```php
+// BAD - returns Field object
+"title" => $page->hero_title()->kti()
+
+// GOOD - returns string
+"title" => (string) $page->hero_title()->kti()
+```
+
+---
+
+## Svelte 5 Component Pattern
+
+Components are pure Svelte 5 with `$props()` - no web component config.
+
+### Simple Props
+
+```svelte
+<script lang="ts">
+    let { title = "", description = "" } = $props();
+</script>
+
+<header>
+    <h2>{title}</h2>
+    <div>{@html description}</div>
+</header>
+```
+
+### Array/Object Props
+
+Props are passed as actual arrays/objects (not JSON strings) since `register.ts` parses the JSON.
+
+```svelte
+<script lang="ts">
+    let { items = [] }: {
+        items?: Array<{ content: string }>;
+    } = $props();
+</script>
+
+{#each items as item}
+    <div>{@html item.content}</div>
+{/each}
+```
+
+### Derived State
+
+Use `$derived()` for computed values:
+
+```svelte
+<script lang="ts">
+    let { items = [] } = $props();
+    let groupedItems = $derived(groupItems(items));
+    
+    function groupItems(items) { /* ... */ }
+</script>
+```
+
+### Reactive State
+
+Use `$state()` for local reactive state:
+
+```svelte
+<script lang="ts">
+    let navState = $state("closed");
+    
+    function toggle() {
+        navState = navState === "open" ? "closed" : "open";
+    }
+</script>
+```
+
+---
+
+## Vite Build Configuration
+
+```typescript
+// vite.config.ts
+import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+
+export default defineConfig({
+  plugins: [svelte()],  // NO customElement: true
+  build: {
+    outDir: "../assets",
+    emptyOutDir: false,
+    lib: {
+      entry: "src/main.ts",
+      name: "components",
+      fileName: () => "js/components.js",
+      formats: ["iife"],
+    },
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith(".css")) {
+            return "css/svelte.css";
+          }
+          return "js/[name][extname]";
+        },
+      },
+    },
+  },
+});
+```
+
+**Output:**
+- `kirby/assets/js/components.js` - IIFE bundle with all components
+- `kirby/assets/css/svelte.css` - Extracted component styles
+
+---
+
+## Component Registry
+
+| Tag | Component | Props |
+|-----|-----------|-------|
+| `c-header` | Header | `rootpath`, `links` |
+| `c-footer` | Footer | `fixed`, `links` |
+| `c-indexhero` | IndexHero | `eyebrow`, `title`, `buttonlabel`, `buttonhref`, `projects` |
+| `c-button` | Button | `href`, `label`, `active` |
+| `c-indexcard` | IndexCard | `href`, `title`, `backgroundimage`, `overlayimage` |
+| `ar-header` | ArticleHeader | `title`, `description` |
+| `ar-img` | ArticleImageBlock | `images` |
+| `ar-text` | ArticleTextBlock | `items` |
+| `ar-grid` | ArticleNumberedGrid | `shownumbers`, `items` |
+| `ar-fullbleed` | ArticleFullBleed | `image`, `alt`, `caption` |
+| `s-bio` | StaticBioBlock | `heading`, `content`, `images`, `items` |
+
+---
+
+## Kirby Troubleshooting
+
+### Reserved Method Names in Structure Fields
+
+Kirby's StructureObject has reserved methods. Using these as field names causes conflicts:
+
+| Reserved Name | Returns |
+|---------------|---------|
+| `content` | Content object |
+| `id` | Structure item ID |
+| `parent` | Parent object |
+| `site` | Site object |
+| `kirby` | Kirby instance |
+
+**Workaround:** Use `$item->toArray()['fieldname']`:
+
 ```php
 foreach ($block->items()->toStructure() as $item) {
-    // 'content' conflicts with Kirby's reserved content() method
     $itemData = $item->toArray();
     $items[] = [
-        'content' => $itemData['content'] ?? '',
+        'content' => $itemData['content'] ?? '',  // Not $item->content()
     ];
 }
 ```
 
-### Kirby Reserved Method Names to Avoid in Structure Fields
-When naming fields inside Kirby structure fields, avoid these reserved method names:
-- `content` - Returns the Content object
-- `id` - Returns the structure item ID
-- `parent` - Returns the parent object
-- `site` - Returns the site object
-- `kirby` - Returns the Kirby instance
+### Blueprint/Snippet Field Mismatches
 
-If you must use these names, access them via `$item->toArray()['fieldname']` instead of `$item->fieldname()`.
+When blocks render empty, verify:
+1. Blueprint field names match what PHP expects
+2. Single file fields vs structure fields are handled correctly
+3. Add fallback logic for backwards compatibility
 
-### Issue: Text block 4-column RTL grid not working (2026-02-03)
+---
 
-**Symptoms:**
-- Text blocks rendered but not in the expected 4-column RTL grid layout
-- Items appeared in wrong positions or single column
+## Build Commands
 
-**Root Cause:**
-- The `columns` prop received values like `"2 Columns"` (label) or `""` (empty)
-- The Svelte component expected clean numbers like `"2"` or `"4"`
-- CSS classes like `.grid-cols-2 Columns` don't exist
+```bash
+cd kirby/svelte
 
-**Fix:** Updated `ArticleTextBlock.svelte` to:
-1. Parse column value with regex to extract number from strings like "2 Columns"
-2. Default to 4 columns when empty (matching original site behavior)
-3. Use inline CSS variable `style="--cols: {colCount}"` instead of class-based approach
+# Development (watch mode)
+npm run dev
 
-```javascript
-// Parse columns - handle "2 Columns", "2", or empty string
-$: {
-    if (!columns || columns.trim() === "") {
-        colCount = 4; // Default to 4-column grid
-    } else {
-        const match = columns.match(/\d+/);
-        colCount = match ? parseInt(match[0], 10) : 4;
-    }
-}
+# Production build
+npm run build
+
+# Type checking
+npm run check
 ```
 
 ---
 
-## Notes for Migration
+## CSS Architecture
 
-1. **Two slice zones**: Pages use `slices`, Projects use `slices2` - Kirby will unify these
+| File | Purpose |
+|------|---------|
+| `normalize.css` | Reset/normalize |
+| `variables.css` | CSS custom properties |
+| `styles.css` | Global styles |
+| `keyframes.css` | Animations |
+| `svelte.css` | Svelte component styles (scoped) |
 
-2. **Repeatable groups**: Prismic uses groups for tags, metadata, bio items - Kirby uses structure fields
-
-3. **Image handling**: Prismic auto-optimizes images - need to configure Kirby's thumb API
-
-4. **Rich text**: Prismic's rich text → Kirby's blocks or writer field
-
-5. **Filtering**: `filter.at('my.project.showcase', true)` → Kirby's `filterBy('showcase', true)`
-
-6. **Preview**: Prismic preview system won't exist - Kirby Panel has its own preview
+All CSS files loaded in `snippets/head.php`. Svelte's scoped CSS uses hashed class names (e.g., `.c-header.svelte-4b3o1e`) and does NOT use Shadow DOM.

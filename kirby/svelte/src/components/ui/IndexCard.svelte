@@ -1,10 +1,10 @@
-<svelte:options customElement={{ tag: "c-indexcard", shadow: "none" }} />
-
-<script>
-    export let href = "#";
-    export let title = "";
-    export let backgroundimage = "";
-    export let overlayimage = "";
+<script lang="ts">
+    let {
+        href = "#",
+        title = "",
+        backgroundimage = "",
+        overlayimage = "",
+    } = $props();
 </script>
 
 <a {href} class="c-indexcard">

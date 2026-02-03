@@ -1,8 +1,5 @@
-<svelte:options customElement={{ tag: "ar-header", shadow: "none" }} />
-
-<script>
-    export let title = "";
-    export let description = "";
+<script lang="ts">
+    let { title = "", description = "" } = $props();
 </script>
 
 <header class="b-ah_header">

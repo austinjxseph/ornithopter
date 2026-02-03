@@ -1,28 +1,19 @@
-<svelte:options customElement={{ tag: "ar-grid", shadow: "none" }} />
-
-<script>
-    export let shownumbers = "true";
-    export let items = "[]";
-
-    let parsedItems = [];
-    let showNumbers = true;
-
-    $: {
-        try {
-            parsedItems = JSON.parse(items);
-        } catch (e) {
-            parsedItems = [];
-        }
-        showNumbers = shownumbers === "true" || shownumbers === true;
-    }
+<script lang="ts">
+    let {
+        shownumbers = true,
+        items = [],
+    }: {
+        shownumbers?: boolean;
+        items?: Array<{ heading?: string; description: string }>;
+    } = $props();
 </script>
 
 <section class="section">
     <div class="container-fw py-sm">
         <div class="b-gr_grid">
-            {#each parsedItems as item, index}
+            {#each items as item, index}
                 <div class="b-gr_cell">
-                    {#if showNumbers}
+                    {#if shownumbers}
                         <h5>({String(index + 1).padStart(2, "0")})</h5>
                     {:else if item.heading}
                         <h5>{item.heading}</h5>

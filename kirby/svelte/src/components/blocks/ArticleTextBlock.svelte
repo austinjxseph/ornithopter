@@ -1,22 +1,14 @@
-<svelte:options customElement={{ tag: "ar-text", shadow: "none" }} />
-
-<script>
-    export let items = "[]";
-
-    let parsedItems = [];
-
-    $: {
-        try {
-            parsedItems = JSON.parse(items);
-        } catch (e) {
-            parsedItems = [];
-        }
-    }
+<script lang="ts">
+    let {
+        items = [],
+    }: {
+        items?: Array<{ content: string }>;
+    } = $props();
 </script>
 
 <section class="b-tb_section">
     <div class="b-tb_grid">
-        {#each parsedItems as item}
+        {#each items as item}
             <div class="b-tb_col">
                 <div class="text-md">
                     {@html item.content}

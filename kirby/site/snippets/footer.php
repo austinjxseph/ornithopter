@@ -1,5 +1,5 @@
 <?php
-// Build footer links JSON
+// Build footer links
 $footerLinks = [];
 foreach ($site->footer_links()->toStructure() as $link) {
     $footerLinks[] = [
@@ -8,11 +8,15 @@ foreach ($site->footer_links()->toStructure() as $link) {
         "href" => $link->link_href()->value(),
     ];
 }
-$footerLinksJson = json_encode($footerLinks);
+
 $fixed = $fixed ?? false;
+$props = [
+    "fixed" => $fixed,
+    "links" => $footerLinks,
+];
 ?>
 
-<c-footer
-  <?= $fixed ? "fixed" : "" ?>
-  links='<?= $footerLinksJson ?>'
-></c-footer>
+<c-footer id="site-footer"></c-footer>
+<script type="application/json" data-for="site-footer">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

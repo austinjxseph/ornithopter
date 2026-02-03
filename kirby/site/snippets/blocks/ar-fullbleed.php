@@ -1,7 +1,15 @@
-<?php $file = $block->image()->toFile(); ?>
+<?php
+$file = $block->image()->toFile();
 
-<ar-fullbleed
-  image="<?= $file?->url() ?>"
-  alt="<?= $file?->alt()->html() ?>"
-  caption="<?= $block->caption()->html() ?>"
-></ar-fullbleed>
+$blockId = "ar-fullbleed-" . $block->id();
+$props = [
+    "image" => $file?->url() ?? "",
+    "alt" => $file?->alt()->value() ?? "",
+    "caption" => $block->caption()->value() ?? "",
+];
+?>
+
+<ar-fullbleed id="<?= $blockId ?>"></ar-fullbleed>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

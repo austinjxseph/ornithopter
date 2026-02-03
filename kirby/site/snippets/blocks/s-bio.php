@@ -7,7 +7,6 @@ foreach ($block->images()->toFiles() as $file) {
         "alt" => $file->alt()->value(),
     ];
 }
-$imagesJson = json_encode($images);
 
 // Build items array
 $items = [];
@@ -20,12 +19,17 @@ foreach ($block->items()->toStructure() as $item) {
         "description" => (string) $item->description()->kt(),
     ];
 }
-$itemsJson = json_encode($items);
+
+$blockId = "s-bio-" . $block->id();
+$props = [
+    "heading" => (string) $block->heading()->kt(),
+    "content" => (string) $block->content()->kt(),
+    "images" => $images,
+    "items" => $items,
+];
 ?>
 
-<s-bio
-  heading="<?= htmlspecialchars((string) $block->heading()->kt()) ?>"
-  content="<?= htmlspecialchars((string) $block->content()->kt()) ?>"
-  images='<?= htmlspecialchars($imagesJson) ?>'
-  items='<?= htmlspecialchars($itemsJson) ?>'
-></s-bio>
+<s-bio id="<?= $blockId ?>"></s-bio>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

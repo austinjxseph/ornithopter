@@ -1,9 +1,5 @@
-<svelte:options customElement={{ tag: "ar-fullbleed", shadow: "none" }} />
-
-<script>
-    export let image = "";
-    export let alt = "";
-    export let caption = "";
+<script lang="ts">
+    let { image = "", alt = "", caption = "" } = $props();
 </script>
 
 <section class="section-fw">

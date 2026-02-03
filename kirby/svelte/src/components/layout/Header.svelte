@@ -1,19 +1,13 @@
-<svelte:options customElement={{ tag: "c-header", shadow: "none" }} />
+<script lang="ts">
+    let {
+        rootpath = "/",
+        links = [],
+    }: {
+        rootpath?: string;
+        links?: Array<{ label: string; href: string }>;
+    } = $props();
 
-<script>
-    export let rootpath = "/";
-    export let links = "[]";
-
-    let navState = "closed";
-    let parsedLinks = [];
-
-    $: {
-        try {
-            parsedLinks = JSON.parse(links);
-        } catch (e) {
-            parsedLinks = [];
-        }
-    }
+    let navState = $state("closed");
 
     function toggleNavigation() {
         navState = navState === "open" ? "closed" : "open";
@@ -31,7 +25,7 @@
             data-nav-element="overlay"
             aria-hidden="true"
             class="c-header_overlay"
-            on:click={toggleNavigation}
+            onclick={toggleNavigation}
         ></button>
 
         <a href={rootpath} aria-label="Go Back Home" class="c-header_logo">
@@ -40,7 +34,7 @@
 
         <ul role="list" class="c-header_drawer">
             <li class="c-header_links">
-                {#each parsedLinks as link}
+                {#each links as link}
                     <a href={link.href} class="c-header_link">
                         <h3>{link.label}</h3>
                     </a>
@@ -51,7 +45,7 @@
         <button
             data-nav-element="menu"
             class="c-header_menu"
-            on:click={toggleNavigation}
+            onclick={toggleNavigation}
         >
             <div class="c-header_marker"></div>
             <div>Menu</div>

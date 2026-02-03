@@ -1,22 +1,26 @@
-import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 export default defineConfig({
-  plugins: [
-    svelte({
-      compilerOptions: {
-        customElement: true,
-      },
-    }),
-  ],
+  plugins: [svelte()],
   build: {
-    outDir: '../assets/js',
+    outDir: "../assets",
     emptyOutDir: false,
     lib: {
-      entry: 'src/main.ts',
-      name: 'components',
-      fileName: () => 'components.js',
-      formats: ['iife'],
+      entry: "src/main.ts",
+      name: "components",
+      fileName: () => "js/components.js",
+      formats: ["iife"],
+    },
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith(".css")) {
+            return "css/svelte.css";
+          }
+          return "js/[name][extname]";
+        },
+      },
     },
   },
 });

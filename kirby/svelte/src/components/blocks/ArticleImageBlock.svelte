@@ -1,23 +1,15 @@
-<svelte:options customElement={{ tag: "ar-img", shadow: "none" }} />
-
-<script>
-    export let images = "[]";
-
-    let parsedImages = [];
-
-    $: {
-        try {
-            parsedImages = JSON.parse(images);
-        } catch (e) {
-            parsedImages = [];
-        }
-    }
+<script lang="ts">
+    let {
+        images = [],
+    }: {
+        images?: Array<{ url: string; alt?: string; caption?: string }>;
+    } = $props();
 </script>
 
 <section class="section">
     <div class="container-fw py-sm">
         <div class="b-ib_grid">
-            {#each parsedImages as item}
+            {#each images as item}
                 <figure class="b-ib_figure">
                     <div class="b-ib_img">
                         {#if item.url}

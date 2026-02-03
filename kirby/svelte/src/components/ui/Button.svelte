@@ -1,9 +1,5 @@
-<svelte:options customElement={{ tag: "c-button", shadow: "none" }} />
-
-<script>
-    export let href = "#";
-    export let label = "Button";
-    export let active = false;
+<script lang="ts">
+    let { href = "#", label = "Button", active = false } = $props();
 </script>
 
 <div class="c-button {active ? 'c-button_active' : ''}">

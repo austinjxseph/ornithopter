@@ -38,6 +38,7 @@
   <link rel="stylesheet" href="/assets/css/variables.css">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/keyframes.css">
+  <link rel="stylesheet" href="/assets/css/svelte.css">
 </head>
 <body class="body">
 <div class="page">

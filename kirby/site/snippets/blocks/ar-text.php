@@ -8,9 +8,14 @@ foreach ($block->items()->toStructure() as $item) {
         "content" => $itemData["content"] ?? "",
     ];
 }
-$itemsJson = json_encode($items);
+
+$blockId = "ar-text-" . $block->id();
+$props = [
+    "items" => $items,
+];
 ?>
 
-<ar-text
-  items='<?= htmlspecialchars($itemsJson) ?>'
-></ar-text>
+<ar-text id="<?= $blockId ?>"></ar-text>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>

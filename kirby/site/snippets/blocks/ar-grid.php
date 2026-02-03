@@ -6,11 +6,15 @@ foreach ($block->items()->toStructure() as $item) {
         "description" => (string) $item->description()->kt(),
     ];
 }
-$itemsJson = json_encode($items);
+
+$blockId = "ar-grid-" . $block->id();
+$props = [
+    "shownumbers" => $block->show_numbers()->toBool(),
+    "items" => $items,
+];
 ?>
 
-<ar-grid
-  columns="<?= $block->columns()->value() ?>"
-  shownumbers="<?= $block->show_numbers()->toBool() ? "true" : "false" ?>"
-  items='<?= htmlspecialchars($itemsJson) ?>'
-></ar-grid>
+<ar-grid id="<?= $blockId ?>"></ar-grid>
+<script type="application/json" data-for="<?= $blockId ?>">
+<?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
+</script>
