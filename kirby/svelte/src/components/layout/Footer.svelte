@@ -1,10 +1,11 @@
 <svelte:options customElement={{ tag: "c-footer", shadow: "none" }} />
 
-<script>
-    export let fixed = null;
+<script lang="ts">
+    export let fixed: string | boolean | null = null;
     export let links = "[]";
 
-    let parsedLinks = [];
+    let parsedLinks: Array<{ icon?: string; label?: string; href?: string }> =
+        [];
     const currentYear = new Date().getFullYear();
 
     // Handle boolean attribute - presence of attribute means true

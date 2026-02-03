@@ -4,14 +4,16 @@
  * Import all components here - they self-register as custom elements
  */
 
-// Layout components
-import "./components/Button.svelte";
-import "./components/IndexCard.svelte";
-import "./components/IndexHero.svelte";
-import "./components/Header.svelte";
-import "./components/Footer.svelte";
+// Layout components (page-level, fixed/sticky positioning)
+import "./components/layout/Header.svelte";
+import "./components/layout/Footer.svelte";
+import "./components/layout/IndexHero.svelte";
 
-// Block components
+// UI components (reusable primitives)
+import "./components/ui/Button.svelte";
+import "./components/ui/IndexCard.svelte";
+
+// Block components (CMS-driven content blocks)
 import "./components/blocks/ArticleHeader.svelte";
 import "./components/blocks/ArticleImageBlock.svelte";
 import "./components/blocks/ArticleTextBlock.svelte";

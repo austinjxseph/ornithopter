@@ -21,7 +21,6 @@
     <section class="section-hr">
         <div class="container-xl">
             <div class="inner">
-                <!-- Left Panel: Hero Section (Sticky) -->
                 <div class="wrap">
                     <div class="text">
                         <div class="heading">
@@ -41,7 +40,6 @@
                     </div>
                 </div>
 
-                <!-- Right Panel: Project Showcase (Scrolling) -->
                 <div class="track">
                     {#each projectList as project}
                         <c-indexcard
