@@ -1,14 +1,16 @@
 <?php
 $items = [];
 foreach ($block->items()->toStructure() as $item) {
+    // Note: 'content' field name conflicts with Kirby's reserved content() method
+    // Use toArray() to access the raw field value instead
+    $itemData = $item->toArray();
     $items[] = [
-        'content' => (string) $item->content()->kt(),
+        "content" => $itemData["content"] ?? "",
     ];
 }
 $itemsJson = json_encode($items);
 ?>
 
 <article-text-block
-  columns="<?= $block->columns()->value() ?>"
   items='<?= htmlspecialchars($itemsJson) ?>'
 ></article-text-block>

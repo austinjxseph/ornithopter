@@ -1,10 +1,10 @@
-<svelte:options customElement={{ tag: "static-bio-block", shadow: "open" }} />
+<svelte:options customElement={{ tag: "static-bio-block", shadow: "none" }} />
 
 <script>
     export let heading = "";
     export let content = "";
-    export let images = "[]"; // JSON string of [{url, alt}]
-    export let items = "[]"; // JSON string of [{type, heading, subtitle, index, description}]
+    export let images = "[]";
+    export let items = "[]";
 
     let parsedImages = [];
     let parsedItems = [];
@@ -51,14 +51,14 @@
     }
 </script>
 
-<section class="u-layout-vflex section">
-    <div class="u-layout-vflex container-xl py-xl">
-        <div class="u-layout-hflex inner">
+<section class="section">
+    <div class="container-xl py-xl">
+        <div class="s-ab_inner">
             <!-- Left Panel: Staggered Images -->
-            <div class="u-layout-vflex col img">
+            <div class="s-ab_col-img">
                 {#each parsedImages as image, i}
-                    <div class="u-layout-hflex img-row img-row-{i + 1}">
-                        <div class="image">
+                    <div class="s-ab_img-row s-ab_img-row-{i + 1}">
+                        <div class="s-ab_image">
                             {#if image?.url}
                                 <img
                                     src={image.url}
@@ -72,17 +72,17 @@
             </div>
 
             <!-- Right Panel: Content -->
-            <div class="u-layout-vflex col body">
+            <div class="s-ab_col-body">
                 <!-- Bio Heading + Content -->
-                <div class="u-layout-vflex page-header">
+                <div class="s-ab_page-header">
                     {#if heading}
-                        <div class="heading">
+                        <div class="s-ab_heading">
                             {@html heading}
                         </div>
                     {/if}
 
                     {#if content}
-                        <div class="u-layout-vflex content">
+                        <div class="s-ab_content">
                             {@html content}
                         </div>
                     {/if}
@@ -90,43 +90,41 @@
 
                 <!-- Dynamic Sections -->
                 {#each groupedItems as group}
-                    <div class="u-layout-vflex group">
-                        <h3 class="u-font-accent group-heading">
+                    <div class="s-ab_group">
+                        <h3 class="s-ab_group-heading">
                             {group.heading}
                         </h3>
                         {#if group.description}
-                            <div class="group-description">
+                            <div class="s-ab_group-description">
                                 {@html group.description}
                             </div>
                         {/if}
                         {#each group.rows as row}
-                            <div class="u-layout-vflex item">
-                                <div class="u-layout-vflex item-header">
+                            <div class="s-ab_item">
+                                <div class="s-ab_item-header">
                                     {#if row.index}
-                                        <div
-                                            class="u-layout-hflex item-row-between"
-                                        >
-                                            <p class="item-heading">
+                                        <div class="s-ab_item-row-between">
+                                            <p class="s-ab_item-heading">
                                                 {row.heading}
                                             </p>
-                                            <p class="item-index">
+                                            <p class="s-ab_item-index">
                                                 {row.index}
                                             </p>
                                         </div>
                                     {:else if row.heading}
-                                        <p class="item-heading">
+                                        <p class="s-ab_item-heading">
                                             {row.heading}
                                         </p>
                                     {/if}
                                     {#if row.subtitle}
-                                        <p class="item-subtitle">
+                                        <p class="s-ab_item-subtitle">
                                             {row.subtitle}
                                         </p>
                                     {/if}
                                 </div>
                                 {#if row.description}
-                                    <div class="u-layout-hflex item-row">
-                                        <div class="item-description">
+                                    <div class="s-ab_item-row">
+                                        <div class="s-ab_item-description">
                                             {@html row.description}
                                         </div>
                                     </div>
@@ -141,10 +139,7 @@
 </section>
 
 <style>
-    @import url("/assets/css/variables.css");
-    @import url("/assets/css/styles.css");
-
-    .inner {
+    .s-ab_inner {
         width: 100%;
         gap: var(--padding--xl);
         display: grid;
@@ -152,20 +147,22 @@
     }
 
     @media screen and (max-width: 991px) {
-        .inner {
+        .s-ab_inner {
             grid-template-columns: 1fr;
             gap: var(--gap--xxl);
         }
     }
 
     @media screen and (min-width: 1600px) {
-        .inner {
+        .s-ab_inner {
             grid-template-columns: repeat(3, 1fr);
         }
     }
 
     /* Left column - Images */
-    .col.img {
+    .s-ab_col-img {
+        display: flex;
+        flex-direction: column;
         flex: 1;
         gap: var(--gap--md);
         max-width: 600px;
@@ -176,7 +173,7 @@
     }
 
     @media screen and (max-width: 991px) {
-        .col.img {
+        .s-ab_col-img {
             max-width: none;
             max-height: none;
             width: 100%;
@@ -184,12 +181,13 @@
     }
 
     @media screen and (min-width: 1600px) {
-        .col.img {
+        .s-ab_col-img {
             grid-column: span 2;
         }
     }
 
-    .img-row {
+    .s-ab_img-row {
+        display: flex;
         flex: 1;
         min-height: 1px;
         min-width: 1px;
@@ -197,26 +195,26 @@
         width: 100%;
     }
 
-    .img-row-1 {
+    .s-ab_img-row-1 {
         padding-right: 0;
     }
 
-    .img-row-2 {
+    .s-ab_img-row-2 {
         padding-right: 80px;
     }
 
-    .img-row-3 {
+    .s-ab_img-row-3 {
         padding-right: 160px;
     }
 
     @media screen and (max-width: 991px) {
-        .img-row-2,
-        .img-row-3 {
+        .s-ab_img-row-2,
+        .s-ab_img-row-3 {
             padding-right: 0;
         }
     }
 
-    .image {
+    .s-ab_image {
         flex: 1;
         height: 100%;
         min-height: 1px;
@@ -224,14 +222,16 @@
         background-color: var(--_themes---neutrals--100);
     }
 
-    .image :global(img) {
+    .s-ab_image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
     /* Right column - Content */
-    .col.body {
+    .s-ab_col-body {
+        display: flex;
+        flex-direction: column;
         flex: 1;
         max-width: 500px;
         min-height: 1px;
@@ -240,22 +240,24 @@
     }
 
     @media screen and (max-width: 991px) {
-        .col.body {
+        .s-ab_col-body {
             max-width: none;
             width: 100%;
         }
     }
 
-    .page-header {
+    .s-ab_page-header {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--xxl);
         width: 100%;
     }
 
-    .heading {
+    .s-ab_heading {
         max-width: 480px;
     }
 
-    .heading :global(p) {
+    .s-ab_heading p {
         font-family: var(--typeface--primary);
         font-size: var(--h3--font-size);
         line-height: var(--h3--line-height);
@@ -264,16 +266,18 @@
         text-shadow: 4px 4px 60px black;
     }
 
-    .heading :global(em) {
+    .s-ab_heading em {
         font-family: var(--typeface--secondary);
         font-style: normal;
     }
 
-    .content {
+    .s-ab_content {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--md);
     }
 
-    .content :global(p) {
+    .s-ab_content p {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -281,12 +285,14 @@
         color: var(--_themes---site--text--text-primary);
     }
 
-    .group {
+    .s-ab_group {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--lg);
         width: 100%;
     }
 
-    .group-heading {
+    .s-ab_group-heading {
         font-family: var(--typeface--secondary);
         font-size: var(--h3--font-size);
         line-height: var(--h3--line-height);
@@ -298,7 +304,7 @@
         font-style: normal;
     }
 
-    .group-description :global(p) {
+    .s-ab_group-description p {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -306,24 +312,28 @@
         color: var(--_themes---site--text--text-primary);
     }
 
-    .item {
+    .s-ab_item {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--md);
         width: 100%;
     }
 
-    .item-header {
+    .s-ab_item-header {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--xxs);
         width: 100%;
     }
 
-    .item-heading {
+    .s-ab_item-heading {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: 1.2;
         color: var(--_themes---site--text--text-primary);
     }
 
-    .item-subtitle {
+    .s-ab_item-subtitle {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -331,20 +341,22 @@
         color: var(--_themes---site--text--text-secondary);
     }
 
-    .item-row {
+    .s-ab_item-row {
+        display: flex;
         width: 100%;
     }
 
-    .item-row-between {
+    .s-ab_item-row-between {
+        display: flex;
         width: 100%;
         justify-content: space-between;
     }
 
-    .item-description {
+    .s-ab_item-description {
         flex: 1;
     }
 
-    .item-description :global(p) {
+    .s-ab_item-description p {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);

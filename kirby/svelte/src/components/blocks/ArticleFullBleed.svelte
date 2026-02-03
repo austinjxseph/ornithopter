@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-full-bleed", shadow: "open" }} />
+<svelte:options customElement={{ tag: "article-full-bleed", shadow: "none" }} />
 
 <script>
     export let image = "";
@@ -6,40 +6,39 @@
     export let caption = "";
 </script>
 
-<section class="u-layout-vflex section">
-    <div class="u-layout-vflex container-fw">
-        <div class="u-layout-vflex img">
+<section class="section-fw">
+    <figure class="b-fb_figure">
+        <div class="b-fb_img">
             {#if image}
                 <img src={image} {alt} loading="lazy" />
             {/if}
         </div>
         {#if caption}
-            <figcaption class="text-sm caption">{caption}</figcaption>
+            <figcaption class="b-fb_caption text-sm">{caption}</figcaption>
         {/if}
-    </div>
+    </figure>
 </section>
 
 <style>
-    @import url("/assets/css/variables.css");
-    @import url("/assets/css/styles.css");
+    .b-fb_figure {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 0;
+    }
 
-    .img {
+    .b-fb_img {
         aspect-ratio: 16 / 9;
-        object-fit: cover;
-        flex-flow: column;
-        justify-content: flex-start;
-        align-self: stretch;
-        align-items: stretch;
         overflow: hidden;
     }
 
-    .img :global(img) {
+    .b-fb_img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .caption {
+    .b-fb_caption {
         color: var(--_themes---site--text--text-secondary);
         padding: var(--gap--xs) var(--global--margin);
         text-align: center;

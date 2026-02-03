@@ -1,11 +1,10 @@
 <svelte:options
-    customElement={{ tag: "article-numbered-grid", shadow: "open" }}
+    customElement={{ tag: "article-numbered-grid", shadow: "none" }}
 />
 
 <script>
-    export let columns = "4";
     export let shownumbers = "true";
-    export let items = "[]"; // JSON string of [{heading, description}]
+    export let items = "[]";
 
     let parsedItems = [];
     let showNumbers = true;
@@ -20,78 +19,54 @@
     }
 </script>
 
-<section class="u-layout-vflex section">
-    <div class="u-layout-vflex container-fw py-sm">
-        <div class="u-layout-vflex grid-container">
-            <div class="grid grid-cols-{columns}">
-                {#each parsedItems as item, index}
-                    <div class="u-layout-vflex cell gap-xxs">
-                        {#if showNumbers}
-                            <h5>({String(index + 1).padStart(2, "0")})</h5>
-                        {:else if item.heading}
-                            <h5>{item.heading}</h5>
-                        {/if}
-                        <div class="text-md">
-                            {@html item.description}
-                        </div>
+<section class="section">
+    <div class="container-fw py-sm">
+        <div class="b-gr_grid">
+            {#each parsedItems as item, index}
+                <div class="b-gr_cell">
+                    {#if showNumbers}
+                        <h5>({String(index + 1).padStart(2, "0")})</h5>
+                    {:else if item.heading}
+                        <h5>{item.heading}</h5>
+                    {/if}
+                    <div class="text-md">
+                        {@html item.description}
                     </div>
-                {/each}
-            </div>
+                </div>
+            {/each}
         </div>
     </div>
 </section>
 
 <style>
-    @import url("/assets/css/variables.css");
-    @import url("/assets/css/styles.css");
-
-    .grid-container {
-        /* Padding removed - .section handles global margins */
-    }
-
-    .grid {
+    .b-gr_grid {
         display: grid;
-        grid-column-gap: 32px;
-        grid-row-gap: 32px;
-        grid-template-columns: repeat(var(--cols), 1fr);
-        align-self: stretch;
-        place-items: start stretch;
+        gap: 32px;
+        grid-template-columns: repeat(4, 1fr);
+        width: 100%;
         direction: rtl;
     }
 
-    .grid > :global(*) {
+    .b-gr_grid > * {
         direction: ltr;
     }
 
-    .grid-cols-2 {
-        --cols: 2;
-    }
-
-    .grid-cols-3 {
-        --cols: 3;
-    }
-
-    .grid-cols-4 {
-        --cols: 4;
-    }
-
     @media screen and (max-width: 991px) {
-        .grid {
+        .b-gr_grid {
             grid-template-columns: repeat(2, 1fr);
             direction: ltr;
         }
     }
 
     @media screen and (max-width: 479px) {
-        .grid {
+        .b-gr_grid {
             grid-template-columns: 1fr;
-            grid-column-gap: 32px;
-            grid-row-gap: 32px;
-            direction: ltr;
         }
     }
 
-    .cell {
-        /* Grid cell container */
+    .b-gr_cell {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap--xxs);
     }
 </style>

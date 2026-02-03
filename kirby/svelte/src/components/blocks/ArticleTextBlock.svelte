@@ -1,8 +1,7 @@
-<svelte:options customElement={{ tag: "article-text-block", shadow: "open" }} />
+<svelte:options customElement={{ tag: "article-text-block", shadow: "none" }} />
 
 <script>
-    export let columns = "2";
-    export let items = "[]"; // JSON string of [{content}]
+    export let items = "[]";
 
     let parsedItems = [];
 
@@ -15,73 +14,45 @@
     }
 </script>
 
-<section class="u-layout-vflex section">
-    <div class="u-layout-vflex container-fw py-sm">
-        <div class="u-layout-vflex text gap-lg">
-            <div class="grid grid-cols-{columns}">
-                {#each parsedItems as item}
-                    <div class="u-layout-vflex col gap-xxs">
-                        <div class="text-md">
-                            {@html item.content}
-                        </div>
-                    </div>
-                {/each}
+<section class="b-tb_section">
+    <div class="b-tb_grid">
+        {#each parsedItems as item}
+            <div class="b-tb_col">
+                <div class="text-md">
+                    {@html item.content}
+                </div>
             </div>
-        </div>
+        {/each}
     </div>
 </section>
 
 <style>
-    @import url("/assets/css/variables.css");
-    @import url("/assets/css/styles.css");
-
-    .text {
-        /* Padding removed - .section handles global margins */
+    .b-tb_section {
+        padding: var(--padding--sm) var(--global--margin);
     }
 
-    .grid {
+    .b-tb_grid {
         display: grid;
         gap: var(--gap--md);
-        grid-template-columns: repeat(var(--cols), 1fr);
-        align-self: stretch;
-        place-items: start stretch;
+        grid-template-columns: repeat(4, 1fr);
+        width: 100%;
         direction: rtl;
     }
 
-    .grid > * {
+    .b-tb_grid > * {
         direction: ltr;
     }
 
-    .grid-cols-1 {
-        --cols: 1;
-    }
-
-    .grid-cols-2 {
-        --cols: 2;
-    }
-
-    .grid-cols-3 {
-        --cols: 3;
-    }
-
-    .grid-cols-4 {
-        --cols: 4;
-    }
-
     @media screen and (max-width: 991px) {
-        .grid {
-            grid-template-columns: repeat(2, 1fr);
-            direction: ltr;
+        .b-tb_grid {
+            display: flex;
+            flex-direction: column;
         }
     }
 
-    @media screen and (max-width: 479px) {
-        .grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .col {
-        /* Column container */
+    .b-tb_col {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap--xxs);
     }
 </style>

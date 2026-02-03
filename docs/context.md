@@ -405,6 +405,94 @@ PRISMIC_WRITE_TOKEN=""   # For Slice Machine write access
 
 ---
 
+## Kirby Block Rendering Troubleshooting (2026-02-03)
+
+### Issue: Blocks rendering as invisible on project pages
+
+**Symptoms:**
+- Article header and first image rendered correctly
+- Subsequent image blocks and all text blocks appeared invisible
+- No JavaScript errors in console
+
+**Root Causes Found:**
+
+#### 1. Image Block: Blueprint/Snippet Field Mismatch
+- **Blueprint** defined a single `image` field (type: files, multiple: false)
+- **PHP snippet** expected `$block->images()->toStructure()` (a structure with multiple images)
+- **Content data** had a mix: some blocks had `images` array populated, others only had `image` (singular)
+
+**Fix:** Updated `article-image-block.php` to check for both:
+```php
+// First check for structure field 'images' (multi-image support)
+$imagesStructure = $block->images()->toStructure();
+if ($imagesStructure->isNotEmpty()) {
+    // ... handle structure
+}
+
+// Fallback: check for single 'image' field (legacy/simple blocks)
+if (empty($images)) {
+    $file = $block->image()->toFile();
+    // ... handle single image
+}
+```
+
+#### 2. Text Block: Reserved Method Name Conflict
+- **Blueprint** used a field named `content` inside a structure
+- **Problem:** `content` is a reserved method name in Kirby's StructureObject class
+- **Effect:** `$item->content()` returned the Content container object, not the field value
+- **Result:** Text content was always empty strings in the JSON
+
+**Fix:** Updated `article-text-block.php` to use `toArray()` instead:
+```php
+foreach ($block->items()->toStructure() as $item) {
+    // 'content' conflicts with Kirby's reserved content() method
+    $itemData = $item->toArray();
+    $items[] = [
+        'content' => $itemData['content'] ?? '',
+    ];
+}
+```
+
+### Kirby Reserved Method Names to Avoid in Structure Fields
+When naming fields inside Kirby structure fields, avoid these reserved method names:
+- `content` - Returns the Content object
+- `id` - Returns the structure item ID
+- `parent` - Returns the parent object
+- `site` - Returns the site object
+- `kirby` - Returns the Kirby instance
+
+If you must use these names, access them via `$item->toArray()['fieldname']` instead of `$item->fieldname()`.
+
+### Issue: Text block 4-column RTL grid not working (2026-02-03)
+
+**Symptoms:**
+- Text blocks rendered but not in the expected 4-column RTL grid layout
+- Items appeared in wrong positions or single column
+
+**Root Cause:**
+- The `columns` prop received values like `"2 Columns"` (label) or `""` (empty)
+- The Svelte component expected clean numbers like `"2"` or `"4"`
+- CSS classes like `.grid-cols-2 Columns` don't exist
+
+**Fix:** Updated `ArticleTextBlock.svelte` to:
+1. Parse column value with regex to extract number from strings like "2 Columns"
+2. Default to 4 columns when empty (matching original site behavior)
+3. Use inline CSS variable `style="--cols: {colCount}"` instead of class-based approach
+
+```javascript
+// Parse columns - handle "2 Columns", "2", or empty string
+$: {
+    if (!columns || columns.trim() === "") {
+        colCount = 4; // Default to 4-column grid
+    } else {
+        const match = columns.match(/\d+/);
+        colCount = match ? parseInt(match[0], 10) : 4;
+    }
+}
+```
+
+---
+
 ## Notes for Migration
 
 1. **Two slice zones**: Pages use `slices`, Projects use `slices2` - Kirby will unify these

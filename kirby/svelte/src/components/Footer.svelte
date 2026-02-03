@@ -1,8 +1,8 @@
-<svelte:options customElement={{ tag: "site-footer", shadow: "open" }} />
+<svelte:options customElement={{ tag: "site-footer", shadow: "none" }} />
 
 <script>
     export let fixed = false;
-    export let links = "[]"; // JSON string of links [{icon, label, href}]
+    export let links = "[]";
 
     let parsedLinks = [];
     const currentYear = new Date().getFullYear();
@@ -16,22 +16,22 @@
     }
 </script>
 
-<footer class="u-layout-vflex component" class:fixed>
-    <div class="vignette"></div>
-    <div class="u-layout-vflex inner">
-        <div class="u-layout-hflex row copyright">
-            <div class="u-layout-vflex u-text-secondary">
+<footer class="c-footer_component" class:c-footer_fixed={fixed}>
+    <div class="c-footer_vignette"></div>
+    <div class="c-footer_inner">
+        <div class="c-footer_row c-footer_copyright">
+            <div class="u-text-secondary">
                 <div class="text-sm">
                     © <span>{currentYear}</span> Austin Joseph.
                 </div>
             </div>
         </div>
-        <ul role="list" class="row">
+        <ul role="list" class="c-footer_row">
             {#each parsedLinks as link}
                 <li>
                     <a
                         href={link.href}
-                        class="link u-inline-block"
+                        class="c-footer_link"
                         title={link.label}
                     >
                         {#if link.icon}
@@ -52,9 +52,7 @@
 </footer>
 
 <style>
-    @import url('/assets/css/variables.css');
-    @import url('/assets/css/styles.css');
-    .component {
+    .c-footer_component {
         padding: 1.2rem var(--global--margin);
         flex-flow: column;
         justify-content: center;
@@ -64,7 +62,7 @@
         position: relative;
     }
 
-    .vignette {
+    .c-footer_vignette {
         position: absolute;
         inset: 0;
         min-height: 10vh;
@@ -83,12 +81,7 @@
         pointer-events: none;
     }
 
-    .inner {
-        position: relative;
-        z-index: 1;
-    }
-
-    .fixed {
+    .c-footer_fixed {
         position: fixed;
         bottom: 0;
         left: 0;
@@ -96,7 +89,9 @@
         z-index: 10;
     }
 
-    .inner {
+    .c-footer_inner {
+        position: relative;
+        z-index: 1;
         max-width: var(--max-width--xl);
         grid-column-gap: 24px;
         grid-row-gap: 24px;
@@ -110,20 +105,23 @@
         display: flex;
     }
 
-    .row {
+    .c-footer_row {
         grid-column-gap: 0.75rem;
         grid-row-gap: 0.75rem;
         flex-flow: row;
         justify-content: flex-start;
         align-items: center;
         display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
 
-    .copyright {
+    .c-footer_copyright {
         align-self: stretch;
     }
 
-    .link {
+    .c-footer_link {
         position: relative;
         padding: 0.5rem;
         display: flex;
@@ -132,7 +130,7 @@
     }
 
     @media screen and (max-width: 991px) {
-        .inner {
+        .c-footer_inner {
             grid-column-gap: 12px;
             grid-row-gap: 12px;
             flex-flow: row;

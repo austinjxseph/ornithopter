@@ -1,9 +1,9 @@
 <svelte:options
-    customElement={{ tag: "article-image-block", shadow: "open" }}
+    customElement={{ tag: "article-image-block", shadow: "none" }}
 />
 
 <script>
-    export let images = "[]"; // JSON string of [{url, alt, caption}]
+    export let images = "[]";
 
     let parsedImages = [];
 
@@ -16,12 +16,12 @@
     }
 </script>
 
-<section class="u-layout-vflex section">
-    <div class="u-layout-vflex container-fw py-sm">
-        <div class="grid">
+<section class="section">
+    <div class="container-fw py-sm">
+        <div class="b-ib_grid">
             {#each parsedImages as item}
-                <div class="u-layout-vflex img-container">
-                    <div class="u-layout-vflex img">
+                <figure class="b-ib_figure">
+                    <div class="b-ib_img">
                         {#if item.url}
                             <img
                                 src={item.url}
@@ -31,48 +31,43 @@
                         {/if}
                     </div>
                     {#if item.caption}
-                        <figcaption class="text-sm caption">
+                        <figcaption class="b-ib_caption text-sm">
                             {item.caption}
                         </figcaption>
                     {/if}
-                </div>
+                </figure>
             {/each}
         </div>
     </div>
 </section>
 
 <style>
-    @import url("/assets/css/variables.css");
-    @import url("/assets/css/styles.css");
-
-    .grid {
+    .b-ib_grid {
         display: grid;
         gap: var(--gap--md);
         grid-template-columns: 1fr;
         align-self: stretch;
     }
 
-    .img-container {
+    .b-ib_figure {
+        display: flex;
+        flex-direction: column;
         gap: var(--gap--xxs);
+        margin: 0;
     }
 
-    .img {
+    .b-ib_img {
         aspect-ratio: 16 / 9;
-        object-fit: cover;
-        flex-flow: column;
-        justify-content: flex-start;
-        align-self: stretch;
-        align-items: stretch;
         overflow: hidden;
     }
 
-    .img img {
+    .b-ib_img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .caption {
+    .b-ib_caption {
         color: var(--_themes---site--text--text-secondary);
         padding-top: var(--gap--xxs);
     }

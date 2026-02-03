@@ -9,11 +9,14 @@
 
 ## Svelte Web Components
 
-- Components use `shadow: "none"` which means styles must be scoped within the component
-- NEVER move component styles to global CSS - that defeats the purpose of using Svelte
-- If styles aren't applying, the issue is with how the component is compiled or structured
-- Fix styling issues by fixing the Svelte component or build process, NOT by dumping styles into global CSS
-- The whole point of Svelte components is encapsulated, scoped styles
+- Components use `shadow: "open"` for true CSS encapsulation via Shadow DOM
+- Styles are fully scoped - they don't leak in or out of components
+- For global theming, use CSS custom properties (variables) which penetrate the shadow boundary
+- NEVER move component styles to global CSS - that defeats the purpose of Shadow DOM
+- If styles aren't applying, check that CSS variables are defined on `:root` or the component is receiving props correctly
+- This is an "islands architecture" pattern - Kirby serves static HTML, Svelte components hydrate as interactive islands
+- **Data passing**: Prefer flat string attributes over nested JSON when possible
+- For complex/nested data (arrays, objects), consider using slots/children instead of JSON attributes - let Kirby loop in PHP and generate child elements that Svelte can read via `<slot>`
 
 ## PHP Development
 
@@ -21,6 +24,32 @@
 - Run server from kirby directory: `cd kirby && php -S localhost:8000 router.php`
 - Ensure required PHP extensions are installed (gd for image thumbnails)
 - Thumbnail driver in config should match installed extensions (gd or im)
+
+## Kirby Block Snippets - Common Pitfalls
+
+### Reserved Method Names in Structure Fields
+Kirby's StructureObject class has reserved method names. If a structure field uses one of these names, accessing it via `$item->fieldname()` will return the wrong value:
+
+**Reserved names to avoid:**
+- `content` - Returns Content object, not field value
+- `id` - Returns structure item ID
+- `parent`, `site`, `kirby` - Return framework objects
+
+**Workaround:** Use `$item->toArray()['fieldname']` instead of `$item->fieldname()`:
+```php
+// BAD - 'content' is reserved
+$value = $item->content()->value(); // Returns empty or wrong value
+
+// GOOD - access via toArray
+$itemData = $item->toArray();
+$value = $itemData['content'] ?? '';
+```
+
+### Blueprint/Snippet Field Mismatches
+When blocks render as invisible, check that:
+1. The **blueprint field names** match what the **PHP snippet** expects
+2. Single file fields (`type: files, multiple: false`) vs structure fields are handled correctly
+3. Consider adding fallback logic for backwards compatibility with existing content
 
 ## Documentation
 

@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "index-card", shadow: "open" }} />
+<svelte:options customElement={{ tag: "index-card", shadow: "none" }} />
 
 <script>
     export let href = "#";
@@ -7,28 +7,26 @@
     export let overlayimage = "";
 </script>
 
-<a {href} class="card u-inline-block">
-    <div class="card-overlay">
+<a {href} class="c-indexcard">
+    <div class="c-indexcard_overlay">
         {#if overlayimage}
             <img src={overlayimage} alt="" loading="lazy" />
         {/if}
     </div>
-    <div class="card-bg">
+    <div class="c-indexcard_bg">
         {#if backgroundimage}
             <img src={backgroundimage} alt="" loading="lazy" />
         {/if}
     </div>
-    <div class="u-layout-hflex card-text">
-        <div class="u-layout-vflex card-heading">
+    <div class="c-indexcard_text">
+        <div class="c-indexcard_heading">
             <h4>{title}</h4>
         </div>
     </div>
 </a>
 
 <style>
-    @import url('/assets/css/variables.css');
-    @import url('/assets/css/styles.css');
-    .card {
+    .c-indexcard {
         aspect-ratio: 1;
         object-fit: cover;
         flex-flow: column;
@@ -43,13 +41,13 @@
     }
 
     @media screen and (max-width: 991px) {
-        .card {
+        .c-indexcard {
             min-height: 100vw;
             overflow: clip;
         }
     }
 
-    .card-bg {
+    .c-indexcard_bg {
         position: absolute;
         left: 0;
         right: 0;
@@ -59,26 +57,26 @@
         width: 100%;
     }
 
-    .card-bg :global(img) {
+    .c-indexcard_bg img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .card-overlay {
+    .c-indexcard_overlay {
         z-index: 2;
         aspect-ratio: 1;
         height: 100%;
         position: absolute;
     }
 
-    .card-overlay :global(img) {
+    .c-indexcard_overlay img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .card-text {
+    .c-indexcard_text {
         z-index: 2;
         aspect-ratio: 1;
         justify-content: space-between;
@@ -86,20 +84,23 @@
         align-items: flex-end;
         padding: 1.5rem;
         position: relative;
+        display: flex;
     }
 
     @media screen and (max-width: 991px) {
-        .card-text {
+        .c-indexcard_text {
             padding: 0.5rem;
         }
     }
 
-    .card-heading {
+    .c-indexcard_heading {
         max-width: 20rem;
+        display: flex;
+        flex-direction: column;
     }
 
     @media screen and (max-width: 991px) {
-        .card-heading {
+        .c-indexcard_heading {
             max-width: none;
         }
     }

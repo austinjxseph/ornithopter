@@ -1,8 +1,8 @@
-<svelte:options customElement={{ tag: "site-header", shadow: "open" }} />
+<svelte:options customElement={{ tag: "site-header", shadow: "none" }} />
 
 <script>
     export let rootpath = "/";
-    export let links = "[]"; // JSON string of links
+    export let links = "[]";
 
     let navState = "closed";
     let parsedLinks = [];
@@ -24,28 +24,24 @@
 <header
     data-nav-state={navState}
     data-nav-element="navbar"
-    class="u-layout-vflex navbar"
+    class="c-header_navbar"
 >
-    <div class="u-layout-hflex inner">
+    <div class="c-header_inner">
         <button
             data-nav-element="overlay"
             aria-hidden="true"
-            class="overlay"
+            class="c-header_overlay"
             on:click={toggleNavigation}
         ></button>
 
-        <a
-            href={rootpath}
-            aria-label="Go Back Home"
-            class="logo u-inline-block"
-        >
+        <a href={rootpath} aria-label="Go Back Home" class="c-header_logo">
             Austin Joseph
         </a>
 
-        <ul role="list" class="drawer u-list-unstyled">
-            <li class="links">
+        <ul role="list" class="c-header_drawer">
+            <li class="c-header_links">
                 {#each parsedLinks as link}
-                    <a href={link.href} class="link u-inline-block">
+                    <a href={link.href} class="c-header_link">
                         <h3>{link.label}</h3>
                     </a>
                 {/each}
@@ -54,19 +50,17 @@
 
         <button
             data-nav-element="menu"
-            class="menu u-inline-block"
+            class="c-header_menu"
             on:click={toggleNavigation}
         >
-            <div class="marker"></div>
+            <div class="c-header_marker"></div>
             <div>Menu</div>
         </button>
     </div>
 </header>
 
 <style>
-    @import url('/assets/css/variables.css');
-    @import url('/assets/css/styles.css');
-    .navbar {
+    .c-header_navbar {
         z-index: 3;
         padding: 1rem var(--global--margin);
         color: var(--_themes---site--text--text-primary);
@@ -77,9 +71,11 @@
         transition: all 0.3s;
         position: fixed;
         inset: 0% 0% auto;
+        display: flex;
+        flex-direction: column;
     }
 
-    .inner {
+    .c-header_inner {
         max-width: var(--max-width--xl);
         grid-column-gap: 16px;
         grid-row-gap: 16px;
@@ -96,7 +92,7 @@
         display: grid;
     }
 
-    .link {
+    .c-header_link {
         grid-column-gap: 4px;
         grid-row-gap: 4px;
         flex-flow: row;
@@ -113,20 +109,15 @@
         letter-spacing: -0.02em;
     }
 
-    .links:hover .link {
+    .c-header_links:hover .c-header_link {
         opacity: 0.2;
     }
 
-    .links:hover .link:hover {
+    .c-header_links:hover .c-header_link:hover {
         opacity: 1;
     }
 
-    .link.is-marker {
-        grid-column-gap: 12px;
-        grid-row-gap: 12px;
-    }
-
-    .overlay {
+    .c-header_overlay {
         z-index: 3;
         opacity: 0;
         display: none;
@@ -135,14 +126,16 @@
         transition: opacity 0.15s;
         position: absolute;
         inset: 0%;
+        border: none;
+        cursor: pointer;
     }
 
-    .logo {
+    .c-header_logo {
         z-index: 5;
         position: relative;
     }
 
-    .drawer {
+    .c-header_drawer {
         position: absolute;
         inset: 0% 0% 0% 0%;
         z-index: 4;
@@ -159,9 +152,11 @@
             transform 0.3s,
             opacity 0.3s,
             backdrop-filter 0.3s;
+        list-style: none;
+        margin: 0;
     }
 
-    .marker {
+    .c-header_marker {
         background-color: #fff;
         border-radius: 24px;
         width: 18px;
@@ -171,7 +166,7 @@
             background-color 0.15s;
     }
 
-    .links {
+    .c-header_links {
         gap: 8px;
         flex-flow: column;
         justify-content: center;
@@ -179,16 +174,7 @@
         display: flex;
     }
 
-    .icon {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 1.125rem;
-        height: 1.1875rem;
-        display: flex;
-    }
-
-    .menu {
+    .c-header_menu {
         background-color: transparent;
         position: relative;
         grid-column-gap: 0.75rem;
@@ -198,55 +184,54 @@
         align-items: center;
         display: flex;
         cursor: pointer;
+        border: none;
+        color: inherit;
+        font-size: inherit;
     }
 
     [data-nav-element="menu"] {
         z-index: 9;
     }
 
-    [data-nav-state="closed"] .drawer {
+    [data-nav-state="closed"] .c-header_drawer {
         pointer-events: none;
         opacity: 0;
         backdrop-filter: blur(0px);
     }
 
-    [data-nav-state="open"] .drawer {
+    [data-nav-state="open"] .c-header_drawer {
         pointer-events: auto;
         opacity: 1;
         backdrop-filter: blur(40px);
     }
 
-    [data-nav-state="open"] .overlay {
+    [data-nav-state="open"] .c-header_overlay {
         opacity: 100%;
         display: block;
     }
 
-    [data-nav-state="closed"] .overlay {
+    [data-nav-state="closed"] .c-header_overlay {
         opacity: 0%;
         display: none;
     }
 
-    .link:hover .u-border {
-        transform: translateY(0%);
-    }
-
-    [data-nav-state="open"] .marker {
+    [data-nav-state="open"] .c-header_marker {
         width: 6px;
         background-color: #e83452;
     }
 
     @media (min-width: 1920px) {
-        .drawer {
+        .c-header_drawer {
             max-width: none;
         }
     }
 
     @media screen and (max-width: 991px) {
-        .navbar {
+        .c-header_navbar {
             font-size: var(--paragraph--font-size-s);
         }
 
-        .inner {
+        .c-header_inner {
             flex-flow: row;
             justify-content: space-between;
             align-items: center;
@@ -255,7 +240,7 @@
             display: flex;
         }
 
-        .drawer {
+        .c-header_drawer {
             width: 60vw;
             max-width: none;
             padding-top: 3rem;

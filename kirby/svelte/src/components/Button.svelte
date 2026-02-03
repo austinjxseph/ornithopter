@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "animated-button", shadow: "open" }} />
+<svelte:options customElement={{ tag: "animated-button", shadow: "none" }} />
 
 <script>
     export let href = "#";
@@ -6,27 +6,25 @@
     export let active = false;
 </script>
 
-<div class="button {active ? 'active' : ''}">
-    <div class="motion">
-        <div class="glow"></div>
-        <div class="mask">
-            <div class="cone"></div>
+<div class="c-button {active ? 'c-button_active' : ''}">
+    <div class="c-button_motion">
+        <div class="c-button_glow"></div>
+        <div class="c-button_mask">
+            <div class="c-button_cone"></div>
         </div>
     </div>
-    <div class="orb">
-        <div class="border"></div>
+    <div class="c-button_orb">
+        <div class="c-button_border"></div>
     </div>
-    <a {href} class="wrapper u-inline-block">
-        <div class="label">
+    <a {href} class="c-button_wrapper">
+        <div class="c-button_label">
             {label}
         </div>
     </a>
 </div>
 
 <style>
-    @import url('/assets/css/variables.css');
-    @import url('/assets/css/styles.css');
-    .button {
+    .c-button {
         grid-column-gap: 1rem;
         grid-row-gap: 1rem;
         background-color: var(--_themes---site--bg--bg-primary);
@@ -44,38 +42,7 @@
         overflow: hidden;
     }
 
-    .button.cc-text {
-        color: #3898ec;
-        background-color: #0000;
-        border: 2px solid #0000;
-    }
-
-    .button.cc-sm {
-        padding: 0.7rem 1.25rem 0.5rem;
-    }
-
-    .button.cc-lg {
-        padding: 1.25rem 2rem 1rem;
-    }
-
-    .button.cc-sec {
-        color: #3898ec;
-        -webkit-text-stroke-color: #3898ec;
-        background-color: #0000;
-        border: 2px solid #3898ec;
-    }
-
-    .button.cc-icon {
-        grid-column-gap: 1rem;
-        grid-row-gap: 1rem;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        text-decoration: none;
-        display: flex;
-    }
-
-    .button.active:hover {
+    .c-button.c-button_active:hover {
         background-image: radial-gradient(
             circle closest-corner at 50% 50%,
             var(--_themes---site--bg--bg-primary),
@@ -86,12 +53,12 @@
         border-color: #fff9;
     }
 
-    .active .motion,
-    .active .orb {
+    .c-button_active .c-button_motion,
+    .c-button_active .c-button_orb {
         opacity: 1;
     }
 
-    .motion {
+    .c-button_motion {
         opacity: 0;
         width: 100%;
         transition: opacity 1s;
@@ -102,7 +69,7 @@
         pointer-events: none;
     }
 
-    .motion * {
+    .c-button_motion * {
         height: 100%;
         left: 0;
         position: absolute;
@@ -110,7 +77,7 @@
         width: 100%;
     }
 
-    .glow {
+    .c-button_glow {
         opacity: 0.12;
         filter: blur(8px);
         animation: borderTurn 2.5s infinite linear;
@@ -126,7 +93,7 @@
         background-size: cover;
     }
 
-    .mask {
+    .c-button_mask {
         opacity: 1;
         -webkit-mask: url("data:image/svg+xml,url('data:image/svg+xml,%253Csvg width='28' height='24' viewBox='0 0 28 24' fill='none' xmlns='http://www.w3.org/2000/svg'%253E%253Crect width='28' height='24' fill='black'/%253E%253C/svg%253E%250A');");
         mask: url("data:image/svg+xml,url('data:image/svg+xml,%253Csvg width='28' height='24' viewBox='0 0 28 24' fill='none' xmlns='http://www.w3.org/2000/svg'%253E%253Crect width='28' height='24' fill='black'/%253E%253C/svg%253E%250A');");
@@ -135,7 +102,7 @@
         mask-size: auto;
     }
 
-    .cone {
+    .c-button_cone {
         opacity: 1;
         animation: borderTurn 2.5s infinite linear;
         background-image: conic-gradient(
@@ -150,7 +117,7 @@
         background-size: cover;
     }
 
-    .orb {
+    .c-button_orb {
         opacity: 0;
         border-radius: 62.5rem;
         width: 100%;
@@ -174,7 +141,7 @@
         pointer-events: none;
     }
 
-    .border {
+    .c-button_border {
         opacity: 1;
         width: 100%;
         position: absolute;
@@ -194,21 +161,21 @@
         background-size: cover;
     }
 
-    .motion:before,
-    .border:before {
+    .c-button_motion:before,
+    .c-button_border:before {
         content: "";
         float: left;
         padding-top: 100%;
     }
 
-    .motion:after,
-    .border:after {
+    .c-button_motion:after,
+    .c-button_border:after {
         clear: both;
         content: "";
         display: block;
     }
 
-    .wrapper {
+    .c-button_wrapper {
         z-index: 1;
         color: #fff;
         letter-spacing: -0.01em;
@@ -218,9 +185,10 @@
         line-height: 1.42;
         text-decoration: none;
         position: relative;
+        display: inline-block;
     }
 
-    .label {
+    .c-button_label {
         z-index: 2;
         color: #0000;
         -webkit-text-fill-color: transparent;
@@ -232,7 +200,7 @@
     }
 
     @media screen and (max-width: 991px) {
-        .button {
+        .c-button {
             color: var(--_themes---site--text--text-primary);
             font-size: var(--paragraph--font-size-m);
         }
