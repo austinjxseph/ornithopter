@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "static-bio-block", shadow: "none" }} />
+<svelte:options customElement={{ tag: "static-bio-block", shadow: "open" }} />
 
 <script>
     export let heading = "";
@@ -141,6 +141,9 @@
 </section>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .inner {
         width: 100%;
         gap: var(--padding--xl);

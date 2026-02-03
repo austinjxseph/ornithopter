@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "site-footer", shadow: "none" }} />
+<svelte:options customElement={{ tag: "site-footer", shadow: "open" }} />
 
 <script>
     export let fixed = false;
@@ -52,6 +52,8 @@
 </footer>
 
 <style>
+    @import url('/assets/css/variables.css');
+    @import url('/assets/css/styles.css');
     .component {
         padding: 1.2rem var(--global--margin);
         flex-flow: column;

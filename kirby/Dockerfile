@@ -1,53 +1,35 @@
 # Kirby CMS Dockerfile for Railway
-FROM php:8.2-apache
+FROM php:8.4-apache
 
-# Install PHP extensions
+# Install GD and other required extensions
 RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype-dev \
     libzip-dev \
-    zip \
-    unzip \
-    && docker-php-ext-install zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache modules
-RUN a2enmod rewrite headers
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set document root to Kirby directory
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Set working directory
-WORKDIR /var/www/html
+# Allow .htaccess overrides
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock* ./
+# Copy Kirby files
+COPY . /var/www/html/
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Set permissions for media and content folders
+RUN chown -R www-data:www-data /var/www/html/media /var/www/html/content
 
-# Copy application files
-COPY . .
-
-# Set permissions for Kirby
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/content \
-    && chmod -R 775 /var/www/html/media
-
-# Apache configuration
-RUN echo '<VirtualHost *:80>\n\
-    DocumentRoot /var/www/html\n\
-    <Directory /var/www/html>\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>\n\
-    # CORS headers for API\n\
-    Header always set Access-Control-Allow-Origin "*"\n\
-    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"\n\
-    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"\n\
-</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
-
-# Expose port
+# Expose port 80
 EXPOSE 80
 
-# Start Apache
 CMD ["apache2-foreground"]

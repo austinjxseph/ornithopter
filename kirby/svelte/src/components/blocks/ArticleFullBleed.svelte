@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-full-bleed", shadow: "none" }} />
+<svelte:options customElement={{ tag: "article-full-bleed", shadow: "open" }} />
 
 <script>
     export let image = "";
@@ -20,6 +20,9 @@
 </section>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .img {
         aspect-ratio: 16 / 9;
         object-fit: cover;

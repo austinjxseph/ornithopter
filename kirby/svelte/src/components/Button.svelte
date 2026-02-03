@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "animated-button", shadow: "none" }} />
+<svelte:options customElement={{ tag: "animated-button", shadow: "open" }} />
 
 <script>
     export let href = "#";
@@ -24,6 +24,8 @@
 </div>
 
 <style>
+    @import url('/assets/css/variables.css');
+    @import url('/assets/css/styles.css');
     .button {
         grid-column-gap: 1rem;
         grid-row-gap: 1rem;

@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-text-block", shadow: "none" }} />
+<svelte:options customElement={{ tag: "article-text-block", shadow: "open" }} />
 
 <script>
     export let columns = "2";
@@ -32,6 +32,9 @@
 </section>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .text {
         /* Padding removed - .section handles global margins */
     }

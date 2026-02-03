@@ -3,8 +3,8 @@
 $images = [];
 foreach ($block->images()->toFiles() as $file) {
     $images[] = [
-        'url' => $file->url(),
-        'alt' => $file->alt()->value(),
+        "url" => $file->url(),
+        "alt" => $file->alt()->value(),
     ];
 }
 $imagesJson = json_encode($images);

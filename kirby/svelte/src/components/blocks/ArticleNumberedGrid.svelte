@@ -1,5 +1,5 @@
 <svelte:options
-    customElement={{ tag: "article-numbered-grid", shadow: "none" }}
+    customElement={{ tag: "article-numbered-grid", shadow: "open" }}
 />
 
 <script>
@@ -42,6 +42,9 @@
 </section>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .grid-container {
         /* Padding removed - .section handles global margins */
     }

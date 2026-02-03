@@ -1,5 +1,5 @@
 <svelte:options
-    customElement={{ tag: "article-image-block", shadow: "none" }}
+    customElement={{ tag: "article-image-block", shadow: "open" }}
 />
 
 <script>
@@ -42,6 +42,9 @@
 </section>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .grid {
         display: grid;
         gap: var(--gap--md);
@@ -63,7 +66,7 @@
         overflow: hidden;
     }
 
-    .img :global(img) {
+    .img img {
         width: 100%;
         height: 100%;
         object-fit: cover;

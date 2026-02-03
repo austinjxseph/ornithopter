@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "index-card", shadow: "none" }} />
+<svelte:options customElement={{ tag: "index-card", shadow: "open" }} />
 
 <script>
     export let href = "#";
@@ -26,6 +26,8 @@
 </a>
 
 <style>
+    @import url('/assets/css/variables.css');
+    @import url('/assets/css/styles.css');
     .card {
         aspect-ratio: 1;
         object-fit: cover;

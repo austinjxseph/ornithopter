@@ -11,6 +11,6 @@ $itemsJson = json_encode($items);
 
 <article-numbered-grid
   columns="<?= $block->columns()->value() ?>"
-  shownumbers="<?= $block->show_numbers()->toBool() ? 'true' : 'false' ?>"
+  shownumbers="<?= $block->show_numbers()->toBool() ? "true" : "false" ?>"
   items='<?= htmlspecialchars($itemsJson) ?>'
 ></article-numbered-grid>

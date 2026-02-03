@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "site-header", shadow: "none" }} />
+<svelte:options customElement={{ tag: "site-header", shadow: "open" }} />
 
 <script>
     export let rootpath = "/";
@@ -64,6 +64,8 @@
 </header>
 
 <style>
+    @import url('/assets/css/variables.css');
+    @import url('/assets/css/styles.css');
     .navbar {
         z-index: 3;
         padding: 1rem var(--global--margin);

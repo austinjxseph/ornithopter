@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-header", shadow: "none" }} />
+<svelte:options customElement={{ tag: "article-header", shadow: "open" }} />
 
 <script>
     export let title = "";
@@ -21,6 +21,9 @@
 </header>
 
 <style>
+    @import url("/assets/css/variables.css");
+    @import url("/assets/css/styles.css");
+
     .header {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;

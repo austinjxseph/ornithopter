@@ -1,9 +1,0 @@
-Alt: 
-
-----
-
-Uuid: tljo2gntl0amo66u
-
-----
-
-Template: image
