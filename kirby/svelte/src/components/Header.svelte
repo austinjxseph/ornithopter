@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "site-header", shadow: "none" }} />
+<svelte:options customElement={{ tag: "c-header", shadow: "none" }} />
 
 <script>
     export let rootpath = "/";

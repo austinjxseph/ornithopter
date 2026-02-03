@@ -11,6 +11,6 @@ foreach ($block->items()->toStructure() as $item) {
 $itemsJson = json_encode($items);
 ?>
 
-<article-text-block
+<ar-text
   items='<?= htmlspecialchars($itemsJson) ?>'
-></article-text-block>
+></ar-text>

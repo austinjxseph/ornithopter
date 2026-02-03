@@ -20,11 +20,11 @@ columns:
             type: blocks
             label: Article Content
             fieldsets:
-              - article-header
-              - article-image-block
-              - article-text-block
-              - article-numbered-grid
-              - article-full-bleed
+              - ar-header
+              - ar-img
+              - ar-text
+              - ar-grid
+              - ar-fullbleed
 
   # Right column - Sidebar (1/3 width)
   - width: 1/3

@@ -1,6 +1,4 @@
-<svelte:options
-    customElement={{ tag: "article-numbered-grid", shadow: "none" }}
-/>
+<svelte:options customElement={{ tag: "ar-grid", shadow: "none" }} />
 
 <script>
     export let shownumbers = "true";

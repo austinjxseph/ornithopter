@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "index-card", shadow: "none" }} />
+<svelte:options customElement={{ tag: "c-indexcard", shadow: "none" }} />
 
 <script>
     export let href = "#";
@@ -26,6 +26,13 @@
 </a>
 
 <style>
+    /* Host element - make custom element stretch full width */
+    :global(c-indexcard) {
+        display: block;
+        width: 100%;
+        align-self: stretch;
+    }
+
     .c-indexcard {
         aspect-ratio: 1;
         object-fit: cover;

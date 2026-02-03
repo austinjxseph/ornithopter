@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-text-block", shadow: "none" }} />
+<svelte:options customElement={{ tag: "ar-text", shadow: "none" }} />
 
 <script>
     export let items = "[]";

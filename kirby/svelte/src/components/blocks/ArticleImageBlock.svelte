@@ -1,6 +1,4 @@
-<svelte:options
-    customElement={{ tag: "article-image-block", shadow: "none" }}
-/>
+<svelte:options customElement={{ tag: "ar-img", shadow: "none" }} />
 
 <script>
     export let images = "[]";

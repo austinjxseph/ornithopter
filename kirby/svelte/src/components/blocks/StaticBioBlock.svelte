@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "static-bio-block", shadow: "none" }} />
+<svelte:options customElement={{ tag: "s-bio", shadow: "none" }} />
 
 <script>
     export let heading = "";

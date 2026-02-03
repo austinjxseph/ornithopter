@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-full-bleed", shadow: "none" }} />
+<svelte:options customElement={{ tag: "ar-fullbleed", shadow: "none" }} />
 
 <script>
     export let image = "";

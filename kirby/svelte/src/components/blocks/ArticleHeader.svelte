@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "article-header", shadow: "none" }} />
+<svelte:options customElement={{ tag: "ar-header", shadow: "none" }} />
 
 <script>
     export let title = "";

@@ -9,14 +9,21 @@
 
 ## Svelte Web Components
 
-- Components use `shadow: "open"` for true CSS encapsulation via Shadow DOM
-- Styles are fully scoped - they don't leak in or out of components
-- For global theming, use CSS custom properties (variables) which penetrate the shadow boundary
-- NEVER move component styles to global CSS - that defeats the purpose of Shadow DOM
-- If styles aren't applying, check that CSS variables are defined on `:root` or the component is receiving props correctly
+**IMPORTANT: This project uses Svelte web components. NEVER suggest removing Svelte or replacing components with plain PHP/HTML. The decision to use Svelte is final.**
+
+- Components use `shadow: "none"` with Svelte's scoped CSS (hashed classes like `svelte-xyz123`)
+- Svelte's scoped CSS works WITHOUT Shadow DOM - it's a compile-time mechanism
+- Scoped CSS prevents styles from leaking OUT; global styles CAN still affect components (useful for theming)
 - This is an "islands architecture" pattern - Kirby serves static HTML, Svelte components hydrate as interactive islands
-- **Data passing**: Prefer flat string attributes over nested JSON when possible
-- For complex/nested data (arrays, objects), consider using slots/children instead of JSON attributes - let Kirby loop in PHP and generate child elements that Svelte can read via `<slot>`
+
+### Data Passing: Props/Attributes
+
+**Use props/attributes** to pass data from PHP to Svelte components:
+- Pass simple strings directly as attributes
+- Pass complex data (arrays, objects) as JSON strings via `htmlspecialchars(json_encode($data))`
+- Svelte parses JSON in the component with `JSON.parse()`
+
+**DO NOT use slots** with `shadow: "none"` - slots are a Shadow DOM feature and don't work without it. Content passed as children will not be projected into `<slot>` elements.
 
 ## PHP Development
 

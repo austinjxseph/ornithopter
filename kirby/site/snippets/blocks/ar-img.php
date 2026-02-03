@@ -31,7 +31,7 @@ if (empty($images)) {
 $imagesJson = json_encode($images);
 ?>
 
-<article-image-block
+<ar-img
   columns="<?= $block->columns()->value() ?>"
   images='<?= htmlspecialchars($imagesJson) ?>'
-></article-image-block>
+></ar-img>

@@ -1,0 +1,9 @@
+Alt: 
+
+----
+
+Uuid: jb71zsg11a4oq12j
+
+----
+
+Template: image

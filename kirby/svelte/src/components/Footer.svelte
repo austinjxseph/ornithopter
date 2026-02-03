@@ -1,11 +1,14 @@
-<svelte:options customElement={{ tag: "site-footer", shadow: "none" }} />
+<svelte:options customElement={{ tag: "c-footer", shadow: "none" }} />
 
 <script>
-    export let fixed = false;
+    export let fixed = null;
     export let links = "[]";
 
     let parsedLinks = [];
     const currentYear = new Date().getFullYear();
+
+    // Handle boolean attribute - presence of attribute means true
+    $: isFixed = fixed !== null && fixed !== false && fixed !== "false";
 
     $: {
         try {
@@ -16,50 +19,64 @@
     }
 </script>
 
-<footer class="c-footer_component" class:c-footer_fixed={fixed}>
+<footer class="c-footer" class:abs={isFixed}>
     <div class="c-footer_vignette"></div>
-    <div class="c-footer_inner">
-        <div class="c-footer_row c-footer_copyright">
-            <div class="u-text-secondary">
-                <div class="text-sm">
-                    © <span>{currentYear}</span> Austin Joseph.
+    <div class="c-footer_component">
+        <div class="c-footer_inner">
+            <div class="c-footer_row copyright">
+                <div class="u-text-secondary">
+                    <div class="text-sm">
+                        © <span>{currentYear}</span> Austin Joseph.
+                    </div>
                 </div>
             </div>
+            <ul role="list" class="c-footer_row">
+                {#each parsedLinks as link}
+                    <li>
+                        <a
+                            href={link.href}
+                            class="c-footer_link"
+                            title={link.label}
+                        >
+                            {#if link.icon}
+                                <img
+                                    src={link.icon}
+                                    width="24"
+                                    height="24"
+                                    alt={link.label}
+                                />
+                            {:else}
+                                <span>{link.label}</span>
+                            {/if}
+                        </a>
+                    </li>
+                {/each}
+            </ul>
         </div>
-        <ul role="list" class="c-footer_row">
-            {#each parsedLinks as link}
-                <li>
-                    <a
-                        href={link.href}
-                        class="c-footer_link"
-                        title={link.label}
-                    >
-                        {#if link.icon}
-                            <img
-                                src={link.icon}
-                                width="24"
-                                height="24"
-                                alt={link.label}
-                            />
-                        {:else}
-                            <span>{link.label}</span>
-                        {/if}
-                    </a>
-                </li>
-            {/each}
-        </ul>
     </div>
 </footer>
 
 <style>
-    .c-footer_component {
-        padding: 1.2rem var(--global--margin);
+    .c-footer {
         flex-flow: column;
         justify-content: center;
         align-self: stretch;
         align-items: flex-start;
         display: flex;
         position: relative;
+        width: 100%;
+    }
+
+    .c-footer.abs {
+        position: fixed;
+        inset: auto 0% 0%;
+        z-index: 10;
+    }
+
+    @media screen and (max-width: 991px) {
+        .c-footer.abs {
+            position: relative;
+        }
     }
 
     .c-footer_vignette {
@@ -81,17 +98,17 @@
         pointer-events: none;
     }
 
-    .c-footer_fixed {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
+    .c-footer_component {
+        padding: 1.2rem var(--global--margin);
+        flex-flow: column;
+        justify-content: center;
+        align-self: stretch;
+        align-items: flex-start;
+        display: flex;
+        position: relative;
     }
 
     .c-footer_inner {
-        position: relative;
-        z-index: 1;
         max-width: var(--max-width--xl);
         grid-column-gap: 24px;
         grid-row-gap: 24px;
@@ -103,6 +120,16 @@
         margin-left: auto;
         margin-right: auto;
         display: flex;
+    }
+
+    @media screen and (max-width: 991px) {
+        .c-footer_inner {
+            grid-column-gap: 12px;
+            grid-row-gap: 12px;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: center;
+        }
     }
 
     .c-footer_row {
@@ -117,25 +144,34 @@
         padding: 0;
     }
 
-    .c-footer_copyright {
-        align-self: stretch;
-    }
-
-    .c-footer_link {
-        position: relative;
-        padding: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    @media screen and (max-width: 991px) {
+        .c-footer_row {
+            padding-left: 0;
+        }
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer_inner {
-            grid-column-gap: 12px;
-            grid-row-gap: 12px;
-            flex-flow: row;
-            justify-content: space-between;
-            align-items: center;
+        .c-footer_row.copyright {
+            grid-column-gap: 0.25rem;
+            grid-row-gap: 0.25rem;
+            flex-flow: column;
+            justify-content: flex-start;
+            align-items: flex-start;
         }
+    }
+
+    .c-footer_link {
+        display: block;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .u-text-secondary {
+        color: var(--_themes---site--text--text-secondary);
+    }
+
+    .text-sm {
+        font-size: var(--paragraph--font-size-s);
+        line-height: var(--paragraph--line-height-s);
     }
 </style>

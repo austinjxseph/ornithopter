@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: "animated-button", shadow: "none" }} />
+<svelte:options customElement={{ tag: "c-button", shadow: "none" }} />
 
 <script>
     export let href = "#";
