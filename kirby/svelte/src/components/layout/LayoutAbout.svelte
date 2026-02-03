@@ -1,10 +1,14 @@
 <script lang="ts">
-    type BioItem = {
-        type: string;
+    type BioRow = {
         heading?: string;
         subtitle?: string;
         index?: string;
         description?: string;
+    };
+
+    type BioSection = {
+        heading: string;
+        rows: BioRow[];
     };
 
     let {
@@ -16,44 +20,8 @@
         heading?: string;
         content?: string;
         images?: Array<{ url: string; alt?: string }>;
-        items?: BioItem[];
+        items?: BioSection[];
     } = $props();
-
-    let groupedItems = $derived(groupItems(items));
-
-    function groupItems(items: BioItem[]) {
-        const groups: {
-            heading: string;
-            description: string;
-            rows: BioItem[];
-        }[] = [];
-        let currentGroup: {
-            heading: string;
-            description: string;
-            rows: BioItem[];
-        } | null = null;
-
-        for (const item of items) {
-            if (item.type === "header") {
-                if (currentGroup) {
-                    groups.push(currentGroup);
-                }
-                currentGroup = {
-                    heading: item.heading || "",
-                    description: item.description || "",
-                    rows: [],
-                };
-            } else if (currentGroup) {
-                currentGroup.rows.push(item);
-            }
-        }
-
-        if (currentGroup) {
-            groups.push(currentGroup);
-        }
-
-        return groups;
-    }
 </script>
 
 <section class="section">
@@ -94,44 +62,37 @@
                 </div>
 
                 <!-- Dynamic Sections -->
-                {#each groupedItems as group}
-                    <div class="s-ab_group">
-                        <h3 class="s-ab_group-heading">
-                            {group.heading}
-                        </h3>
-                        {#if group.description}
-                            <div class="s-ab_group-description">
-                                {@html group.description}
-                            </div>
+                {#each items as section}
+                    <div class="s-ab_section">
+                        {#if section.heading}
+                            <h3 class="s-ab_section-heading">
+                                {section.heading}
+                            </h3>
                         {/if}
-                        {#each group.rows as row}
-                            <div class="s-ab_item">
-                                <div class="s-ab_item-header">
-                                    {#if row.index}
-                                        <div class="s-ab_item-row-between">
-                                            <p class="s-ab_item-heading">
+                        {#each section.rows as row}
+                            <div class="s-ab_row">
+                                {#if row.heading || row.index}
+                                    <div class="s-ab_row-header">
+                                        {#if row.heading}
+                                            <p class="s-ab_row-title">
                                                 {row.heading}
                                             </p>
-                                            <p class="s-ab_item-index">
+                                        {/if}
+                                        {#if row.index}
+                                            <p class="s-ab_row-index">
                                                 {row.index}
                                             </p>
-                                        </div>
-                                    {:else if row.heading}
-                                        <p class="s-ab_item-heading">
-                                            {row.heading}
-                                        </p>
-                                    {/if}
-                                    {#if row.subtitle}
-                                        <p class="s-ab_item-subtitle">
-                                            {row.subtitle}
-                                        </p>
-                                    {/if}
-                                </div>
+                                        {/if}
+                                    </div>
+                                {/if}
+                                {#if row.subtitle}
+                                    <p class="s-ab_row-subtitle">
+                                        {row.subtitle}
+                                    </p>
+                                {/if}
                                 {#if row.description}
-                                    <div class="s-ab_item-row">
-                                        <div class="s-ab_item-description">
-                                            {@html row.description}
-                                        </div>
+                                    <div class="s-ab_row-description">
+                                        {@html row.description}
                                     </div>
                                 {/if}
                             </div>
@@ -254,7 +215,7 @@
     .s-ab_page-header {
         display: flex;
         flex-direction: column;
-        gap: var(--gap--xxl);
+        gap: var(--gap--xl);
         width: 100%;
     }
 
@@ -290,14 +251,14 @@
         color: var(--_themes---site--text--text-primary);
     }
 
-    .s-ab_group {
+    .s-ab_section {
         display: flex;
         flex-direction: column;
         gap: var(--gap--lg);
         width: 100%;
     }
 
-    .s-ab_group-heading {
+    .s-ab_section-heading {
         font-family: var(--typeface--secondary);
         font-size: var(--h3--font-size);
         line-height: var(--h3--line-height);
@@ -309,36 +270,36 @@
         font-style: normal;
     }
 
-    .s-ab_group-description :global(p) {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: var(--paragraph--line-height-s);
-        letter-spacing: var(--paragraph--letter-spacing);
-        color: var(--_themes---site--text--text-primary);
-    }
-
-    .s-ab_item {
+    .s-ab_row {
         display: flex;
         flex-direction: column;
+        gap: var(--gap--xs);
+        width: 100%;
+    }
+
+    .s-ab_row-header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
         gap: var(--gap--md);
-        width: 100%;
     }
 
-    .s-ab_item-header {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap--xxs);
-        width: 100%;
-    }
-
-    .s-ab_item-heading {
+    .s-ab_row-title {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: 1.2;
         color: var(--_themes---site--text--text-primary);
     }
 
-    .s-ab_item-subtitle {
+    .s-ab_row-index {
+        font-family: var(--typeface--primary);
+        font-size: var(--paragraph--font-size-s);
+        line-height: 1.2;
+        color: var(--_themes---site--text--text-secondary);
+        white-space: nowrap;
+    }
+
+    .s-ab_row-subtitle {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -346,22 +307,11 @@
         color: var(--_themes---site--text--text-secondary);
     }
 
-    .s-ab_item-row {
-        display: flex;
-        width: 100%;
-    }
-
-    .s-ab_item-row-between {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .s-ab_item-description {
+    .s-ab_row-description {
         flex: 1;
     }
 
-    .s-ab_item-description :global(p) {
+    .s-ab_row-description :global(p) {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);

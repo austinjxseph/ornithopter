@@ -59,9 +59,10 @@
 
 <style>
     /* Host element - make custom element stretch full width */
-    :global(c-indexhero) {
+    :global(l-home) {
         display: block;
         width: 100%;
+        flex: 1;
         align-self: stretch;
     }
 

@@ -7,10 +7,13 @@
 
 import { registerSvelteElement } from "./register";
 
+// Global components
+import Header from "./components/global/Header.svelte";
+import Footer from "./components/global/Footer.svelte";
+
 // Layout components
-import Header from "./components/layout/Header.svelte";
-import Footer from "./components/layout/Footer.svelte";
-import IndexHero from "./components/layout/IndexHero.svelte";
+import LayoutIndex from "./components/layout/LayoutIndex.svelte";
+import LayoutAbout from "./components/layout/LayoutAbout.svelte";
 
 // UI components
 import Button from "./components/ui/Button.svelte";
@@ -22,12 +25,13 @@ import ArticleImageBlock from "./components/blocks/ArticleImageBlock.svelte";
 import ArticleTextBlock from "./components/blocks/ArticleTextBlock.svelte";
 import ArticleNumberedGrid from "./components/blocks/ArticleNumberedGrid.svelte";
 import ArticleFullBleed from "./components/blocks/ArticleFullBleed.svelte";
-import StaticBioBlock from "./components/blocks/StaticBioBlock.svelte";
 
-// Register layout components
+// Register global components
 registerSvelteElement("c-header", Header, ["rootpath", "links"]);
 registerSvelteElement("c-footer", Footer, ["fixed", "links"]);
-registerSvelteElement("c-indexhero", IndexHero, [
+
+// Register layout components
+registerSvelteElement("l-home", LayoutIndex, [
   "eyebrow",
   "title",
   "buttonlabel",
@@ -54,7 +58,8 @@ registerSvelteElement("ar-fullbleed", ArticleFullBleed, [
   "alt",
   "caption",
 ]);
-registerSvelteElement("s-bio", StaticBioBlock, [
+
+registerSvelteElement("l-about", LayoutAbout, [
   "heading",
   "content",
   "images",

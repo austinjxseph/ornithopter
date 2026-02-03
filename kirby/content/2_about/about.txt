@@ -1,0 +1,33 @@
+Title: About
+
+----
+
+About-heading: <p>I'm a software designer &amp; creative developer currently in <em>London</em>, with a strong focus on Visual &amp; Motion Design.</p>
+
+----
+
+About-content: <p>I specialize in creating digital experiences that bridge the gap between engineering and design. With expertise in brand identity, web design, and front-end development, I help businesses tell their stories through thoughtful, purposeful design.</p>
+
+----
+
+About-images: []
+
+----
+
+About-items: [{"content":{"heading":"Work Experience","rows":[{"heading":"Creative Developer @ Shoreditch Design","index":"","subtitle":"November ‘23 - Present","description":"<p>As an interdisciplinary hire, I deal with the design, build, and deployment of interactive, content-driven, marketing websites — with Site Architecture, Content Management Systems, Search Engine Optimisation, and Marketing &amp; Analytics.</p>"},{"heading":"Product Designer @ Stealth Startup","index":"","subtitle":"January - March ‘22","description":"<p>Conducted product research for the web application for a social network start-up, worked closely with collaborators to explore visual design, new features, and with developers on high fidelity prototypes.</p>"}]},"id":"172d7fe2-b9a7-4041-88cb-1ab820757163","isHidden":false,"type":"ab-bio"},{"content":{"heading":"Education","rows":[{"heading":"Master’s Degree, in Human-Computer Interaction","index":"2022-2023","subtitle":"City St. George, University of London","description":""},{"heading":"Bachelor’s Degree, in Electronics Engineering","index":"2018-2022","subtitle":"Vellore Institute of Technology, Chennai","description":""}]},"id":"b42494df-6f88-426e-83f5-2efcc9a0e043","isHidden":false,"type":"ab-bio"},{"content":{"heading":"Contact","rows":[{"heading":"","index":"","subtitle":"","description":"<p>Whilst I’m not actively not looking for new opportunities, if you’ve found my work or my general being interesting, I’d love to hear from you. I’m always open to a chat, online or otherwise. Would be a shame if we didn’t put all these cafes in London to good use. If you wanna keep me on your radar, you can also find my full resume here.</p>"}]},"id":"049dccfb-2359-4555-937b-c8fcb020ecf1","isHidden":false,"type":"ab-bio"}]
+
+----
+
+Meta-title: About | Austin Joseph
+
+----
+
+Meta-description: I'm a software designer & creative developer currently in London, with a strong focus on Visual & Motion Design.
+
+----
+
+Meta-image: []
+
+----
+
+Uuid: Csxpoeod9TcFjjgD

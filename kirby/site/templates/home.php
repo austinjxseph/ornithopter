@@ -29,7 +29,7 @@ $heroProps = [
 ];
 ?>
 
-<c-indexhero id="<?= $heroId ?>"></c-indexhero>
+<l-home id="<?= $heroId ?>"></l-home>
 <script type="application/json" data-for="<?= $heroId ?>">
 <?= json_encode($heroProps, JSON_UNESCAPED_SLASHES) ?>
 </script>

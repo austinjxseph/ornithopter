@@ -13,6 +13,7 @@ columns:
         info: "{{ page.template }}"
         templates:
           - home
+          - about
           - default
 
       # Site Settings
