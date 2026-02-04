@@ -1,0 +1,53 @@
+Title: Petrichor
+
+----
+
+Blocks: [{"content":{"title":"Designing the brand and website for an educational consultancy startup.","description":"<p>In 2021, I joined a startup as its founding designer for an Educational Consultancy, set up by fresh graduates from various management degrees all across Europe. Here, I designed their brand, social media templates, and a website for the agency. The logo was used in their socials, letterheads and marketing.</p>"},"id":"00a53d2d-22c2-4826-8fcf-81c7b201299a","isHidden":false,"type":"ar-header"},{"content":{"image":["file://gxyq1ye5gr79av1s"],"spacing":"stack"},"id":"43caffca-035e-4bd7-882f-a8fe22a141b9","isHidden":false,"type":"ar-img"},{"content":{"columns":"","items":[{"content":"<p>The brand required a cohesive design language across digital platforms and print materials — while staying connected to the overarching them of nurturing talent.</p>"},{"content":"<p>The brand identity needed to reflect our core values and audience perception. Petrichor represents the first rain, symbolising a fresh start and growth. We wanted to establish natural, earthy connections with our audience.</p>"}]},"id":"51dc305f-9a29-4a86-b8e6-5de91c886038","isHidden":false,"type":"ar-text"},{"content":{"image":["file://0z0f6laadoooy93u"],"spacing":"stack"},"id":"4124d20b-33ca-4907-9ac8-6d7b29a94287","isHidden":false,"type":"ar-img"},{"content":{"image":["file://exxccanvrbbusn0v"],"spacing":"trim"},"id":"616decc3-430f-4c7d-9598-831b5e0cf151","isHidden":false,"type":"ar-img"},{"content":{"columns":"","items":[{"content":"<p>Brand guidelines define our online presence. These shape the direction for our social media assets for LinkedIn and Instagram, including creator content and Instagram Ads.</p>"},{"content":"<p>The logo uses modified Montserrat font with rounded ends for an earthy feel. It incorporates leaf motifs that suggest maternal nurturing. Ascenders and tittles were adapted to align with themes of nature.</p>"}]},"id":"de4b0866-cc14-4cec-b86f-6af09c1b9927","isHidden":false,"type":"ar-text"},{"content":{"image":["file://jgrxlhynkcnsrmb7"],"spacing":"stack"},"id":"ea3e52b2-cdbe-439e-9b1a-b10357d9af94","isHidden":false,"type":"ar-img"},{"content":{"image":["file://de04ykuzyos1oshs"],"spacing":"trim"},"id":"d4a021c9-07fd-4744-bc6b-404e728d3bc2","isHidden":false,"type":"ar-img"},{"content":{"image":["file://obo7nje79acmg25y"],"spacing":"trim"},"id":"46361712-dd38-48dd-9dbb-17315be2420b","isHidden":false,"type":"ar-img"}]
+
+----
+
+Name: Petrichor
+
+----
+
+Project-title: Designing the brand and website for an educational consultancy startup.
+
+----
+
+Description: <p>In 2021, I joined a startup as its founding designer for an Educational Consultancy, set up by fresh graduates from various management degrees all across Europe. Here, I designed their brand, social media templates, and a website for the agency. The logo was used in their socials, letterheads and marketing.</p>
+
+----
+
+Tags: Branding & Identity, Social Media
+
+----
+
+Showcase: true
+
+----
+
+Published: 2021-09-01
+
+----
+
+Thumbnail-base: - 'file://avlptvp7ixzsjow6'
+
+----
+
+Thumbnail-overlay: - 'file://9pm9qpixnwimfoca'
+
+----
+
+Meta-title: Petrichor - Designing the brand and website for an educational consultancy startup.
+
+----
+
+Meta-description: I designed the brand, social media templates, and a website for an educational consulting agency. The logo was used in their socials, letterheads and marketing.
+
+----
+
+Meta-image: []
+
+----
+
+Uuid: l8toemkafdpte7p4

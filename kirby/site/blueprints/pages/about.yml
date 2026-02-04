@@ -24,7 +24,7 @@ columns:
 
       about_items:
         type: blocks
-        label: Content
+        label: Body
         fieldsets:
           - ab-bio
 
@@ -36,11 +36,11 @@ columns:
 
       meta_description:
         type: textarea
-        label: Description
+        label: Meta Description
         buttons: false
 
       meta_image:
         type: files
-        label: Social Image
+        label: Opengraph Image
         multiple: false
         max: 1

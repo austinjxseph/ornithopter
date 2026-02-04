@@ -5,30 +5,48 @@ options:
   changeStatus: false
   delete: false
 
-fields:
-  hero_eyebrow:
-    type: text
-    label: Eyebrow Text
-    default: Available for freelance work
-    help: Small text above the main heading
-    width: 1/2
+columns:
+  - width: 1/3
+    fields:
+      hero_title:
+        type: writer
+        label: Heading
+        marks:
+          - italic
+        help: Use italic for accent text (e.g. "design engineer")
 
-  hero_button_label:
-    type: text
-    label: Button Label
-    default: Information
-    width: 1/2
+      hero_eyebrow:
+        type: text
+        label: Eyebrow
+        default: Available for freelance work
+        help: Small text above the main heading
 
-  hero_title:
-    type: writer
-    label: Hero Title
-    marks:
-      - italic
-    help: Use italic for accent text (e.g. "design engineer")
+      hero_button_label:
+        type: text
+        label: Button Label
+        default: Information
 
-  hero_button_link:
-    type: link
-    label: Button Link
-    options:
-      - page
-      - url
+      hero_button_link:
+        type: link
+        label: Button Link
+        options:
+          - page
+          - url
+
+  - width: 2/3
+    sections:
+      featured:
+        type: fields
+        fields:
+          featured_projects:
+            type: pages
+            label: Projects
+            help: Select and order projects to display
+            multiple: true
+            query: site.find('projects').children.listed
+            max: 6
+            layout: cardlets
+            size: medium
+            image:
+              ratio: 16/9
+              cover: true

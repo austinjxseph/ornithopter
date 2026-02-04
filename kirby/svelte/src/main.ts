@@ -50,7 +50,7 @@ registerSvelteElement("c-indexcard", IndexCard, [
 
 // Register block components
 registerSvelteElement("ar-header", ArticleHeader, ["title", "description"]);
-registerSvelteElement("ar-img", ArticleImageBlock, ["images"]);
+registerSvelteElement("ar-img", ArticleImageBlock, ["images", "spacing"]);
 registerSvelteElement("ar-text", ArticleTextBlock, ["items"]);
 registerSvelteElement("ar-grid", ArticleNumberedGrid, ["shownumbers", "items"]);
 registerSvelteElement("ar-fullbleed", ArticleFullBleed, [

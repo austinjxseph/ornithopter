@@ -1,13 +1,15 @@
 <script lang="ts">
     let {
         images = [],
+        spacing = "stack",
     }: {
         images?: Array<{ url: string; alt?: string; caption?: string }>;
+        spacing?: "stack" | "trim";
     } = $props();
 </script>
 
 <section class="section">
-    <div class="container-fw py-sm">
+    <div class="container-fw py-sm" class:pt-0={spacing === "trim"}>
         <div class="b-ib_grid">
             {#each images as item}
                 <figure class="b-ib_figure">

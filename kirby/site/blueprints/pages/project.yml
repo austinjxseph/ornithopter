@@ -36,13 +36,13 @@ columns:
         fields:
           name:
             type: text
-            label: Project Name
+            label: Name
             help: Short name for cards
             required: true
 
           project_title:
             type: text
-            label: Project Title
+            label: Title
             help: Full title for detail page
             required: true
 
@@ -67,13 +67,13 @@ columns:
 
           showcase:
             type: toggle
-            label: Show on Homepage
+            label: Featured
             default: true
             width: 1/2
 
           published:
             type: date
-            label: Published Date
+            label: Published
             width: 1/2
 
       # Images
@@ -97,27 +97,6 @@ columns:
             uploads:
               template: image
 
-      # Metadata
-      metadata:
-        type: fields
-        label: Metadata
-        fields:
-          project_metadata:
-            type: structure
-            label: Metadata Items
-            help: Additional info like Client, Year, Role
-            fields:
-              label:
-                type: text
-                label: Label
-                placeholder: e.g. Client
-                width: 1/2
-              content:
-                type: text
-                label: Content
-                placeholder: e.g. Acme Corp
-                width: 1/2
-
       # SEO
       seo:
         type: fields
@@ -125,7 +104,7 @@ columns:
         fields:
           meta_title:
             type: text
-            label: Meta Title
+            label: Page Title
             help: Leave empty to use project title
 
           meta_description:
@@ -135,7 +114,7 @@ columns:
 
           meta_image:
             type: files
-            label: OG Image
+            label: Opengraph Image
             max: 1
             uploads:
               template: image

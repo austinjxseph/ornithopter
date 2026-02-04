@@ -1,16 +1,11 @@
 <?php snippet("head"); ?>
 <?php snippet("header"); ?>
 
-<?php
-// Build projects data array for the component
-$projects = page("projects")
-    ->children()
-    ->listed()
-    ->filterBy("showcase", true)
-    ->sortBy("sort", "asc")
-    ->limit(4);
+<?php // Build projects data array from featured projects field
+
+
 $projectsData = [];
-foreach ($projects as $project) {
+foreach ($page->featured_projects()->toPages() as $project) {
     $projectsData[] = [
         "url" => $project->url(),
         "title" => $project->project_title()->value(),

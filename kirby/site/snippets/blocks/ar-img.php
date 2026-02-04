@@ -31,6 +31,7 @@ if (empty($images)) {
 $blockId = "ar-img-" . $block->id();
 $props = [
     "images" => $images,
+    "spacing" => $block->spacing()->value() ?: "stack",
 ];
 ?>
 

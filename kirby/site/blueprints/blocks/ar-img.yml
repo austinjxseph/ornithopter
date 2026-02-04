@@ -11,3 +11,14 @@ fields:
       back: black
     uploads:
       template: image
+    width: 3/4
+
+  spacing:
+    type: select
+    label: Spacing
+    default: stack
+    required: true
+    options:
+      stack: Stack (with padding)
+      trim: Trim (no top padding)
+    width: 1/4
