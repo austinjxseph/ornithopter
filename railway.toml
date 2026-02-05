@@ -1,20 +1,8 @@
 # Railway Configuration
-# This file configures how Railway builds and deploys the services
+# This file configures how Railway builds and deploys the service
 
-# Note: Railway will auto-detect services from Dockerfiles
+# Note: Railway will auto-detect the Dockerfile at the repo root
 # You can also configure via the Railway dashboard for more control
 
-# For multi-service setup, configure in Railway dashboard:
-# 1. Create a new project
-# 2. Add service "kirby" with root directory "/kirby"
-# 3. Add service "website" with root directory "/website"
-# 4. Configure environment variables for each service
-# 5. Set up internal networking between services
-
-# Kirby service environment variables:
+# Environment variables:
 # - KIRBY_DEBUG=false
-# - FRONTEND_URL=https://yourdomain.com
-
-# Website service environment variables:
-# - VITE_KIRBY_API_URL=http://kirby.railway.internal/api
-# - NODE_ENV=production

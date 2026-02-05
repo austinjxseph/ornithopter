@@ -1,0 +1,15 @@
+{
+  "name": "austinjxseph/portfolio-kirby",
+  "description": "Kirby CMS backend for portfolio",
+  "type": "project",
+  "require": {
+    "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+    "getkirby/cms": "^5.2"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "getkirby/composer-installer": true
+    }
+  }
+}
