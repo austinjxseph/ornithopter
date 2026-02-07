@@ -56,6 +56,13 @@ When blocks render as invisible, check that:
 2. Single file fields (`type: files, multiple: false`) vs structure fields are handled correctly
 3. Consider adding fallback logic for backwards compatibility with existing content
 
+## Three.js / Shader Work
+
+- Always refer to the `.claude/skills/threejs-shaders/SKILL.md` skill when doing any shader or Three.js work
+- Reference shaders and component patterns live in `davinci/canvas/threejs/reference/`
+- Use vanilla Three.js (not React Three Fiber) - port patterns from reference components to Svelte
+- GLSL shader files are framework-agnostic and can be reused directly
+
 ## Documentation
 
 - After each successful implementation or fix, log a summary in `docs/process.md`

@@ -6,6 +6,57 @@ Description: Design Engineer focused on brand and web, obsessed with building ex
 
 ----
 
+Header-links:
+
+-
+  link_label: Home
+  link_page:
+    - 'page://IsRRaX9xShu6pOqQ'
+-
+  link_label: About
+  link_page:
+    - 'page://Csxpoeod9TcFjjgD'
+-
+  link_label: Gallery
+  link_page:
+    - 'page://x9xwrs6zmnlr1rrb'
+-
+  link_label: Colophon
+  link_page:
+    - 'page://hwgashwlqgh07zqn'
+
+----
+
+Footer-links:
+
+-
+  link_icon:
+    - 'file://dw7xatvxleazc63d'
+  link_label: Email
+  link_href: 'mailto:austinjxseph@gmail.com'
+-
+  link_icon:
+    - 'file://deg8k8mje56ivmj6'
+  link_label: LinkedIn
+  link_href: 'https://www.linkedin.com/in/austinjxseph/'
+-
+  link_icon:
+    - 'file://xohtpuxos2pvijcd'
+  link_label: read.cv
+  link_href: 'page://ihowqx1wjfrnzkdm'
+-
+  link_icon:
+    - 'file://i50cgc4ebzc4celo'
+  link_label: Bluesky
+  link_href: 'https://austinjxseph.bsky.social'
+-
+  link_icon:
+    - 'file://phw1204mt6a23qts'
+  link_label: GitHub
+  link_href: 'https://github.com/austinjxseph'
+
+----
+
 Email: hello@austinjoseph.com
 
 ----

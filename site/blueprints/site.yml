@@ -73,10 +73,15 @@ columns:
                 required: true
                 width: 1/2
               link_href:
-                type: url
-                label: URL
+                type: link
+                label: Link
                 required: true
                 width: 1/2
+                options:
+                  - url
+                  - page
+                  - email
+                  - tel
 
   # Right column: Projects & Thoughts (2/3 width)
   - width: 2/3

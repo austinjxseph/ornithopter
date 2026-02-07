@@ -28,6 +28,7 @@ columns:
 
   # Right column - Sidebar (1/3 width)
   - width: 1/3
+    sticky: true
     sections:
       # Main info
       main:
@@ -39,12 +40,14 @@ columns:
             label: Name
             help: Short name for cards
             required: true
+            width: 1/2
 
           project_title:
             type: text
             label: Title
             help: Full title for detail page
             required: true
+            width: 1/2
 
           description:
             type: writer
@@ -86,6 +89,7 @@ columns:
             label: Thumbnail (Base Layer)
             help: Background image for project card
             max: 1
+            width: 1/2
             uploads:
               template: image
 
@@ -94,6 +98,7 @@ columns:
             label: Thumbnail (Overlay Layer)
             help: Foreground image for project card
             max: 1
+            width: 1/2
             uploads:
               template: image
 

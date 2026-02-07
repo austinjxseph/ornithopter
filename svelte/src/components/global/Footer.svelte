@@ -8,6 +8,27 @@
     } = $props();
 
     const currentYear = new Date().getFullYear();
+
+    let time = $state("");
+
+    function updateTime() {
+        const now = new Date();
+        time = now
+            .toLocaleTimeString("en-GB", {
+                timeZone: "Europe/London",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+            })
+            .toUpperCase();
+    }
+
+    $effect(() => {
+        updateTime();
+        const interval = setInterval(updateTime, 1000);
+        return () => clearInterval(interval);
+    });
 </script>
 
 <footer class="c-footer" class:abs={fixed}>
@@ -21,6 +42,10 @@
                     </div>
                 </div>
             </div>
+            <div class="c-footer_location">
+                <span class="c-footer_location-label">London, England</span>
+                <span class="c-footer_location-time">[{time}]</span>
+            </div>
             <ul role="list" class="c-footer_row">
                 {#each links as link}
                     <li>
@@ -28,6 +53,8 @@
                             href={link.href}
                             class="c-footer_link"
                             title={link.label}
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             {#if link.icon}
                                 <img
@@ -101,25 +128,19 @@
 
     .c-footer_inner {
         max-width: var(--max-width--xl);
-        grid-column-gap: 24px;
-        grid-row-gap: 24px;
-        flex-flow: row;
-        justify-content: space-between;
-        align-self: stretch;
-        align-items: center;
         width: 100%;
         margin-left: auto;
         margin-right: auto;
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 24px;
     }
 
     @media screen and (max-width: 991px) {
         .c-footer_inner {
-            grid-column-gap: 12px;
-            grid-row-gap: 12px;
-            flex-flow: row;
-            justify-content: space-between;
-            align-items: center;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
     }
 
@@ -148,6 +169,38 @@
             flex-flow: column;
             justify-content: flex-start;
             align-items: flex-start;
+        }
+    }
+
+    .c-footer_row:last-child {
+        justify-content: flex-end;
+    }
+
+    .c-footer_location {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .c-footer_location-label {
+        font-family: var(--typeface--primary);
+        font-size: var(--paragraph--font-size-s);
+        line-height: var(--paragraph--line-height-s);
+        color: var(--_themes---site--text--text-primary);
+    }
+
+    .c-footer_location-time {
+        font-family: var(--typeface--primary);
+        font-size: var(--paragraph--font-size-s);
+        line-height: var(--paragraph--line-height-s);
+        color: var(--_themes---site--text--text-secondary);
+    }
+
+    @media screen and (max-width: 991px) {
+        .c-footer_location {
+            display: none;
         }
     }
 

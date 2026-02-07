@@ -14,6 +14,7 @@ import Footer from "./components/global/Footer.svelte";
 // Layout components
 import LayoutIndex from "./components/layout/LayoutIndex.svelte";
 import LayoutAbout from "./components/layout/LayoutAbout.svelte";
+import Layout404 from "./components/layout/Layout404.svelte";
 
 // UI components
 import Button from "./components/ui/Button.svelte";
@@ -64,6 +65,13 @@ registerSvelteElement("l-about", LayoutAbout, [
   "content",
   "images",
   "items",
+]);
+
+registerSvelteElement("l-404", Layout404, [
+  "title",
+  "message",
+  "buttonlabel",
+  "buttonhref",
 ]);
 
 console.log("Svelte components loaded");

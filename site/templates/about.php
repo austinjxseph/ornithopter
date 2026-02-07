@@ -39,10 +39,12 @@ $aboutProps = [
 ];
 ?>
 
+<main class="u-layout-vflex main">
 <l-about id="<?= $aboutId ?>"></l-about>
 <script type="application/json" data-for="<?= $aboutId ?>">
 <?= json_encode($aboutProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
+</main>
 
 <?php snippet("footer"); ?>
 <?php snippet("scripts"); ?>
