@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
     let {
         eyebrow = "Available for freelance work",
         title = "",
@@ -17,12 +19,31 @@
             thumbnail_overlay: string;
         }>;
     } = $props();
+
+    let activeTitle = $state("");
+    let trackEl: HTMLDivElement;
+
+    const wheelId = "indexwheel-" + Math.random().toString(36).slice(2, 8);
+
+    onMount(() => {
+        function onActiveCard(e: Event) {
+            const detail = (e as CustomEvent).detail;
+            if (detail?.project?.title) {
+                activeTitle = detail.project.title;
+            }
+        }
+
+        trackEl?.addEventListener("activecard", onActiveCard);
+        return () => {
+            trackEl?.removeEventListener("activecard", onActiveCard);
+        };
+    });
 </script>
 
 <main class="main">
     <section class="section-hr">
         <div class="container-xl">
-            <div class="inner">
+            <div class="inner" data-canvas-map>
                 <div class="wrap">
                     <div class="text">
                         <div class="heading">
@@ -38,19 +59,20 @@
                                 href={buttonhref}
                                 active
                             ></c-button>
+                            {#if activeTitle}
+                                <div class="active-title">
+                                    <h4>{activeTitle}</h4>
+                                </div>
+                            {/if}
                         </div>
                     </div>
                 </div>
 
-                <div class="track">
-                    {#each projects as project}
-                        <c-indexcard
-                            href={project.url}
-                            title={project.title}
-                            backgroundimage={project.thumbnail_base}
-                            overlayimage={project.thumbnail_overlay}
-                        ></c-indexcard>
-                    {/each}
+                <div class="track" bind:this={trackEl}>
+                    <c-indexwheel
+                        id={wheelId}
+                        projects={JSON.stringify(projects)}
+                    ></c-indexwheel>
                 </div>
             </div>
         </div>
@@ -99,13 +121,15 @@
         display: flex;
     }
 
-    /* Inner layout - horizontal flex */
+    /* Inner layout - horizontal flex, single viewport height */
     .inner {
         flex-direction: row;
         align-items: flex-start;
         display: flex;
         flex: 1;
         align-self: stretch;
+        height: 100dvh;
+        overflow: hidden;
     }
 
     @media screen and (max-width: 991px) {
@@ -117,14 +141,12 @@
         }
     }
 
-    /* Left panel - sticky with full viewport height */
+    /* Left panel - full viewport height */
     .wrap {
         flex-direction: column;
         align-items: flex-start;
         display: flex;
-        position: sticky;
         flex: 1;
-        top: 0;
         height: 100dvh;
     }
 
@@ -161,38 +183,38 @@
         }
     }
 
-    /* Right panel - scrolling track */
+    /* Right panel - canvas track */
     .track {
-        flex-direction: column;
-        align-items: flex-start;
         display: flex;
-        padding-right: var(--global--margin);
-        padding-left: var(--global--margin);
-        padding-top: var(--_units---abs--32);
-        padding-bottom: var(--_units---abs--16);
-        grid-column-gap: 32px;
-        grid-row-gap: 32px;
         flex: 1;
         align-self: stretch;
         max-width: calc(100dvh - 2 * var(--padding--lg));
-        height: fit-content;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .track::-webkit-scrollbar {
-        display: none;
+        padding-right: 48px;
+        position: relative;
+        height: 100dvh;
     }
 
     @media screen and (max-width: 991px) {
         .track {
-            grid-column-gap: var(--global--margin);
-            grid-row-gap: var(--global--margin);
             flex: 1;
             max-width: none;
-            padding-top: 0;
+            height: auto;
+            padding-right: var(--global--margin);
+            padding-left: var(--global--margin);
             overflow: hidden;
         }
+    }
+
+    /* Active project title */
+    .active-title {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .active-title h4 {
+        margin: 0;
+        font-weight: 400;
+        color: var(--_themes---site--text--text-secondary);
     }
 
     /* Eyebrow */

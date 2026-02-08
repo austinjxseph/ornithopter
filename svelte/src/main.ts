@@ -19,6 +19,7 @@ import Layout404 from "./components/layout/Layout404.svelte";
 // UI components
 import Button from "./components/ui/Button.svelte";
 import IndexCard from "./components/ui/IndexCard.svelte";
+import IndexWheel from "./components/ui/IndexWheel.svelte";
 
 // Block components
 import ArticleHeader from "./components/blocks/ArticleHeader.svelte";
@@ -48,6 +49,7 @@ registerSvelteElement("c-indexcard", IndexCard, [
   "backgroundimage",
   "overlayimage",
 ]);
+registerSvelteElement("c-indexwheel", IndexWheel, ["projects"]);
 
 // Register block components
 registerSvelteElement("ar-header", ArticleHeader, ["title", "description"]);
