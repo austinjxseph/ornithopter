@@ -30,7 +30,7 @@ Published: 2022-07-01
 
 ----
 
-Thumbnail-base: - 'file://bdizmydzjamfbahv'
+Thumbnail-base: - 'file://fe0orqe41q9jvejy'
 
 ----
 

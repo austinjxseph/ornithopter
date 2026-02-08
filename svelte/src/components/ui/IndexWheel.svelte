@@ -17,8 +17,8 @@
     const CARD_WIDTH = 6;
     const CARD_HEIGHT = 6;
     const CARD_SEGMENTS = 32;
-    const DRUM_RADIUS = 12.0;
-    const CAMERA_Z = 18;
+    const DRUM_RADIUS = 10.0;
+    const CAMERA_Z = 22;
     const MOBILE_BREAKPOINT = 991;
 
     // --- Interaction tuning ---
@@ -32,7 +32,7 @@
 
     // --- Visual tuning ---
     const HOVER_OPACITY = 0.2;
-    const LERP_SPEED = 0.08;
+    const LERP_SPEED = 0.2;
 
     let container: HTMLDivElement;
     let isMobile = $state(false);
@@ -121,8 +121,9 @@
         }
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-        camera.position.z = CAMERA_Z;
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        camera.position.set(0, 0, CAMERA_Z);
+        camera.lookAt(0, 0, 0);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = THREE.NoToneMapping;
@@ -226,30 +227,83 @@
         resizeObserver.observe(container);
         requestAnimationFrame(updateSize);
 
-        // --- Raycaster for hover/click ---
+        // --- Hover/click via analytical cylinder hit test ---
+        // The raycaster can't work here because the vertex shader warps
+        // geometry on the GPU — all meshes share the same CPU bounding box.
+        // Instead we cast a ray against the mathematical cylinder (Y-Z plane,
+        // radius = DRUM_RADIUS) and compute which card slot the hit angle
+        // falls into.
         const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
+        const mouseNDC = new THREE.Vector2();
         let hoveredMeshIndex = -1;
         let isAnyHovered = false;
+        let lastMouseEvent: MouseEvent | null = null;
 
-        function onMouseMove(e: MouseEvent) {
-            if (!container) return;
+        function hitTestDrum(e: MouseEvent): number {
+            if (!container) return -1;
             const rect = container.getBoundingClientRect();
-            mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+            mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
+            raycaster.setFromCamera(mouseNDC, camera);
+            const origin = raycaster.ray.origin;
+            const dir = raycaster.ray.direction;
 
-            // Only hit visible (front-facing) cards
-            const hit = intersects.find((i) => {
-                const idx = (i.object as THREE.Mesh).userData.meshIndex;
-                return materials[idx].uniforms.uOpacity.value > 0.1;
-            });
+            // Intersect ray with cylinder: y² + z² = R²
+            // Ray: P = O + t*D  →  (Oy+t*Dy)² + (Oz+t*Dz)² = R²
+            const a = dir.y * dir.y + dir.z * dir.z;
+            const b = 2 * (origin.y * dir.y + origin.z * dir.z);
+            const c =
+                origin.y * origin.y +
+                origin.z * origin.z -
+                DRUM_RADIUS * DRUM_RADIUS;
+            const discriminant = b * b - 4 * a * c;
 
-            if (hit) {
-                hoveredMeshIndex = (hit.object as THREE.Mesh).userData
-                    .meshIndex;
+            if (discriminant < 0) return -1;
+
+            const t = (-b - Math.sqrt(discriminant)) / (2 * a);
+            if (t < 0) return -1;
+
+            const hitPoint = new THREE.Vector3()
+                .copy(origin)
+                .addScaledVector(dir, t);
+
+            // Check x bounds (card width)
+            if (Math.abs(hitPoint.x) > CARD_WIDTH / 2) return -1;
+
+            // Get the angle of the hit point on the drum
+            const hitAngle = Math.atan2(hitPoint.y, hitPoint.z);
+
+            // Find which mesh slot this angle falls into
+            // Card center is at uBaseAngle (position.y=0 in the plane maps to this angle)
+            // Card spans from uBaseAngle - halfArc to uBaseAngle + halfArc
+            const halfArc = CARD_HEIGHT / 2 / DRUM_RADIUS;
+
+            let bestIndex = -1;
+            let bestDist = Infinity;
+
+            for (let i = 0; i < MESH_COUNT; i++) {
+                if (!meshes[i].visible) continue;
+                const cardCenter = materials[i].uniforms.uBaseAngle.value;
+
+                // Angular distance (wrapped to [-PI, PI])
+                let diff = hitAngle - cardCenter;
+                diff =
+                    ((((diff + Math.PI) % TWO_PI) + TWO_PI) % TWO_PI) - Math.PI;
+
+                if (Math.abs(diff) < halfArc && Math.abs(diff) < bestDist) {
+                    bestDist = Math.abs(diff);
+                    bestIndex = i;
+                }
+            }
+
+            return bestIndex;
+        }
+
+        function updateHover(e: MouseEvent) {
+            const hit = hitTestDrum(e);
+            if (hit >= 0) {
+                hoveredMeshIndex = hit;
                 isAnyHovered = true;
                 container.style.cursor = "pointer";
             } else {
@@ -259,22 +313,22 @@
             }
         }
 
+        function onMouseMove(e: MouseEvent) {
+            lastMouseEvent = e;
+            updateHover(e);
+        }
+
+        function onMouseLeave() {
+            lastMouseEvent = null;
+            hoveredMeshIndex = -1;
+            isAnyHovered = false;
+            if (container) container.style.cursor = "default";
+        }
+
         function onClick(e: MouseEvent) {
-            if (!container) return;
-            const rect = container.getBoundingClientRect();
-            mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(meshes);
-
-            const hit = intersects.find((i) => {
-                const idx = (i.object as THREE.Mesh).userData.meshIndex;
-                return materials[idx].uniforms.uOpacity.value > 0.1;
-            });
-
-            if (hit) {
-                const project = (hit.object as THREE.Mesh).userData.project;
+            const hit = hitTestDrum(e);
+            if (hit >= 0) {
+                const project = meshes[hit].userData.project;
                 if (project?.url) {
                     window.location.href = project.url;
                 }
@@ -282,6 +336,7 @@
         }
 
         container.addEventListener("mousemove", onMouseMove);
+        container.addEventListener("mouseleave", onMouseLeave);
         container.addEventListener("click", onClick);
 
         // --- Wheel/touch scroll capture ---
@@ -381,6 +436,20 @@
                 }
             }
 
+            // Re-poll hover when drum is moving but mouse hasn't moved
+            if (
+                lastMouseEvent &&
+                (Math.abs(drumVelocity) > 0.0001 || isSnapping)
+            ) {
+                updateHover(lastMouseEvent);
+            }
+
+            // Active card detection (before mesh update so we can use it for opacity)
+            const drumNormAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
+            const activeMeshIndex =
+                Math.round(drumNormAngle / angleStep) % MESH_COUNT;
+            const activeProjectIndex = activeMeshIndex % cardCount;
+
             // Phase 3: Update meshes
             for (let i = 0; i < MESH_COUNT; i++) {
                 const baseSeatAngle = -i * angleStep;
@@ -391,18 +460,25 @@
                 const normAngle = ((currentAngle % TWO_PI) + TWO_PI) % TWO_PI;
                 // Angle 0 = front, PI = back
                 const cosAngle = Math.cos(normAngle);
-                const visibility = smoothstep(-0.2, 0.3, cosAngle);
+                const visibility = smoothstep(0.3, 0.6, cosAngle);
 
-                // Combine visibility with hover
+                // Hide fully culled cards so raycaster skips them
+                meshes[i].visible = visibility > 0.01;
+
+                // Opacity: one card highlighted at a time — hover takes priority over active
                 let opacityTarget: number;
-                if (visibility < 0.01) {
+                if (!meshes[i].visible) {
                     opacityTarget = 0;
-                } else if (!isAnyHovered) {
-                    opacityTarget = visibility;
-                } else if (i === hoveredMeshIndex) {
-                    opacityTarget = visibility;
+                } else if (isAnyHovered) {
+                    opacityTarget =
+                        i === hoveredMeshIndex
+                            ? visibility
+                            : visibility * HOVER_OPACITY;
                 } else {
-                    opacityTarget = visibility * HOVER_OPACITY;
+                    opacityTarget =
+                        i === activeMeshIndex
+                            ? visibility
+                            : visibility * HOVER_OPACITY;
                 }
 
                 targetOpacities[i] = opacityTarget;
@@ -412,12 +488,6 @@
                 materials[i].uniforms.uOpacity.value +=
                     (targetOpacities[i] - current) * LERP_SPEED;
             }
-
-            // Active card detection
-            const normAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
-            const activeMeshIndex =
-                Math.round(normAngle / angleStep) % MESH_COUNT;
-            const activeProjectIndex = activeMeshIndex % cardCount;
 
             if (
                 activeProjectIndex !== lastActiveIndex &&
@@ -465,6 +535,7 @@
             if (resizeObserver) resizeObserver.disconnect();
 
             container?.removeEventListener("mousemove", onMouseMove);
+            container?.removeEventListener("mouseleave", onMouseLeave);
             container?.removeEventListener("click", onClick);
 
             if (scrollZone) {

@@ -46,6 +46,11 @@
             <div class="inner" data-canvas-map>
                 <div class="wrap">
                     <div class="text">
+                        {#if activeTitle}
+                            <div class="active-title">
+                                <h4>{activeTitle}</h4>
+                            </div>
+                        {/if}
                         <div class="heading">
                             <div class="eyebrow">
                                 <div class="marker"></div>
@@ -59,20 +64,13 @@
                                 href={buttonhref}
                                 active
                             ></c-button>
-                            {#if activeTitle}
-                                <div class="active-title">
-                                    <h4>{activeTitle}</h4>
-                                </div>
-                            {/if}
                         </div>
                     </div>
                 </div>
 
                 <div class="track" bind:this={trackEl}>
-                    <c-indexwheel
-                        id={wheelId}
-                        projects={JSON.stringify(projects)}
-                    ></c-indexwheel>
+                    <c-indexwheel id={wheelId}></c-indexwheel>
+                    {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects })}<\/script>`}
                 </div>
             </div>
         </div>
@@ -159,16 +157,16 @@
 
     /* Text container */
     .text {
-        flex-direction: row;
-        align-items: flex-start;
         display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
         padding-right: var(--global--margin);
         padding-left: var(--global--margin);
         padding-top: var(--_units---abs--32);
         padding-bottom: var(--_units---abs--24);
         flex: 1;
         position: relative;
-        justify-content: flex-start;
         align-self: stretch;
     }
 
@@ -176,8 +174,7 @@
         .text {
             padding-top: 8rem;
             padding-bottom: 4rem;
-            grid-column-gap: 3rem;
-            grid-row-gap: 3rem;
+            gap: 3rem;
             justify-content: flex-start;
             align-items: flex-start;
         }
@@ -217,6 +214,12 @@
         color: var(--_themes---site--text--text-secondary);
     }
 
+    @media screen and (max-width: 991px) {
+        .active-title {
+            display: none;
+        }
+    }
+
     /* Eyebrow */
     .eyebrow {
         flex-direction: row;
@@ -241,14 +244,13 @@
         height: 4px;
     }
 
-    /* Heading container */
+    /* Heading container - row 3, aligned to bottom */
     .heading {
         flex-direction: column;
         align-items: flex-start;
         display: flex;
-        grid-column-gap: var(--gap--md);
-        grid-row-gap: var(--gap--md);
-        align-self: flex-end;
+        gap: var(--gap--md);
+        align-self: start;
         max-width: 40rem;
         justify-content: flex-start;
     }

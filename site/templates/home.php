@@ -17,7 +17,10 @@ foreach ($page->featured_projects()->toPages() as $project) {
 $heroId = "hero-" . $page->id();
 $heroProps = [
     "eyebrow" => $page->hero_eyebrow()->value(),
-    "title" => (string) $page->hero_title()->kti(),
+    "title" => strip_tags(
+        (string) $page->hero_title()->kti(),
+        "<em><i><span><strong><b>",
+    ),
     "buttonlabel" => $page->hero_button_label()->value(),
     "buttonhref" => $page->hero_button_link()->toUrl(),
     "projects" => $projectsData,

@@ -30,7 +30,7 @@ Published: 2021-09-01
 
 ----
 
-Thumbnail-base: - 'file://avlptvp7ixzsjow6'
+Thumbnail-base: - 'file://ubvzqt64o305bqfv'
 
 ----
 

@@ -20,6 +20,7 @@
     data-nav-element="navbar"
     class="c-header_navbar"
 >
+    <div class="c-header_vignette"></div>
     <div class="c-header_inner">
         <button
             data-nav-element="overlay"
@@ -54,6 +55,25 @@
 </header>
 
 <style>
+    .c-header_vignette {
+        position: absolute;
+        inset: 0;
+        height: 10vh;
+        background: linear-gradient(
+            to bottom,
+            var(--_themes---site--bg--bg-primary) 0%,
+            color-mix(
+                    in srgb,
+                    var(--_themes---site--bg--bg-primary) 80%,
+                    transparent
+                )
+                40%,
+            transparent 100%
+        );
+        z-index: 2;
+        pointer-events: none;
+    }
+
     .c-header_navbar {
         z-index: 3;
         padding: 1rem var(--global--margin);

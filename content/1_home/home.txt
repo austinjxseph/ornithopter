@@ -2,7 +2,7 @@ Title: Home
 
 ----
 
-Hero-title: Digital Designer and Creative Developer, <em>obsessed</em> with building products bridging engineering and design. Avid <em>Garamond</em> lover and passionate Times New Roman hater.
+Hero-title: <p>Design Engineer <em>obsessed</em> with building products bridging visual design and code. <br>Avid <em>Garamond</em> lover and passionate Times New Roman hater.</p>
 
 ----
 
