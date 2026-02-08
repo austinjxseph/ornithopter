@@ -16361,9 +16361,129 @@ Simple texture + opacity. Uses `CoverUV()` for aspect-ratio-correct texture mapp
 ### `svelte/src/components/layout/LayoutIndex.svelte`
 - Added `padding-right: 48px` to `.track` for right-side spacing
 
-## Still TODO
+## Still TODO (end of Session 2)
 - Card border-radius / rounding on the canvas cards
 - Fine-tune card spacing and curvature
 - Card reordering behaviour
 - Active title display polish
 - Mobile fallback testing
+
+---
+
+# Session 3 — Infinite Drum, Inertia & Snapping
+
+## Summary
+
+Major rewrite of IndexWheel from a finite scroll-driven carousel (Lenis page scroll 0→1) to a self-contained infinite drum with its own scroll engine, inertia, snapping, and visibility culling.
+
+## What Changed
+
+### 1. Infinite drum — full 360° of meshes
+- Drum now filled with meshes around the entire circle
+- `MESH_COUNT = Math.ceil(2π / (cardArc + 0.04))` — dynamically calculated to tile perfectly
+- With current values (DRUM_RADIUS=12, CARD_HEIGHT=6): `cardArc = 0.5`, gives 12 meshes
+- Textures cached by project index — only 4 images loaded, reused across all meshes via `i % cardCount`
+
+### 2. Self-contained scroll engine (no more Lenis)
+- Removed all Lenis scroll binding (`scrollProgress`, `onScroll`, `bindLenis`, `lenis-ready` listener)
+- Wheel and touch events captured directly on `[data-canvas-map]` element
+- `{ passive: false }` + `preventDefault()` blocks page scroll in the drum section
+- `drumAngle` accumulates continuously — no clamping, infinite in both directions
+
+### 3. Inertia
+- Wheel delta feeds into `drumVelocity` (scaled by `WHEEL_SENSITIVITY`)
+- Each frame: `drumAngle += drumVelocity`, then `drumVelocity *= FRICTION`
+- Velocity decays naturally, drum coasts to a stop
+
+### 4. Snapping
+- After `IDLE_DELAY` (120ms) of no input AND velocity below `SNAP_THRESHOLD`:
+  - Compute nearest card center: `Math.floor(normAngle / angleStep + 0.4)` (biased — need 60% progress to advance)
+  - Lerp `drumAngle` toward snap target at `SNAP_LERP` speed
+  - Uses absolute radians (preserves revolution count) to avoid jumps
+  - Shortest-path calculation for wrap-around cases
+
+### 5. Visibility culling
+- `cos(normalizedAngle)` determines how front-facing each card is
+- `smoothstep(-0.2, 0.3, cosAngle)` maps to visibility (1.0 at front, fades to 0 at sides/back)
+- Combined with hover opacity — back-facing cards are fully invisible
+- Raycaster filters out invisible cards (opacity < 0.1) so you can't hover/click through the drum
+
+### 6. LayoutIndex changes
+- Added `data-canvas-map` attribute to `.inner` div
+- Removed `.track-spacer` div and `.track-sticky` wrapper
+- Section is now exactly `100dvh` with `overflow: hidden`
+- `.wrap` no longer needs `position: sticky`
+
+## Current Configuration Values
+
+```
+CARD_WIDTH       = 6
+CARD_HEIGHT      = 6
+CARD_SEGMENTS    = 32
+DRUM_RADIUS      = 12.0      // gives 12 meshes (3 repeats of 4 projects)
+CAMERA_Z         = 18        // 6 units clearance from drum front face
+
+WHEEL_SENSITIVITY = 0.0003   // radians per pixel of wheel deltaY
+TOUCH_SENSITIVITY = 0.004    // radians per pixel of touch deltaY
+FRICTION          = 0.92     // velocity decay per frame
+SNAP_THRESHOLD    = 0.0005   // velocity below which snap engages
+SNAP_LERP         = 0.08     // lerp speed toward snap target
+SNAP_EPSILON      = 0.001    // "close enough" to snap target
+IDLE_DELAY        = 120      // ms of no input before snapping
+
+HOVER_OPACITY     = 0.2
+LERP_SPEED        = 0.08
+```
+
+### MESH_COUNT formula
+```
+cardArc = CARD_HEIGHT / DRUM_RADIUS
+MESH_COUNT = Math.ceil(2π / (cardArc + 0.04))
+angleStep = 2π / MESH_COUNT
+```
+The `0.04` in the formula is the minimum gap between cards. After `MESH_COUNT` is computed, `angleStep` is recalculated for perfect tiling — the actual gap becomes `angleStep - cardArc`.
+
+### Snap bias
+`Math.floor(normAngle / angleStep + 0.4)` — the `0.4` means you need to scroll 60% past a card before it advances to the next. Values: `0.5` = standard 50% rounding, `0.3` = need 70% to advance.
+
+## Architecture
+
+### Scroll capture
+- `[data-canvas-map]` attribute on `.inner` in LayoutIndex — whole section captures wheel/touch
+- Wheel: `e.deltaY * WHEEL_SENSITIVITY` added to `drumVelocity`
+- Touch: tracks `touchLastY`, computes delta, applies to velocity and angle directly
+
+### Animation loop (3 phases per frame)
+1. **Inertia**: apply velocity to angle, decay velocity
+2. **Snap**: detect idle + low velocity, compute target, lerp toward it
+3. **Update**: set each material's `uBaseAngle`, compute visibility, lerp opacity
+
+### Active card detection
+- Normalize `drumAngle` to `[0, 2π)`, divide by `angleStep`, round to mesh index
+- Map to project index via `% cardCount`
+- Dispatch `activecard` CustomEvent when project changes
+- Initial event fired on first frame for project 0
+
+## Files Modified
+
+### `svelte/src/components/ui/IndexWheel.svelte`
+- Full rewrite of scroll engine, mesh creation, animation loop
+- Added inertia, snapping, visibility culling
+- Removed all Lenis dependency
+
+### `svelte/src/components/layout/LayoutIndex.svelte`
+- Added `data-canvas-map` to `.inner`
+- Removed spacer div and track-sticky wrapper
+- Simplified CSS: section is 100dvh, no sticky positioning
+
+## Tuning History
+- `WHEEL_SENSITIVITY`: started at 0.0008, reduced to 0.0003 (was too sensitive, spinning multiple cards per scroll tick)
+- `DRUM_RADIUS`: tried 10 (10 meshes), 12.5 (13 meshes), 14 (14 meshes), settled on 12 (12 meshes)
+- `CAMERA_Z`: adjusted proportionally with radius — settled on 18 for 6 units clearance
+- Snap bias: changed from `Math.round` (50%) to `Math.floor(x + 0.4)` (60%) to reduce drastic snapping
+
+## Still TODO
+- Card border-radius / rounding on canvas cards
+- Active title display polish
+- Mobile fallback testing
+- Potential snap feel improvements (easing curve instead of linear lerp)

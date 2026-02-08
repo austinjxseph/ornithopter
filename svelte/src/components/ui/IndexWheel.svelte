@@ -17,12 +17,12 @@
     const CARD_WIDTH = 6;
     const CARD_HEIGHT = 6;
     const CARD_SEGMENTS = 32;
-    const DRUM_RADIUS = 10.0;
-    const CAMERA_Z = 15;
+    const DRUM_RADIUS = 12.0;
+    const CAMERA_Z = 18;
     const MOBILE_BREAKPOINT = 991;
 
     // --- Interaction tuning ---
-    const WHEEL_SENSITIVITY = 0.0008;
+    const WHEEL_SENSITIVITY = 0.0003;
     const TOUCH_SENSITIVITY = 0.004;
     const FRICTION = 0.92;
     const SNAP_THRESHOLD = 0.0005;
@@ -358,7 +358,8 @@
             ) {
                 // Find nearest card center
                 const normAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
-                const nearestSlot = Math.round(normAngle / angleStep);
+                // Biased rounding: need 60% progress to advance to next card
+                const nearestSlot = Math.floor(normAngle / angleStep + 0.4);
                 const baseRevolutions = Math.round(drumAngle / TWO_PI) * TWO_PI;
                 snapTarget = baseRevolutions + nearestSlot * angleStep;
 
