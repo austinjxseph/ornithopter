@@ -5,12 +5,14 @@ foreach ($block->items()->toStructure() as $item) {
     // Use toArray() to access the raw field value instead
     $itemData = $item->toArray();
     $items[] = [
+        "heading" => $itemData["heading"] ?? "",
         "content" => $itemData["content"] ?? "",
     ];
 }
 
 $blockId = "b-text-" . $block->id();
 $props = [
+    "columns" => $block->columns()->value() ?: "4",
     "items" => $items,
 ];
 ?>

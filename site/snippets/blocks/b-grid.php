@@ -9,7 +9,7 @@ foreach ($block->items()->toStructure() as $item) {
 
 $blockId = "b-grid-" . $block->id();
 $props = [
-    "shownumbers" => $block->show_numbers()->toBool(),
+    "columns" => $block->columns()->value() ?: "4",
     "items" => $items,
 ];
 ?>

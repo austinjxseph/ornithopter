@@ -58,8 +58,8 @@ registerSvelteElement("b-header", BlockHeader, [
   "layout",
 ]);
 registerSvelteElement("b-img", BlockImage, ["images", "spacing"]);
-registerSvelteElement("b-text", BlockText, ["items"]);
-registerSvelteElement("b-grid", BlockGrid, ["shownumbers", "items"]);
+registerSvelteElement("b-text", BlockText, ["columns", "items"]);
+registerSvelteElement("b-grid", BlockGrid, ["columns", "items"]);
 registerSvelteElement("b-fullbleed", BlockFullBleed, [
   "image",
   "alt",

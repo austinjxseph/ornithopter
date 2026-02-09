@@ -6,18 +6,21 @@ fields:
   columns:
     type: select
     label: Columns
-    default: "2"
+    default: "4"
     options:
-      "1": 1 Column
-      "2": 2 Columns
-      "3": 3 Columns
-      "4": 4 Columns
+      "1": "1"
+      "2": "2"
+      "3": "3"
+      "4": "4"
     width: 1/4
 
   items:
     type: structure
     label: Text Items
     fields:
+      heading:
+        type: text
+        label: Heading
       content:
         type: writer
         label: Content

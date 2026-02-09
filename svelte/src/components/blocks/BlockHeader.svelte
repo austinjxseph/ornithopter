@@ -34,7 +34,7 @@
     .header {
         display: flex;
         flex-direction: column;
-        gap: var(--gap--md);
+        gap: var(--gap--lg);
         align-self: stretch;
         padding-left: var(--global--margin);
         padding-right: var(--global--margin);
@@ -46,7 +46,7 @@
     .header.is-row {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
-        gap: var(--gap--md);
+        gap: var(--gap--lg);
         padding-left: var(--global--margin);
         padding-right: var(--global--margin);
         padding-top: var(--padding--xl);

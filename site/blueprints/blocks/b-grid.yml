@@ -8,16 +8,10 @@ fields:
     label: Columns
     default: "4"
     options:
-      "2": 2 Columns
-      "3": 3 Columns
-      "4": 4 Columns
-    width: 1/4
-
-  show_numbers:
-    type: toggle
-    label: Show Numbers
-    default: true
-    help: Auto-number items (01, 02, 03...)
+      "1": "1"
+      "2": "2"
+      "3": "3"
+      "4": "4"
     width: 1/4
 
   items:
@@ -27,7 +21,7 @@ fields:
       heading:
         type: text
         label: Heading
-        help: Custom heading (used if show_numbers is off)
+        help: Leave empty to auto-number
       description:
         type: writer
         label: Description

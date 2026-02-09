@@ -20,6 +20,20 @@ foreach ($page->about_items()->toBlocks() as $block) {
             "description" => (string) $block->description()->kt(),
             "layout" => $block->layout()->value() ?: "column",
         ];
+    } elseif ($block->type() === "b-text") {
+        $textItems = [];
+        foreach ($block->items()->toStructure() as $item) {
+            $itemData = $item->toArray();
+            $textItems[] = [
+                "heading" => $itemData["heading"] ?? "",
+                "content" => $itemData["content"] ?? "",
+            ];
+        }
+        $itemsData[] = [
+            "type" => "b-text",
+            "columns" => $block->columns()->value() ?: "4",
+            "items" => $textItems,
+        ];
     }
 }
 $aboutId = "about-" . $page->id();
