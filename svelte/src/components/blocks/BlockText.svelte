@@ -6,10 +6,10 @@
     } = $props();
 </script>
 
-<section class="b-tb_section">
-    <div class="b-tb_grid">
+<section class="section">
+    <div class="grid">
         {#each items as item}
-            <div class="b-tb_col">
+            <div class="col">
                 <div class="text-md">
                     {@html item.content}
                 </div>
@@ -19,11 +19,11 @@
 </section>
 
 <style>
-    .b-tb_section {
+    .section {
         padding: var(--padding--sm) var(--global--margin);
     }
 
-    .b-tb_grid {
+    .grid {
         display: grid;
         gap: var(--gap--md);
         grid-template-columns: repeat(4, 1fr);
@@ -31,18 +31,18 @@
         direction: rtl;
     }
 
-    .b-tb_grid > * {
+    .grid > * {
         direction: ltr;
     }
 
     @media screen and (max-width: 991px) {
-        .b-tb_grid {
+        .grid {
             display: flex;
             flex-direction: column;
         }
     }
 
-    .b-tb_col {
+    .col {
         display: flex;
         flex-direction: column;
         gap: var(--gap--xxs);

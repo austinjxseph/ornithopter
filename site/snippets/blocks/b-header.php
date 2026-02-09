@@ -1,12 +1,13 @@
 <?php
-$blockId = "ar-header-" . $block->id();
+$blockId = "b-header-" . $block->id();
 $props = [
-    "title" => $block->title()->value(),
+    "title" => (string) $block->title()->kt(),
     "description" => (string) $block->description()->kt(),
+    "layout" => $block->layout()->value() ?: "column",
 ];
 ?>
 
-<ar-header id="<?= $blockId ?>"></ar-header>
+<b-header id="<?= $blockId ?>"></b-header>
 <script type="application/json" data-for="<?= $blockId ?>">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

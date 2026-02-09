@@ -33,9 +33,9 @@
     const TOP_OFFSET = ROW_HEIGHT; // push active row below the top fade zone
     const TWEEN_DURATION = 0.35;
     const cardCount = $derived(projects.length);
-    // 5 copies for infinite scroll runway
+    // 3 copies for infinite scroll runway
     const slotItems = $derived(
-        Array.from({ length: 5 }, () => projects).flat(),
+        Array.from({ length: 3 }, () => projects).flat(),
     );
 
     let lastIndex = -1;
@@ -51,7 +51,7 @@
 
         if (!innerEl || !itemEls.length) return;
 
-        continuousPos = cardCount * 2;
+        continuousPos = cardCount;
 
         function posToY(pos: number) {
             return -pos * ROW_HEIGHT + TOP_OFFSET;
@@ -64,6 +64,10 @@
         function updateOpacities(pos: number) {
             itemEls.forEach((el, i) => {
                 const dist = i - pos;
+                if (Math.abs(dist) > 3) {
+                    gsap.set(el, { opacity: 0 });
+                    return;
+                }
                 let opacity = 0;
                 if (dist === -1) opacity = 0.2;
                 else if (dist === 0) opacity = 1;
@@ -82,7 +86,7 @@
         function resetToCenter() {
             const normalised =
                 ((continuousPos % cardCount) + cardCount) % cardCount;
-            const centerPos = cardCount * 2 + normalised;
+            const centerPos = cardCount + normalised;
             if (continuousPos === centerPos) return;
             gsap.killTweensOf(innerEl);
             gsap.set(innerEl, { y: posToY(centerPos) });
@@ -96,7 +100,7 @@
 
             if (lastIndex === -1) {
                 lastIndex = newIndex;
-                continuousPos = cardCount * 2 + newIndex;
+                continuousPos = cardCount + newIndex;
                 gsap.set(innerEl, { y: posToY(continuousPos) });
                 updateOpacities(continuousPos);
                 return;
@@ -110,8 +114,8 @@
 
             // Reset to center copy if approaching boundary
             if (
-                continuousPos + delta < cardCount ||
-                continuousPos + delta >= cardCount * 4
+                continuousPos + delta < 0 ||
+                continuousPos + delta >= cardCount * 3
             ) {
                 resetToCenter();
             }
@@ -187,7 +191,7 @@
 
                 <div class="track" bind:this={trackEl}>
                     <c-indexwheel id={wheelId}></c-indexwheel>
-                    {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects })}<\/script>`}
+                    {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects }).replace(/<\//g, "<\\/")}<\/script>`}
                 </div>
             </div>
         </div>

@@ -1,6 +1,23 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import * as THREE from "three";
+    import {
+        DoubleSide,
+        Group,
+        LinearFilter,
+        Mesh,
+        NoToneMapping,
+        PerspectiveCamera,
+        PlaneGeometry,
+        Raycaster,
+        SRGBColorSpace,
+        Scene,
+        ShaderMaterial,
+        TextureLoader,
+        Vector2,
+        Vector3,
+        WebGLRenderer,
+    } from "three";
+    import type { Texture } from "three";
 
     let {
         projects = [],
@@ -13,10 +30,12 @@
         }>;
     } = $props();
 
+    // --- Constants ---
+    const TWO_PI = 2 * Math.PI;
+
     // --- Card & drum geometry ---
     const CARD_WIDTH = 6;
     const CARD_HEIGHT = 6;
-    const CARD_SEGMENTS = 32;
     const DRUM_RADIUS = 10.0;
     const CAMERA_Z = 22;
     const MOBILE_BREAKPOINT = 991;
@@ -34,6 +53,9 @@
     const HOVER_OPACITY = 0.2;
     const LERP_SPEED = 0.2;
 
+    // --- Pre-allocated reusable objects ---
+    const _hitPoint = new Vector3();
+
     let container: HTMLDivElement;
     let isMobile = $state(false);
 
@@ -45,7 +67,6 @@
     // Vertex shader - wraps each card onto the drum cylinder
     const vertexShader = `
         uniform float uRadius;
-        uniform float uCardHeight;
         uniform float uBaseAngle;
 
         varying vec2 vUv;
@@ -104,12 +125,12 @@
         }
 
         // --- Three.js setup ---
-        let renderer: THREE.WebGLRenderer;
+        let renderer: WebGLRenderer;
         let animationId: number;
         let resizeObserver: ResizeObserver | null = null;
 
         try {
-            renderer = new THREE.WebGLRenderer({
+            renderer = new WebGLRenderer({
                 antialias: true,
                 alpha: true,
             });
@@ -120,48 +141,52 @@
             };
         }
 
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        const scene = new Scene();
+        const camera = new PerspectiveCamera(45, 1, 0.1, 1000);
         camera.position.set(0, 0, CAMERA_Z);
         camera.lookAt(0, 0, 0);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.toneMapping = THREE.NoToneMapping;
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = NoToneMapping;
+        renderer.outputColorSpace = SRGBColorSpace;
         container.appendChild(renderer.domElement);
 
-        const drum = new THREE.Group();
+        // WebGL context loss handling
+        renderer.domElement.addEventListener("webglcontextlost", (e) => {
+            e.preventDefault();
+            cancelAnimationFrame(animationId);
+        });
+        renderer.domElement.addEventListener("webglcontextrestored", () => {
+            animate();
+        });
+
+        const drum = new Group();
         scene.add(drum);
 
-        const textureLoader = new THREE.TextureLoader();
-        const materials: THREE.ShaderMaterial[] = [];
-        const meshes: THREE.Mesh[] = [];
+        const textureLoader = new TextureLoader();
+        const materials: ShaderMaterial[] = [];
+        const meshes: Mesh[] = [];
         const targetOpacities: number[] = [];
 
-        const geometry = new THREE.PlaneGeometry(
-            CARD_WIDTH,
-            CARD_HEIGHT,
-            CARD_SEGMENTS,
-            CARD_SEGMENTS,
-        );
+        // 1 X-segment (flat), 16 Y-segments (for cylinder wrap)
+        const geometry = new PlaneGeometry(CARD_WIDTH, CARD_HEIGHT, 1, 16);
 
         // --- Fill drum with meshes around full 360° ---
         const cardCount = projects.length;
         const cardArc = CARD_HEIGHT / DRUM_RADIUS;
-        // Calculate how many meshes fill the drum, then compute perfect angleStep
-        const MESH_COUNT = Math.ceil((2 * Math.PI) / (cardArc + 0.04));
-        const angleStep = (2 * Math.PI) / MESH_COUNT;
+        const MESH_COUNT = Math.ceil(TWO_PI / (cardArc + 0.04));
+        const angleStep = TWO_PI / MESH_COUNT;
 
         // Cache textures by project index (only cardCount textures loaded)
-        const textureCache = new Map<number, THREE.Texture>();
-        function getTexture(projectIndex: number): THREE.Texture {
+        const textureCache = new Map<number, Texture>();
+        function getTexture(projectIndex: number): Texture {
             if (textureCache.has(projectIndex))
                 return textureCache.get(projectIndex)!;
             const tex = textureLoader.load(
                 projects[projectIndex].thumbnail_base,
             );
-            tex.minFilter = THREE.LinearFilter;
-            tex.magFilter = THREE.LinearFilter;
+            tex.minFilter = LinearFilter;
+            tex.magFilter = LinearFilter;
             textureCache.set(projectIndex, tex);
             return tex;
         }
@@ -172,34 +197,40 @@
             const baseSeatAngle = -i * angleStep;
             const texture = getTexture(projectIndex);
 
-            const material = new THREE.ShaderMaterial({
+            const material = new ShaderMaterial({
                 uniforms: {
                     uRadius: { value: DRUM_RADIUS },
-                    uCardHeight: { value: CARD_HEIGHT },
                     uBaseAngle: { value: baseSeatAngle },
                     uTexture: { value: texture },
                     uPlaneSize: {
-                        value: new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT),
+                        value: new Vector2(CARD_WIDTH, CARD_HEIGHT),
                     },
-                    uImageRes: { value: new THREE.Vector2(1, 1) },
+                    uImageRes: { value: new Vector2(1, 1) },
                     uOpacity: { value: 1.0 },
                 },
                 vertexShader,
                 fragmentShader,
                 transparent: true,
-                side: THREE.DoubleSide,
+                side: DoubleSide,
             });
 
-            texture.onUpdate = () => {
-                if (texture.image) {
-                    material.uniforms.uImageRes.value.set(
-                        texture.image.width || 1,
-                        texture.image.height || 1,
-                    );
-                }
-            };
+            // Set uImageRes for all materials sharing this texture
+            if (!texture.userData.materials) {
+                texture.userData.materials = [];
+                texture.onUpdate = () => {
+                    if (texture.image) {
+                        const w = texture.image.width || 1;
+                        const h = texture.image.height || 1;
+                        for (const mat of texture.userData
+                            .materials as ShaderMaterial[]) {
+                            mat.uniforms.uImageRes.value.set(w, h);
+                        }
+                    }
+                };
+            }
+            texture.userData.materials.push(material);
 
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new Mesh(geometry, material);
             mesh.userData = {
                 meshIndex: i,
                 projectIndex,
@@ -233,8 +264,8 @@
         // Instead we cast a ray against the mathematical cylinder (Y-Z plane,
         // radius = DRUM_RADIUS) and compute which card slot the hit angle
         // falls into.
-        const raycaster = new THREE.Raycaster();
-        const mouseNDC = new THREE.Vector2();
+        const raycaster = new Raycaster();
+        const mouseNDC = new Vector2();
         let hoveredMeshIndex = -1;
         let isAnyHovered = false;
         let lastMouseEvent: MouseEvent | null = null;
@@ -250,7 +281,6 @@
             const dir = raycaster.ray.direction;
 
             // Intersect ray with cylinder: y² + z² = R²
-            // Ray: P = O + t*D  →  (Oy+t*Dy)² + (Oz+t*Dz)² = R²
             const a = dir.y * dir.y + dir.z * dir.z;
             const b = 2 * (origin.y * dir.y + origin.z * dir.z);
             const c =
@@ -264,19 +294,15 @@
             const t = (-b - Math.sqrt(discriminant)) / (2 * a);
             if (t < 0) return -1;
 
-            const hitPoint = new THREE.Vector3()
-                .copy(origin)
-                .addScaledVector(dir, t);
+            _hitPoint.copy(origin).addScaledVector(dir, t);
 
             // Check x bounds (card width)
-            if (Math.abs(hitPoint.x) > CARD_WIDTH / 2) return -1;
+            if (Math.abs(_hitPoint.x) > CARD_WIDTH / 2) return -1;
 
             // Get the angle of the hit point on the drum
-            const hitAngle = Math.atan2(hitPoint.y, hitPoint.z);
+            const hitAngle = Math.atan2(_hitPoint.y, _hitPoint.z);
 
             // Find which mesh slot this angle falls into
-            // Card center is at uBaseAngle (position.y=0 in the plane maps to this angle)
-            // Card spans from uBaseAngle - halfArc to uBaseAngle + halfArc
             const halfArc = CARD_HEIGHT / 2 / DRUM_RADIUS;
 
             let bestIndex = -1;
@@ -392,8 +418,6 @@
         }
 
         // --- Animation loop ---
-        const TWO_PI = 2 * Math.PI;
-
         function animate() {
             animationId = requestAnimationFrame(animate);
 
@@ -411,14 +435,11 @@
                 Math.abs(drumVelocity) < SNAP_THRESHOLD &&
                 now - lastInteractionTime > IDLE_DELAY
             ) {
-                // Find nearest card center
                 const normAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
-                // Biased rounding: need 60% progress to advance to next card
                 const nearestSlot = Math.floor(normAngle / angleStep + 0.4);
                 const baseRevolutions = Math.round(drumAngle / TWO_PI) * TWO_PI;
                 snapTarget = baseRevolutions + nearestSlot * angleStep;
 
-                // Pick shortest path
                 if (Math.abs(snapTarget - drumAngle) > TWO_PI / 2) {
                     snapTarget += drumAngle > snapTarget ? TWO_PI : -TWO_PI;
                 }
@@ -444,7 +465,7 @@
                 updateHover(lastMouseEvent);
             }
 
-            // Active card detection (before mesh update so we can use it for opacity)
+            // Active card detection
             const drumNormAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
             const activeMeshIndex =
                 Math.round(drumNormAngle / angleStep) % MESH_COUNT;
@@ -456,16 +477,12 @@
                 const currentAngle = baseSeatAngle + drumAngle;
                 materials[i].uniforms.uBaseAngle.value = currentAngle;
 
-                // Visibility culling: cos of the normalized angle
                 const normAngle = ((currentAngle % TWO_PI) + TWO_PI) % TWO_PI;
-                // Angle 0 = front, PI = back
                 const cosAngle = Math.cos(normAngle);
                 const visibility = smoothstep(0.3, 0.6, cosAngle);
 
-                // Hide fully culled cards so raycaster skips them
                 meshes[i].visible = visibility > 0.01;
 
-                // Opacity: one card highlighted at a time — hover takes priority over active
                 let opacityTarget: number;
                 if (!meshes[i].visible) {
                     opacityTarget = 0;
@@ -483,7 +500,6 @@
 
                 targetOpacities[i] = opacityTarget;
 
-                // Lerp opacity
                 const current = materials[i].uniforms.uOpacity.value;
                 materials[i].uniforms.uOpacity.value +=
                     (targetOpacities[i] - current) * LERP_SPEED;
@@ -545,7 +561,6 @@
                 scrollZone.removeEventListener("touchend", onTouchEnd);
             }
 
-            // Dispose Three.js resources
             geometry.dispose();
             for (const mat of materials) {
                 mat.dispose();

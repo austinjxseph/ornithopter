@@ -133,6 +133,10 @@ c-footer {
     width: 100%;
 }
 
+.inner {
+    width: 100%;
+}
+
 @media screen and (max-width: 991px) {
     .page,
     .main {

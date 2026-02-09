@@ -10,33 +10,20 @@ foreach ($page->about_images()->toFiles() as $image) {
         "url" => $image->url(),
         "alt" => $image->alt()->value() ?? "",
     ];
-} // Build items array from blocks field
+} // Build items array from blocks field — unified with type discrimination
 $itemsData = [];
 foreach ($page->about_items()->toBlocks() as $block) {
-    if ($block->type() === "ab-bio") {
-        $content = $block->content()->toArray();
-        $rows = [];
-        foreach ($content["rows"] ?? [] as $row) {
-            $rows[] = [
-                "heading" => $row["heading"] ?? "",
-                "subtitle" => $row["subtitle"] ?? "",
-                "index" => $row["index"] ?? "",
-                "description" => $row["description"] ?? "",
-            ];
-        }
+    if ($block->type() === "b-header") {
         $itemsData[] = [
-            "heading" => $content["heading"] ?? "",
-            "rows" => $rows,
+            "type" => "b-header",
+            "title" => (string) $block->title()->kt(),
+            "description" => (string) $block->description()->kt(),
+            "layout" => $block->layout()->value() ?: "column",
         ];
     }
 }
 $aboutId = "about-" . $page->id();
-$aboutProps = [
-    "heading" => (string) $page->about_heading()->kt(),
-    "content" => (string) $page->about_content()->kt(),
-    "images" => $imagesData,
-    "items" => $itemsData,
-];
+$aboutProps = ["images" => $imagesData, "items" => $itemsData];
 ?>
 
 <main class="u-layout-vflex main">

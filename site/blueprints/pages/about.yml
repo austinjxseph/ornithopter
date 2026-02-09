@@ -3,18 +3,6 @@ title: About
 columns:
   - width: 2/3
     fields:
-      about_heading:
-        type: writer
-        label: Heading
-        marks:
-          - italic
-        help: Use italic for accent text (e.g. location)
-
-      about_content:
-        type: writer
-        label: Content
-        help: Main bio paragraph
-
       about_images:
         type: files
         label: Images
@@ -26,7 +14,7 @@ columns:
         type: blocks
         label: Body
         fieldsets:
-          - ab-bio
+          - b-header
 
   - width: 1/3
     sticky: true

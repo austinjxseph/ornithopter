@@ -10,10 +10,10 @@
 
 <section class="section">
     <div class="container-fw py-sm" class:pt-0={spacing === "trim"}>
-        <div class="b-ib_grid">
+        <div class="grid">
             {#each images as item}
-                <figure class="b-ib_figure">
-                    <div class="b-ib_img">
+                <figure class="figure">
+                    <div class="img-wrap">
                         {#if item.url}
                             <img
                                 src={item.url}
@@ -23,7 +23,7 @@
                         {/if}
                     </div>
                     {#if item.caption}
-                        <figcaption class="b-ib_caption text-sm">
+                        <figcaption class="caption text-sm">
                             {item.caption}
                         </figcaption>
                     {/if}
@@ -34,32 +34,32 @@
 </section>
 
 <style>
-    .b-ib_grid {
+    .grid {
         display: grid;
         gap: var(--gap--md);
         grid-template-columns: 1fr;
         align-self: stretch;
     }
 
-    .b-ib_figure {
+    .figure {
         display: flex;
         flex-direction: column;
         gap: var(--gap--xxs);
         margin: 0;
     }
 
-    .b-ib_img {
+    .img-wrap {
         aspect-ratio: 16 / 9;
         overflow: hidden;
     }
 
-    .b-ib_img img {
+    .img-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .b-ib_caption {
+    .caption {
         color: var(--_themes---site--text--text-secondary);
         padding-top: var(--gap--xxs);
     }

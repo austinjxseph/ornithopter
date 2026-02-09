@@ -1,0 +1,29 @@
+name: Article Header
+icon: title
+preview: fields
+
+fields:
+  layout:
+    type: select
+    label: Layout
+    default: column
+    options:
+      column: Column
+      row: Row
+    width: 1/3
+
+  title:
+    type: writer
+    label: Title
+    marks:
+      - bold
+      - italic
+    width: 2/3
+
+  description:
+    type: writer
+    label: Description
+    marks:
+      - bold
+      - italic
+      - link

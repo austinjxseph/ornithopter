@@ -9,13 +9,13 @@ foreach ($block->items()->toStructure() as $item) {
     ];
 }
 
-$blockId = "ar-text-" . $block->id();
+$blockId = "b-text-" . $block->id();
 $props = [
     "items" => $items,
 ];
 ?>
 
-<ar-text id="<?= $blockId ?>"></ar-text>
+<b-text id="<?= $blockId ?>"></b-text>
 <script type="application/json" data-for="<?= $blockId ?>">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

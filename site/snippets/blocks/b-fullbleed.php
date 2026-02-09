@@ -1,7 +1,7 @@
 <?php
 $file = $block->image()->toFile();
 
-$blockId = "ar-fullbleed-" . $block->id();
+$blockId = "b-fullbleed-" . $block->id();
 $props = [
     "image" => $file?->url() ?? "",
     "alt" => $file?->alt()->value() ?? "",
@@ -9,7 +9,7 @@ $props = [
 ];
 ?>
 
-<ar-fullbleed id="<?= $blockId ?>"></ar-fullbleed>
+<b-fullbleed id="<?= $blockId ?>"></b-fullbleed>
 <script type="application/json" data-for="<?= $blockId ?>">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

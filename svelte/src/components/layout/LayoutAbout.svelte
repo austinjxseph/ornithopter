@@ -1,26 +1,17 @@
 <script lang="ts">
-    type BioRow = {
-        heading?: string;
-        subtitle?: string;
-        index?: string;
-        description?: string;
-    };
-
-    type BioSection = {
-        heading: string;
-        rows: BioRow[];
+    type HeaderItem = {
+        type: "b-header";
+        title: string;
+        description: string;
+        layout: string;
     };
 
     let {
-        heading = "",
-        content = "",
         images = [],
         items = [],
     }: {
-        heading?: string;
-        content?: string;
         images?: Array<{ url: string; alt?: string }>;
-        items?: BioSection[];
+        items?: HeaderItem[];
     } = $props();
 </script>
 
@@ -46,58 +37,12 @@
 
             <!-- Right Panel: Content -->
             <div class="s-ab_col-body">
-                <!-- Bio Heading + Content -->
-                <div class="s-ab_page-header">
-                    {#if heading}
-                        <div class="s-ab_heading">
-                            {@html heading}
-                        </div>
-                    {/if}
-
-                    {#if content}
-                        <div class="s-ab_content">
-                            {@html content}
-                        </div>
-                    {/if}
-                </div>
-
-                <!-- Dynamic Sections -->
-                {#each items as section}
-                    <div class="s-ab_section">
-                        {#if section.heading}
-                            <h3 class="s-ab_section-heading">
-                                {section.heading}
-                            </h3>
-                        {/if}
-                        {#each section.rows as row}
-                            <div class="s-ab_row">
-                                {#if row.heading || row.index}
-                                    <div class="s-ab_row-header">
-                                        {#if row.heading}
-                                            <p class="s-ab_row-title">
-                                                {row.heading}
-                                            </p>
-                                        {/if}
-                                        {#if row.index}
-                                            <p class="s-ab_row-index">
-                                                {row.index}
-                                            </p>
-                                        {/if}
-                                    </div>
-                                {/if}
-                                {#if row.subtitle}
-                                    <p class="s-ab_row-subtitle">
-                                        {row.subtitle}
-                                    </p>
-                                {/if}
-                                {#if row.description}
-                                    <div class="s-ab_row-description">
-                                        {@html row.description}
-                                    </div>
-                                {/if}
-                            </div>
-                        {/each}
-                    </div>
+                {#each items as item}
+                    <b-header
+                        title={item.title}
+                        description={item.description}
+                        layout={item.layout}
+                    ></b-header>
                 {/each}
             </div>
         </div>
@@ -210,112 +155,5 @@
             max-width: none;
             width: 100%;
         }
-    }
-
-    .s-ab_page-header {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap--xl);
-        width: 100%;
-    }
-
-    .s-ab_heading {
-        max-width: 480px;
-    }
-
-    .s-ab_heading :global(p) {
-        font-family: var(--typeface--primary);
-        font-size: var(--h3--font-size);
-        line-height: var(--h3--line-height);
-        letter-spacing: var(--h3--letter-spacing);
-        color: var(--_themes---site--text--text-primary);
-        text-shadow: 4px 4px 60px black;
-    }
-
-    .s-ab_heading :global(em) {
-        font-family: var(--typeface--secondary);
-        font-style: normal;
-    }
-
-    .s-ab_content {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap--md);
-    }
-
-    .s-ab_content :global(p) {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: var(--paragraph--line-height-s);
-        letter-spacing: var(--paragraph--letter-spacing);
-        color: var(--_themes---site--text--text-primary);
-    }
-
-    .s-ab_section {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap--lg);
-        width: 100%;
-    }
-
-    .s-ab_section-heading {
-        font-family: var(--typeface--secondary);
-        font-size: var(--h3--font-size);
-        line-height: var(--h3--line-height);
-        letter-spacing: var(--h3--letter-spacing);
-        color: var(--_themes---site--text--text-primary);
-        max-width: 480px;
-        text-shadow: 4px 4px 60px black;
-        font-weight: 400;
-        font-style: normal;
-    }
-
-    .s-ab_row {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap--xs);
-        width: 100%;
-    }
-
-    .s-ab_row-header {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        gap: var(--gap--md);
-    }
-
-    .s-ab_row-title {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: 1.2;
-        color: var(--_themes---site--text--text-primary);
-    }
-
-    .s-ab_row-index {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: 1.2;
-        color: var(--_themes---site--text--text-secondary);
-        white-space: nowrap;
-    }
-
-    .s-ab_row-subtitle {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: var(--paragraph--line-height-s);
-        letter-spacing: var(--paragraph--letter-spacing);
-        color: var(--_themes---site--text--text-secondary);
-    }
-
-    .s-ab_row-description {
-        flex: 1;
-    }
-
-    .s-ab_row-description :global(p) {
-        font-family: var(--typeface--primary);
-        font-size: var(--paragraph--font-size-s);
-        line-height: var(--paragraph--line-height-s);
-        letter-spacing: var(--paragraph--letter-spacing);
-        color: var(--_themes---site--text--text-primary);
     }
 </style>

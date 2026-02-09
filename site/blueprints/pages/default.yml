@@ -13,12 +13,11 @@ tabs:
         type: blocks
         label: Content
         fieldsets:
-          - ar-header
-          - ar-img
-          - ar-text
-          - ar-grid
-          - ar-fullbleed
-          - s-bio
+          - b-header
+          - b-img
+          - b-text
+          - b-grid
+          - b-fullbleed
 
   seo:
     label: SEO

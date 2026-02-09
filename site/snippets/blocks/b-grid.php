@@ -7,14 +7,14 @@ foreach ($block->items()->toStructure() as $item) {
     ];
 }
 
-$blockId = "ar-grid-" . $block->id();
+$blockId = "b-grid-" . $block->id();
 $props = [
     "shownumbers" => $block->show_numbers()->toBool(),
     "items" => $items,
 ];
 ?>
 
-<ar-grid id="<?= $blockId ?>"></ar-grid>
+<b-grid id="<?= $blockId ?>"></b-grid>
 <script type="application/json" data-for="<?= $blockId ?>">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

@@ -22,11 +22,11 @@ import IndexCard from "./components/ui/IndexCard.svelte";
 import IndexWheel from "./components/ui/IndexWheel.svelte";
 
 // Block components
-import ArticleHeader from "./components/blocks/ArticleHeader.svelte";
-import ArticleImageBlock from "./components/blocks/ArticleImageBlock.svelte";
-import ArticleTextBlock from "./components/blocks/ArticleTextBlock.svelte";
-import ArticleNumberedGrid from "./components/blocks/ArticleNumberedGrid.svelte";
-import ArticleFullBleed from "./components/blocks/ArticleFullBleed.svelte";
+import BlockHeader from "./components/blocks/BlockHeader.svelte";
+import BlockImage from "./components/blocks/BlockImage.svelte";
+import BlockText from "./components/blocks/BlockText.svelte";
+import BlockGrid from "./components/blocks/BlockGrid.svelte";
+import BlockFullBleed from "./components/blocks/BlockFullBleed.svelte";
 
 // Register global components
 registerSvelteElement("c-header", Header, ["rootpath", "links"]);
@@ -52,22 +52,21 @@ registerSvelteElement("c-indexcard", IndexCard, [
 registerSvelteElement("c-indexwheel", IndexWheel, ["projects"]);
 
 // Register block components
-registerSvelteElement("ar-header", ArticleHeader, ["title", "description"]);
-registerSvelteElement("ar-img", ArticleImageBlock, ["images", "spacing"]);
-registerSvelteElement("ar-text", ArticleTextBlock, ["items"]);
-registerSvelteElement("ar-grid", ArticleNumberedGrid, ["shownumbers", "items"]);
-registerSvelteElement("ar-fullbleed", ArticleFullBleed, [
+registerSvelteElement("b-header", BlockHeader, [
+  "title",
+  "description",
+  "layout",
+]);
+registerSvelteElement("b-img", BlockImage, ["images", "spacing"]);
+registerSvelteElement("b-text", BlockText, ["items"]);
+registerSvelteElement("b-grid", BlockGrid, ["shownumbers", "items"]);
+registerSvelteElement("b-fullbleed", BlockFullBleed, [
   "image",
   "alt",
   "caption",
 ]);
 
-registerSvelteElement("l-about", LayoutAbout, [
-  "heading",
-  "content",
-  "images",
-  "items",
-]);
+registerSvelteElement("l-about", LayoutAbout, ["images", "items"]);
 
 registerSvelteElement("l-404", Layout404, [
   "title",

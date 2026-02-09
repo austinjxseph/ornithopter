@@ -28,14 +28,14 @@ if (empty($images)) {
     }
 }
 
-$blockId = "ar-img-" . $block->id();
+$blockId = "b-img-" . $block->id();
 $props = [
     "images" => $images,
     "spacing" => $block->spacing()->value() ?: "stack",
 ];
 ?>
 
-<ar-img id="<?= $blockId ?>"></ar-img>
+<b-img id="<?= $blockId ?>"></b-img>
 <script type="application/json" data-for="<?= $blockId ?>">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>
