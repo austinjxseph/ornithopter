@@ -52,6 +52,17 @@ columns:
                 width: 1/2
                 max: 1
 
+      # Preloader
+      preloader:
+        type: fields
+        label: Preloader
+        fields:
+          preloader_images:
+            type: files
+            label: Preloader Images
+            uploads:
+              template: image
+
       # Footer
       footer:
         type: fields

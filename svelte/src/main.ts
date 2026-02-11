@@ -10,6 +10,7 @@ import { registerSvelteElement } from "./register";
 // Global components
 import Header from "./components/global/Header.svelte";
 import Footer from "./components/global/Footer.svelte";
+import Preloader from "./components/global/Preloader.svelte";
 
 // Layout components
 import LayoutIndex from "./components/layout/LayoutIndex.svelte";
@@ -20,6 +21,9 @@ import Layout404 from "./components/layout/Layout404.svelte";
 import Button from "./components/ui/Button.svelte";
 import IndexCard from "./components/ui/IndexCard.svelte";
 import IndexWheel from "./components/ui/IndexWheel.svelte";
+import Asterisk from "./components/ui/Asterisk.svelte";
+import Helix from "./components/ui/Helix.svelte";
+import Drum from "./components/ui/Drum.svelte";
 
 // Block components
 import BlockHeader from "./components/blocks/BlockHeader.svelte";
@@ -31,6 +35,7 @@ import BlockFullBleed from "./components/blocks/BlockFullBleed.svelte";
 // Register global components
 registerSvelteElement("c-header", Header, ["rootpath", "links"]);
 registerSvelteElement("c-footer", Footer, ["fixed", "links"]);
+registerSvelteElement("c-preloader", Preloader, ["images"]);
 
 // Register layout components
 registerSvelteElement("l-home", LayoutIndex, [
@@ -50,6 +55,9 @@ registerSvelteElement("c-indexcard", IndexCard, [
   "overlayimage",
 ]);
 registerSvelteElement("c-indexwheel", IndexWheel, ["projects"]);
+registerSvelteElement("c-asterisk", Asterisk, ["images"]);
+registerSvelteElement("c-helix", Helix, ["images"]);
+registerSvelteElement("c-drum", Drum, ["images"]);
 
 // Register block components
 registerSvelteElement("b-header", BlockHeader, [

@@ -24,13 +24,17 @@
 </script>
 
 <section class="section ab">
-    <div class="container-xl py-xl">
-        <div class="s-ab_inner">
-            <!-- Left Panel -->
-            <div class="s-ab_col-img"></div>
+    <div class="container-xl py-lg">
+        <div class="l-inner">
+            <div class="col-img">
+                {#if images.length}
+                    {@const helixId = `ab-helix-${Math.random().toString(36).slice(2, 8)}`}
+                    <c-helix id={helixId}></c-helix>
+                    {@html `<script type="application/json" data-for="${helixId}">${JSON.stringify({ images })}<\/script>`}
+                {/if}
+            </div>
 
-            <!-- Right Panel: Content -->
-            <div class="s-ab_col-body">
+            <div class="col-body">
                 {#each items as item, i}
                     {@const blockId = `ab-${item.type}-${i}`}
                     {#if item.type === "b-header"}
@@ -56,7 +60,14 @@
         min-height: 100vh;
     }
 
-    .s-ab_inner {
+    @media screen and (max-width: 991px) {
+        .ab {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+    }
+
+    .l-inner {
         width: 100%;
         gap: var(--gap--xxl);
         display: grid;
@@ -64,24 +75,40 @@
     }
 
     @media screen and (max-width: 991px) {
-        .s-ab_inner {
+        .l-inner {
             grid-template-columns: 1fr;
             gap: var(--gap--xxl);
         }
     }
 
-    /* Left column */
-    .s-ab_col-img {
+    /* Left column - sticky star wheel */
+    .col-img {
         min-height: 1px;
         min-width: 1px;
+        position: sticky;
+        top: var(--padding--lg, 2rem);
+        height: fit-content;
+        aspect-ratio: 1;
+    }
+
+    @media screen and (max-width: 991px) {
+        .col-img {
+            position: relative;
+            top: auto;
+            aspect-ratio: 4 / 3;
+        }
     }
 
     /* Right column - Content */
-    .s-ab_col-body :global(b-header) {
+    .col-body :global(b-header) {
         max-width: 800px;
     }
 
-    .s-ab_col-body {
+    .col-body :global(.text-md p strong) {
+        color: var(--_themes---site--text--text-secondary);
+    }
+
+    .col-body {
         display: flex;
         flex-direction: column;
         flex: 1;

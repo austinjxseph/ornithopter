@@ -7,8 +7,7 @@ columns:
         type: files
         label: Images
         multiple: true
-        max: 3
-        help: Up to 3 staggered images
+        help: Images used as planes in the star wheel
 
       about_items:
         type: blocks

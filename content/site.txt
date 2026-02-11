@@ -27,6 +27,15 @@ Header-links:
 
 ----
 
+Preloader-images:
+
+- 'file://fiiyeu0xko8bc9gu'
+- 'file://viyg10fzn3jz3pay'
+- 'file://f5k9q37ujqo2i7mj'
+- 'file://kp4martauregcpov'
+
+----
+
 Footer-links:
 
 -

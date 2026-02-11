@@ -1,0 +1,9 @@
+Alt: 
+
+----
+
+Uuid: viyg10fzn3jz3pay
+
+----
+
+Template: image
