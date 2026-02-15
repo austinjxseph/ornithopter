@@ -8,6 +8,7 @@ foreach ($site->preloader_images()->toFiles() as $image) {
 }
 
 $props = [
+    "title" => (string) $site->preloader_title(),
     "images" => $preloaderImages,
 ];
 ?>

@@ -190,7 +190,7 @@
                 </div>
 
                 <div class="track" bind:this={trackEl}>
-                    <c-indexwheel id={wheelId}></c-indexwheel>
+                    <c-reel id={wheelId}></c-reel>
                     {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects }).replace(/<\//g, "<\\/")}<\/script>`}
                 </div>
             </div>

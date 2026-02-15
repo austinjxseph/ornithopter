@@ -57,6 +57,13 @@ columns:
         type: fields
         label: Preloader
         fields:
+          preloader_title:
+            type: writer
+            label: Preloader Title
+            inline: true
+            marks:
+              - italic
+              - bold
           preloader_images:
             type: files
             label: Preloader Images

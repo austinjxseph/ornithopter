@@ -42,4 +42,3 @@
 </head>
 <body class="body">
 <div class="page">
-<?php // snippet("preloader"); ?>

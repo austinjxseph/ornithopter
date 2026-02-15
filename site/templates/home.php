@@ -1,4 +1,5 @@
 <?php snippet("head"); ?>
+<?php snippet("preloader"); ?>
 <?php snippet("header"); ?>
 
 <?php // Build projects data array from featured projects field
@@ -27,10 +28,12 @@ $heroProps = [
 ];
 ?>
 
+<main class="main">
 <l-home id="<?= $heroId ?>"></l-home>
 <script type="application/json" data-for="<?= $heroId ?>">
 <?= json_encode($heroProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
+</main>
 
 <?php snippet("footer", ["fixed" => true]); ?>
 <?php snippet("scripts"); ?>

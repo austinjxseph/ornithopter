@@ -27,6 +27,10 @@ Header-links:
 
 ----
 
+Preloader-title: Simplicity is the ultimate sophistication.
+
+----
+
 Preloader-images:
 
 - 'file://fiiyeu0xko8bc9gu'

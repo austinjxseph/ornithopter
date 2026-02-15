@@ -28,20 +28,21 @@
     // Config
     const CARD_WIDTH = 2.4;
     const CARD_HEIGHT = 1.6;
-    const DRUM_RADIUS = 4.0;
-    const CAMERA_Z = 10;
-    const ROTATION_SPEED = 0.003;
-    const MOUSE_TILT = 0.15;
-    const MOUSE_LERP = 0.05;
+    const DRUM_RADIUS = 2.0;
+    const CAMERA_Z = 12;
+    const ROTATION_SPEED = 0.006;
 
     // Vertex shader — wraps each card onto a cylinder around Y-axis
     const vertexShader = `
         uniform float uRadius;
         uniform float uBaseAngle;
+        uniform float uScaleY;
 
         varying vec2 vUv;
+        varying float vDepth;
 
         void main() {
+            // UVs stay at full scale — image doesn't distort
             vUv = uv;
 
             float angleOffset = position.x / uRadius;
@@ -49,8 +50,12 @@
 
             vec3 pos;
             pos.x = sin(angle) * uRadius;
-            pos.y = position.y;
+            // Scale geometry height but keep image anchored from center
+            pos.y = position.y * uScaleY;
             pos.z = cos(angle) * uRadius;
+
+            // Per-vertex depth: positive = facing camera, negative = behind horizon
+            vDepth = pos.z;
 
             gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
@@ -61,8 +66,10 @@
         uniform sampler2D uTexture;
         uniform vec2 uImageRes;
         uniform vec2 uPlaneSize;
+        uniform float uScaleY;
 
         varying vec2 vUv;
+        varying float vDepth;
 
         vec2 CoverUV(vec2 u, vec2 s, vec2 i) {
             float rs = s.x / s.y;
@@ -73,9 +80,17 @@
         }
 
         void main() {
-            vec2 uv = CoverUV(vUv, uPlaneSize, uImageRes);
+            // Remap V so the image stays full-size, centered — mask reveal effect
+            // When uScaleY=0.5, vUv.y 0→1 maps to image 0.25→0.75 (center crop)
+            float remappedV = mix(0.5 - 0.5 * uScaleY, 0.5 + 0.5 * uScaleY, vUv.y);
+            vec2 maskedUv = vec2(vUv.x, remappedV);
+
+            vec2 uv = CoverUV(maskedUv, uPlaneSize, uImageRes);
             vec4 tex = texture2D(uTexture, uv);
-            gl_FragColor = tex;
+
+            // Per-pixel dim past the horizon: darken RGB instead of alpha (avoids transparent sort overhead)
+            float fade = vDepth > 0.0 ? 1.0 : 0.3;
+            gl_FragColor = vec4(tex.rgb * fade, tex.a);
         }
     `;
 
@@ -118,6 +133,9 @@
         });
 
         const drum = new Group();
+        drum.position.y = 0.5;
+        drum.rotation.z = 10 * (Math.PI / 180);
+        drum.rotation.x = 15 * (Math.PI / 180);
         scene.add(drum);
 
         const textureLoader = new TextureLoader();
@@ -128,8 +146,7 @@
 
         // Fill drum with meshes around full 360°
         const cardCount = images.length;
-        const cardArc = CARD_WIDTH / DRUM_RADIUS;
-        const MESH_COUNT = Math.ceil(TWO_PI / (cardArc + 0.04));
+        const MESH_COUNT = 5;
         const angleStep = TWO_PI / MESH_COUNT;
 
         // Cache textures by image index
@@ -137,7 +154,16 @@
         function getTexture(imageIndex: number): Texture {
             if (textureCache.has(imageIndex))
                 return textureCache.get(imageIndex)!;
-            const tex = textureLoader.load(images[imageIndex].url);
+            const tex = textureLoader.load(images[imageIndex].url, (loaded) => {
+                if (loaded.image) {
+                    const w = loaded.image.width || 1;
+                    const h = loaded.image.height || 1;
+                    for (const mat of (loaded.userData.materials ||
+                        []) as ShaderMaterial[]) {
+                        mat.uniforms.uImageRes.value.set(w, h);
+                    }
+                }
+            });
             tex.minFilter = LinearFilter;
             tex.magFilter = LinearFilter;
             textureCache.set(imageIndex, tex);
@@ -153,6 +179,7 @@
                 uniforms: {
                     uRadius: { value: DRUM_RADIUS },
                     uBaseAngle: { value: baseSeatAngle },
+                    uScaleY: { value: 0.0 },
                     uTexture: { value: texture },
                     uPlaneSize: {
                         value: new Vector2(CARD_WIDTH, CARD_HEIGHT),
@@ -164,19 +191,8 @@
                 side: DoubleSide,
             });
 
-            // Set uImageRes when texture loads
             if (!texture.userData.materials) {
                 texture.userData.materials = [];
-                texture.onUpdate = () => {
-                    if (texture.image) {
-                        const w = texture.image.width || 1;
-                        const h = texture.image.height || 1;
-                        for (const mat of texture.userData
-                            .materials as ShaderMaterial[]) {
-                            mat.uniforms.uImageRes.value.set(w, h);
-                        }
-                    }
-                };
             }
             texture.userData.materials.push(material);
 
@@ -186,6 +202,7 @@
         }
 
         // --- Sizing ---
+        let resizeTimer: ReturnType<typeof setTimeout>;
         function updateSize() {
             if (!container) return;
             const { width, height } = container.getBoundingClientRect();
@@ -195,53 +212,88 @@
             renderer.setSize(width, height);
         }
 
-        resizeObserver = new ResizeObserver(updateSize);
+        resizeObserver = new ResizeObserver(() => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(updateSize, 100);
+        });
         resizeObserver.observe(container);
         requestAnimationFrame(updateSize);
 
-        // --- Mouse parallax tilt ---
-        let targetTiltX = 0;
-        let targetTiltY = 0;
-        let currentTiltX = 0;
-        let currentTiltY = 0;
+        // --- Timeline-driven animation ---
+        // Phase 1: Grow in (staggered per card)
+        // Phase 2: Spin at full height
+        // Phase 3: Collapse out (staggered per card)
+        const INTRO_DUR = 0.6; // seconds — each card's grow duration
+        const HOLD_DUR = 3.0; // seconds — spin at full height
+        const OUTRO_DUR = 0.6; // seconds — each card's collapse duration
+        const STAGGER = 0.12; // seconds — delay between each card
+        const STAGGER_TOTAL = STAGGER * (MESH_COUNT - 1);
 
-        function onMouseMove(e: MouseEvent) {
-            const rect = container.getBoundingClientRect();
-            const mx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            const my = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-            targetTiltX = -my * MOUSE_TILT;
-            targetTiltY = mx * MOUSE_TILT;
-        }
+        // Full timeline: intro(staggered) → hold → outro(staggered)
+        const INTRO_END = INTRO_DUR + STAGGER_TOTAL;
+        const OUTRO_START = INTRO_END + HOLD_DUR;
+        const TOTAL_DUR = OUTRO_START + OUTRO_DUR + STAGGER_TOTAL;
 
-        function onMouseLeave() {
-            targetTiltX = 0;
-            targetTiltY = 0;
-        }
-
-        container.addEventListener("mousemove", onMouseMove);
-        container.addEventListener("mouseleave", onMouseLeave);
-
-        // --- Animation — auto-rotate by advancing uBaseAngle ---
         let rotationOffset = 0;
         let isVisible = true;
+        let startTime = -1;
+
+        // Ease-in-out cubic — smooth acceleration and deceleration
+        function easeInOutCubic(t: number) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function getCardScaleY(cardIndex: number, elapsed: number): number {
+            // Intro: last card opens first
+            const delay = (MESH_COUNT - 1 - cardIndex) * STAGGER;
+            const introT = Math.max(
+                0,
+                Math.min(1, (elapsed - delay) / INTRO_DUR),
+            );
+            if (elapsed < INTRO_END) {
+                return easeInOutCubic(introT);
+            }
+
+            // Hold
+            if (elapsed < OUTRO_START) {
+                return 1.0;
+            }
+
+            // Outro: first card closes first, last card closes last
+            const reverseDelay = (MESH_COUNT - 1 - cardIndex) * STAGGER;
+            const outroT = Math.max(
+                0,
+                Math.min(1, (elapsed - OUTRO_START - reverseDelay) / OUTRO_DUR),
+            );
+            return 1.0 - easeInOutCubic(outroT);
+        }
 
         function animate() {
             if (!isVisible) return;
+            cancelAnimationFrame(animationId);
             animationId = requestAnimationFrame(animate);
+
+            const now = performance.now() / 1000;
+            if (startTime < 0) startTime = now;
+            const elapsed = now - startTime;
+
+            // Check if fully done
+            if (elapsed >= TOTAL_DUR) {
+                for (let i = 0; i < MESH_COUNT; i++) {
+                    materials[i].uniforms.uScaleY.value = 0;
+                }
+                renderer.render(scene, camera);
+                return;
+            }
 
             rotationOffset += ROTATION_SPEED;
 
-            // Lerp mouse tilt
-            currentTiltX += (targetTiltX - currentTiltX) * MOUSE_LERP;
-            currentTiltY += (targetTiltY - currentTiltY) * MOUSE_LERP;
-            drum.rotation.x = currentTiltX;
-            drum.rotation.y = currentTiltY;
-
-            // Update all materials with rotation
+            // Update all materials with per-card stagger
             for (let i = 0; i < MESH_COUNT; i++) {
                 const baseSeatAngle = -i * angleStep;
                 materials[i].uniforms.uBaseAngle.value =
                     baseSeatAngle + rotationOffset;
+                materials[i].uniforms.uScaleY.value = getCardScaleY(i, elapsed);
             }
 
             renderer.render(scene, camera);
@@ -265,8 +317,6 @@
             cancelAnimationFrame(animationId);
             if (resizeObserver) resizeObserver.disconnect();
             intersectionObserver.disconnect();
-            container?.removeEventListener("mousemove", onMouseMove);
-            container?.removeEventListener("mouseleave", onMouseLeave);
 
             geometry.dispose();
             for (const mat of materials) mat.dispose();

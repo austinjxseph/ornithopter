@@ -12,10 +12,12 @@ $errorProps = [
 ];
 ?>
 
+<main class="main">
 <l-404 id="<?= $errorId ?>"></l-404>
 <script type="application/json" data-for="<?= $errorId ?>">
 <?= json_encode($errorProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
+</main>
 
 <?php snippet("footer", ["fixed" => true]); ?>
 <?php snippet("scripts"); ?>
