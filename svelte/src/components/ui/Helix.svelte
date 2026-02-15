@@ -46,7 +46,6 @@
 
         varying vec2 vUv;
         varying vec3 vNormal;
-        varying vec3 vWorldPos;
 
         void main() {
             vUv = uv;
@@ -71,26 +70,23 @@
             vec3 twistedNormal = vec3(-sa, 0.0, ca);
             vNormal = normalize(normalMatrix * twistedNormal);
 
-            vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-            vWorldPos = (modelMatrix * vec4(pos, 1.0)).xyz;
-
-            gl_Position = projectionMatrix * mvPos;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
     `;
 
     // Fragment shader — textured with lighting
     const fragmentShader = `
+        precision mediump float;
+
         uniform sampler2D uTexture;
         uniform vec2 uPlaneSize;
         uniform vec2 uImageRes;
-        uniform float uOpacity;
         uniform vec3 uLightDir;
         uniform float uAmbient;
         uniform float uDiffuse;
 
         varying vec2 vUv;
         varying vec3 vNormal;
-        varying vec3 vWorldPos;
 
         vec2 CoverUV(vec2 u, vec2 s, vec2 i) {
             float rs = s.x / s.y;
@@ -109,7 +105,7 @@
             float diff = max(dot(n, uLightDir), 0.0);
             float lighting = uAmbient + uDiffuse * diff;
 
-            gl_FragColor = vec4(tex.rgb * lighting, uOpacity);
+            gl_FragColor = vec4(tex.rgb * lighting, tex.a);
         }
     `;
 
@@ -123,6 +119,7 @@
         let renderer: WebGLRenderer;
         let animationId: number;
         let resizeObserver: ResizeObserver | null = null;
+        let disposed = false;
 
         try {
             renderer = new WebGLRenderer({
@@ -136,13 +133,27 @@
         const scene = new Scene();
         scene.fog = new FogExp2(0x000000, 0.04);
 
-        const camera = new PerspectiveCamera(40, 1, 0.1, 100);
+        const camera = new PerspectiveCamera(40, 1, 0.1, 30);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = NoToneMapping;
         renderer.outputColorSpace = SRGBColorSpace;
         renderer.setClearColor(0x000000, 0);
         container.appendChild(renderer.domElement);
+
+        // WebGL context loss handling
+        function onContextLost(e: Event) {
+            e.preventDefault();
+            cancelAnimationFrame(animationId);
+        }
+        function onContextRestored() {
+            if (!disposed) animate();
+        }
+        renderer.domElement.addEventListener("webglcontextlost", onContextLost);
+        renderer.domElement.addEventListener(
+            "webglcontextrestored",
+            onContextRestored,
+        );
 
         // Light direction (normalized) — upper-right-front
         const lightDir = new Vector3(3, 4, 5).normalize();
@@ -182,14 +193,12 @@
                     uTexture: { value: tex },
                     uPlaneSize: { value: new Vector2(CARD_WIDTH, CARD_HEIGHT) },
                     uImageRes: { value: new Vector2(1, 1) },
-                    uOpacity: { value: 1.0 },
                     uLightDir: { value: lightDir },
                     uAmbient: { value: 0.6 },
                     uDiffuse: { value: 0.5 },
                 },
                 vertexShader,
                 fragmentShader,
-                transparent: true,
                 side: DoubleSide,
             });
 
@@ -270,7 +279,8 @@
         let isVisible = true;
 
         function animate() {
-            if (!isVisible) return;
+            if (!isVisible || disposed) return;
+            cancelAnimationFrame(animationId);
             animationId = requestAnimationFrame(animate);
 
             rotationOffset += ROTATION_SPEED;
@@ -295,7 +305,7 @@
         const intersectionObserver = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting;
-                if (isVisible) animate();
+                if (isVisible && !disposed) animate();
                 else cancelAnimationFrame(animationId);
             },
             { threshold: 0 },
@@ -304,27 +314,40 @@
 
         animate();
 
-        // WebGL context loss handling
-        renderer.domElement.addEventListener("webglcontextlost", (e) => {
-            e.preventDefault();
-            cancelAnimationFrame(animationId);
-        });
-        renderer.domElement.addEventListener("webglcontextrestored", () => {
-            animate();
-        });
-
         // Cleanup
         return () => {
+            disposed = true;
             cancelAnimationFrame(animationId);
             if (resizeObserver) resizeObserver.disconnect();
             intersectionObserver.disconnect();
             container?.removeEventListener("mousemove", onMouseMove);
             container?.removeEventListener("mouseleave", onMouseLeave);
 
+            renderer.domElement.removeEventListener(
+                "webglcontextlost",
+                onContextLost,
+            );
+            renderer.domElement.removeEventListener(
+                "webglcontextrestored",
+                onContextRestored,
+            );
+
+            // Remove scene children to break references
+            stripGroup.clear();
+            scene.clear();
+
+            // Dispose GPU resources
             geometry.dispose();
             for (const mat of materials) mat.dispose();
-            for (const tex of textures) tex.dispose();
+            for (const tex of textures) {
+                tex.userData.materials = null;
+                tex.dispose();
+            }
+            materials.length = 0;
+            textures.length = 0;
+
             renderer.dispose();
+            renderer.forceContextLoss();
 
             if (renderer.domElement.parentNode) {
                 renderer.domElement.parentNode.removeChild(renderer.domElement);

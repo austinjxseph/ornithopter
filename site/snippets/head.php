@@ -41,4 +41,4 @@
   <link rel="stylesheet" href="/assets/css/svelte.css">
 </head>
 <body class="body">
-<div class="page">
+<div class="page" data-barba="wrapper">

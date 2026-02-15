@@ -56,7 +56,7 @@
     // --- Pre-allocated reusable objects ---
     const _hitPoint = new Vector3();
 
-    let container: HTMLDivElement;
+    let container = $state<HTMLDivElement>();
     let isMobile = $state(false);
 
     function smoothstep(edge0: number, edge1: number, x: number): number {
@@ -88,6 +88,8 @@
 
     // Fragment shader - texture with opacity
     const fragmentShader = `
+        precision mediump float;
+
         uniform sampler2D uTexture;
         uniform vec2 uImageRes;
         uniform vec2 uPlaneSize;
@@ -118,7 +120,7 @@
         checkMobile();
         window.addEventListener("resize", checkMobile);
 
-        if (isMobile || !projects.length) {
+        if (isMobile || !projects.length || !container) {
             return () => {
                 window.removeEventListener("resize", checkMobile);
             };
@@ -141,8 +143,10 @@
             };
         }
 
+        let disposed = false;
+
         const scene = new Scene();
-        const camera = new PerspectiveCamera(45, 1, 0.1, 1000);
+        const camera = new PerspectiveCamera(45, 1, 0.1, 50);
         camera.position.set(0, 0, CAMERA_Z);
         camera.lookAt(0, 0, 0);
 
@@ -152,13 +156,18 @@
         container.appendChild(renderer.domElement);
 
         // WebGL context loss handling
-        renderer.domElement.addEventListener("webglcontextlost", (e) => {
+        function onContextLost(e: Event) {
             e.preventDefault();
             cancelAnimationFrame(animationId);
-        });
-        renderer.domElement.addEventListener("webglcontextrestored", () => {
-            animate();
-        });
+        }
+        function onContextRestored() {
+            if (!disposed) animate();
+        }
+        renderer.domElement.addEventListener("webglcontextlost", onContextLost);
+        renderer.domElement.addEventListener(
+            "webglcontextrestored",
+            onContextRestored,
+        );
 
         const drum = new Group();
         scene.add(drum);
@@ -219,8 +228,9 @@
                 texture.userData.materials = [];
                 texture.onUpdate = () => {
                     if (texture.image) {
-                        const w = texture.image.width || 1;
-                        const h = texture.image.height || 1;
+                        const img = texture.image as HTMLImageElement;
+                        const w = img.width || 1;
+                        const h = img.height || 1;
                         for (const mat of texture.userData
                             .materials as ShaderMaterial[]) {
                             mat.uniforms.uImageRes.value.set(w, h);
@@ -331,11 +341,11 @@
             if (hit >= 0) {
                 hoveredMeshIndex = hit;
                 isAnyHovered = true;
-                container.style.cursor = "pointer";
+                container!.style.cursor = "pointer";
             } else {
                 hoveredMeshIndex = -1;
                 isAnyHovered = false;
-                container.style.cursor = "default";
+                container!.style.cursor = "default";
             }
         }
 
@@ -417,8 +427,21 @@
             scrollZone.addEventListener("touchend", onTouchEnd);
         }
 
+        // --- Visibility-based pause ---
+        let isVisible = true;
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                isVisible = entry.isIntersecting;
+                if (isVisible && !disposed) animate();
+                else cancelAnimationFrame(animationId);
+            },
+            { threshold: 0 },
+        );
+        intersectionObserver.observe(container);
+
         // --- Animation loop ---
         function animate() {
+            if (disposed || !isVisible) return;
             animationId = requestAnimationFrame(animate);
 
             const now = performance.now();
@@ -545,10 +568,12 @@
 
         // --- Cleanup ---
         return () => {
+            disposed = true;
             window.removeEventListener("resize", checkMobile);
             cancelAnimationFrame(animationId);
 
             if (resizeObserver) resizeObserver.disconnect();
+            intersectionObserver.disconnect();
 
             container?.removeEventListener("mousemove", onMouseMove);
             container?.removeEventListener("mouseleave", onMouseLeave);
@@ -561,13 +586,34 @@
                 scrollZone.removeEventListener("touchend", onTouchEnd);
             }
 
+            renderer.domElement.removeEventListener(
+                "webglcontextlost",
+                onContextLost,
+            );
+            renderer.domElement.removeEventListener(
+                "webglcontextrestored",
+                onContextRestored,
+            );
+
+            // Remove scene children to break references
+            drum.clear();
+            scene.clear();
+
+            // Dispose GPU resources
             geometry.dispose();
             for (const mat of materials) {
                 mat.dispose();
             }
-            textureCache.forEach((tex) => tex.dispose());
+            textureCache.forEach((tex) => {
+                tex.userData.materials = null;
+                tex.dispose();
+            });
             textureCache.clear();
+            materials.length = 0;
+            meshes.length = 0;
+
             renderer.dispose();
+            renderer.forceContextLoss();
 
             if (renderer.domElement.parentNode) {
                 renderer.domElement.parentNode.removeChild(renderer.domElement);

@@ -57,6 +57,7 @@
         let renderer: WebGLRenderer;
         let animationId: number;
         let resizeObserver: ResizeObserver | null = null;
+        let disposed = false;
 
         try {
             renderer = new WebGLRenderer({
@@ -70,13 +71,27 @@
         const scene = new Scene();
         scene.fog = new FogExp2(0x000000, 0.06);
 
-        const camera = new PerspectiveCamera(35, 1, 0.1, 100);
+        const camera = new PerspectiveCamera(35, 1, 0.1, 30);
 
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = NoToneMapping;
         renderer.outputColorSpace = SRGBColorSpace;
         renderer.setClearColor(0x000000, 0);
         container.appendChild(renderer.domElement);
+
+        // WebGL context loss handling
+        function onContextLost(e: Event) {
+            e.preventDefault();
+            cancelAnimationFrame(animationId);
+        }
+        function onContextRestored() {
+            if (!disposed) animate();
+        }
+        renderer.domElement.addEventListener("webglcontextlost", onContextLost);
+        renderer.domElement.addEventListener(
+            "webglcontextrestored",
+            onContextRestored,
+        );
 
         // Scene hierarchy: orientationGroup > tiltWrapper > mainGroup > meshes
         const orientationGroup = new Group();
@@ -164,8 +179,21 @@
         resizeObserver = new ResizeObserver(updateOrientation);
         resizeObserver.observe(container);
 
+        // Pause animation when off-screen
+        let isVisible = true;
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                isVisible = entry.isIntersecting;
+                if (isVisible && !disposed) animate();
+                else cancelAnimationFrame(animationId);
+            },
+            { threshold: 0 },
+        );
+        intersectionObserver.observe(container);
+
         // Animation loop
         function animate() {
+            if (!isVisible || disposed) return;
             animationId = requestAnimationFrame(animate);
 
             loopValue += config.tiltLoopSpeed * loopDirection;
@@ -190,24 +218,37 @@
 
         animate();
 
-        // WebGL context loss handling
-        renderer.domElement.addEventListener("webglcontextlost", (e) => {
-            e.preventDefault();
-            cancelAnimationFrame(animationId);
-        });
-        renderer.domElement.addEventListener("webglcontextrestored", () => {
-            animate();
-        });
-
         // Cleanup
         return () => {
+            disposed = true;
             cancelAnimationFrame(animationId);
             if (resizeObserver) resizeObserver.disconnect();
+            intersectionObserver.disconnect();
 
+            renderer.domElement.removeEventListener(
+                "webglcontextlost",
+                onContextLost,
+            );
+            renderer.domElement.removeEventListener(
+                "webglcontextrestored",
+                onContextRestored,
+            );
+
+            // Remove scene children to break references
+            mainGroup.clear();
+            tiltWrapper.clear();
+            orientationGroup.clear();
+            scene.clear();
+
+            // Dispose GPU resources
             geometry.dispose();
             for (const mat of materials) mat.dispose();
             for (const tex of textures) tex.dispose();
+            materials.length = 0;
+            textures.length = 0;
+
             renderer.dispose();
+            renderer.forceContextLoss();
 
             if (renderer.domElement.parentNode) {
                 renderer.domElement.parentNode.removeChild(renderer.domElement);

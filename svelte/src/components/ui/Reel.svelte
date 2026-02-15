@@ -34,10 +34,10 @@
     const TWO_PI = 2 * Math.PI;
 
     // --- Card & drum geometry ---
-    const CARD_WIDTH = 7.5;
-    const CARD_HEIGHT = 7.5;
-    const DRUM_RADIUS = 10.0;
-    const CAMERA_Z = 22;
+    const CARD_WIDTH = 6;
+    const CARD_HEIGHT = 6;
+    const DRUM_RADIUS = 8;
+    const CAMERA_Z = 20;
     const MOBILE_BREAKPOINT = 991;
 
     // --- Interaction tuning ---
@@ -88,6 +88,8 @@
 
     // Fragment shader - texture with opacity
     const fragmentShader = `
+        precision mediump float;
+
         uniform sampler2D uTexture;
         uniform vec2 uImageRes;
         uniform vec2 uPlaneSize;
@@ -118,7 +120,7 @@
         checkMobile();
         window.addEventListener("resize", checkMobile);
 
-        if (isMobile || !projects.length) {
+        if (isMobile || !projects.length || !container) {
             return () => {
                 window.removeEventListener("resize", checkMobile);
             };
@@ -141,8 +143,10 @@
             };
         }
 
+        let disposed = false;
+
         const scene = new Scene();
-        const camera = new PerspectiveCamera(45, 1, 0.1, 1000);
+        const camera = new PerspectiveCamera(45, 1, 0.1, 50);
         camera.position.set(0, 0, CAMERA_Z);
         camera.lookAt(0, 0, 0);
 
@@ -152,13 +156,18 @@
         container.appendChild(renderer.domElement);
 
         // WebGL context loss handling
-        renderer.domElement.addEventListener("webglcontextlost", (e) => {
+        function onContextLost(e: Event) {
             e.preventDefault();
             cancelAnimationFrame(animationId);
-        });
-        renderer.domElement.addEventListener("webglcontextrestored", () => {
-            animate();
-        });
+        }
+        function onContextRestored() {
+            if (!disposed) animate();
+        }
+        renderer.domElement.addEventListener("webglcontextlost", onContextLost);
+        renderer.domElement.addEventListener(
+            "webglcontextrestored",
+            onContextRestored,
+        );
 
         const drum = new Group();
         scene.add(drum);
@@ -225,8 +234,9 @@
                 texture.userData.materials = [];
                 texture.onUpdate = () => {
                     if (texture.image) {
-                        const w = texture.image.width || 1;
-                        const h = texture.image.height || 1;
+                        const img = texture.image as HTMLImageElement;
+                        const w = img.width || 1;
+                        const h = img.height || 1;
                         for (const mat of texture.userData
                             .materials as ShaderMaterial[]) {
                             mat.uniforms.uImageRes.value.set(w, h);
@@ -337,11 +347,11 @@
             if (hit >= 0) {
                 hoveredMeshIndex = hit;
                 isAnyHovered = true;
-                container.style.cursor = "pointer";
+                container!.style.cursor = "pointer";
             } else {
                 hoveredMeshIndex = -1;
                 isAnyHovered = false;
-                container.style.cursor = "default";
+                container!.style.cursor = "default";
             }
         }
 
@@ -362,7 +372,15 @@
             if (hit >= 0) {
                 const project = meshes[hit].userData.project;
                 if (project?.url) {
-                    window.location.href = project.url;
+                    const host = container?.closest("c-reel");
+                    if (host) {
+                        host.dispatchEvent(
+                            new CustomEvent("reel-navigate", {
+                                bubbles: true,
+                                detail: { url: project.url, project },
+                            }),
+                        );
+                    }
                 }
             }
         }
@@ -423,8 +441,21 @@
             scrollZone.addEventListener("touchend", onTouchEnd);
         }
 
+        // --- Visibility-based pause ---
+        let isVisible = true;
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                isVisible = entry.isIntersecting;
+                if (isVisible && !disposed) animate();
+                else cancelAnimationFrame(animationId);
+            },
+            { threshold: 0 },
+        );
+        intersectionObserver.observe(container);
+
         // --- Animation loop ---
         function animate() {
+            if (disposed || !isVisible) return;
             animationId = requestAnimationFrame(animate);
 
             const now = performance.now();
@@ -471,7 +502,8 @@
                 updateHover(lastMouseEvent);
             }
 
-            // Active card detection
+            // Active card detection — current drum position drives both
+            // the visual highlight and the title list event
             const drumNormAngle = ((drumAngle % TWO_PI) + TWO_PI) % TWO_PI;
             const activeMeshIndex =
                 Math.round(drumNormAngle / angleStep) % MESH_COUNT;
@@ -551,10 +583,12 @@
 
         // --- Cleanup ---
         return () => {
+            disposed = true;
             window.removeEventListener("resize", checkMobile);
             cancelAnimationFrame(animationId);
 
             if (resizeObserver) resizeObserver.disconnect();
+            intersectionObserver.disconnect();
 
             container?.removeEventListener("mousemove", onMouseMove);
             container?.removeEventListener("mouseleave", onMouseLeave);
@@ -567,13 +601,34 @@
                 scrollZone.removeEventListener("touchend", onTouchEnd);
             }
 
+            renderer.domElement.removeEventListener(
+                "webglcontextlost",
+                onContextLost,
+            );
+            renderer.domElement.removeEventListener(
+                "webglcontextrestored",
+                onContextRestored,
+            );
+
+            // Remove scene children to break references
+            drum.clear();
+            scene.clear();
+
+            // Dispose GPU resources
             geometry.dispose();
             for (const mat of materials) {
                 mat.dispose();
             }
-            textureCache.forEach((tex) => tex.dispose());
+            textureCache.forEach((tex) => {
+                tex.userData.materials = null;
+                tex.dispose();
+            });
             textureCache.clear();
+            materials.length = 0;
+            meshes.length = 0;
+
             renderer.dispose();
+            renderer.forceContextLoss();
 
             if (renderer.domElement.parentNode) {
                 renderer.domElement.parentNode.removeChild(renderer.domElement);

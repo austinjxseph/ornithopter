@@ -9,60 +9,57 @@
         images?: Array<{ url: string; alt?: string }>;
     } = $props();
 
-    let preloaderEl: HTMLElement;
-    let footerEl: HTMLElement;
-    let thumbEl: HTMLElement;
-    let pctEl: HTMLElement;
-    let progressObj = { value: 0 };
+    let preloaderEl = $state<HTMLElement>();
+    let footerEl = $state<HTMLElement>();
+    let progress = $state(0);
 
     onMount(() => {
         const gsap = (window as any).gsap;
         if (!gsap) return;
 
-        // Hide only main content until preloader is done
-        // Header/footer stay visible (preloader bg covers them anyway)
-        const mainEl = document.querySelector(".page > main.main");
-        if (mainEl) {
-            gsap.set(mainEl, { opacity: 0 });
-        }
-
         // Drum timeline: intro(0.6+0.48) + hold(3.0) + outro(0.6+0.48) ≈ 5.16s
         const TOTAL_DURATION = 5.16;
+
+        // GSAP proxy — updates $state on each tick
+        const proxy = { value: 0 };
+        const updateProgress = () => {
+            progress = proxy.value;
+        };
 
         const tl = gsap.timeline();
 
         // --- Progress bar animation ---
 
         // Segment 1: 0 → 12%
-        tl.to(progressObj, {
+        tl.to(proxy, {
             value: 12,
             duration: TOTAL_DURATION * 0.15,
             ease: "power2.inOut",
-            onUpdate: updateDisplay,
+            onUpdate: updateProgress,
         });
 
         // Segment 2: 12 → 60%
-        tl.to(progressObj, {
+        tl.to(proxy, {
             value: 60,
             duration: TOTAL_DURATION * 0.25,
             ease: "power2.inOut",
-            onUpdate: updateDisplay,
+            onUpdate: updateProgress,
         });
 
         // Segment 3: 60 → 84%
-        tl.to(progressObj, {
+        tl.to(proxy, {
             value: 84,
             duration: TOTAL_DURATION * 0.3,
             ease: "power2.inOut",
-            onUpdate: updateDisplay,
+            onUpdate: updateProgress,
         });
 
         // Segment 4: 84 → 100%
-        tl.to(progressObj, {
+        tl.to(proxy, {
             value: 100,
             duration: TOTAL_DURATION * 0.25,
             ease: "power2.inOut",
-            onUpdate: updateDisplay,
+            onUpdate: updateProgress,
         });
 
         // --- Exit sequence ---
@@ -75,37 +72,21 @@
             delay: 0.15,
         });
 
-        // Fade out preloader bg, fade in main content simultaneously
+        // Fade out preloader bg, then signal Barba to reveal main content
         tl.to(preloaderEl, {
             opacity: 0,
-            duration: 0.4,
+            duration: 0.3,
             ease: "power2.out",
+            onStart: () => {
+                // Signal page to start revealing main content (overlaps with fade-out)
+                window.dispatchEvent(new CustomEvent("preloader-done"));
+            },
             onComplete: () => {
                 // Remove the custom element — triggers Svelte unmount
-                // which calls Drum's cleanup (geometry, materials, textures, renderer)
-                const host = preloaderEl.closest("c-preloader");
+                const host = preloaderEl?.closest("c-preloader");
                 if (host) host.remove();
             },
         });
-
-        // Fade in main content overlapping with preloader fade
-        if (mainEl) {
-            tl.to(
-                mainEl,
-                {
-                    opacity: 1,
-                    duration: 0.4,
-                    ease: "power2.out",
-                },
-                "<0.1",
-            );
-        }
-
-        function updateDisplay() {
-            const v = Math.round(progressObj.value);
-            if (thumbEl) thumbEl.style.width = progressObj.value + "%";
-            if (pctEl) pctEl.textContent = v + "%";
-        }
 
         return () => {
             tl.kill();
@@ -125,9 +106,9 @@
 
         <div class="progress-row">
             <div class="progress-bar">
-                <div class="progress-thumb" bind:this={thumbEl}></div>
+                <div class="progress-thumb" style="width: {progress}%"></div>
             </div>
-            <p class="progress-pct" bind:this={pctEl}>0%</p>
+            <p class="progress-pct">{Math.round(progress)}%</p>
         </div>
     </div>
 </div>
@@ -179,6 +160,7 @@
     h4 :global(em),
     h4 :global(i),
     h4 :global(span) {
+        font-size: 1rem;
         font-family: var(--typeface--tertiary);
         font-style: italic;
     }

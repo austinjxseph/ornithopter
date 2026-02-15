@@ -1,9 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    // GSAP loaded globally via CDN
-    declare const gsap: any;
-
     let {
         eyebrow = "Available for freelance work",
         title = "",
@@ -248,7 +245,7 @@
         flex: 1;
         align-self: stretch;
         height: 100dvh;
-        overflow: hidden;
+        overflow-y: scroll;
     }
 
     @media screen and (max-width: 991px) {

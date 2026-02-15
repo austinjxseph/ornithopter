@@ -1,7 +1,7 @@
 <?php snippet("head"); ?>
 <?php snippet("header"); ?>
 
-<main class="u-layout-vflex main">
+<main class="u-layout-vflex main" data-barba="container" data-barba-namespace="projects">
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
       <header class="u-layout-vflex header">
@@ -32,7 +32,6 @@
       </div>
     </div>
   </div>
-</main>
-
 <?php snippet("footer"); ?>
+</main>
 <?php snippet("scripts"); ?>

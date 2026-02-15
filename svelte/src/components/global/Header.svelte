@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
     let {
         rootpath = "/",
         links = [],
@@ -12,7 +14,19 @@
     function toggleNavigation() {
         navState = navState === "open" ? "closed" : "open";
         document.body.style.overflow = navState === "open" ? "hidden" : "";
+        if (window.lenis) {
+            navState === "open" ? window.lenis.stop() : window.lenis.start();
+        }
     }
+
+    onMount(() => {
+        function closeNav() {
+            navState = "closed";
+            document.body.style.overflow = "";
+        }
+        window.addEventListener("barba-close-nav", closeNav);
+        return () => window.removeEventListener("barba-close-nav", closeNav);
+    });
 </script>
 
 <header
@@ -34,6 +48,9 @@
         </a>
 
         <ul role="list" class="c-header_drawer">
+            <div class="c-header_edge">
+                <div class="c-header_edge-shine"></div>
+            </div>
             <li class="c-header_links">
                 {#each links as link}
                     <a href={link.href} class="c-header_link">
@@ -58,17 +75,22 @@
     .c-header_vignette {
         position: absolute;
         inset: 0;
-        height: 10vh;
+        height: 12vh;
         background: linear-gradient(
             to bottom,
-            var(--_themes---site--bg--bg-primary) 0%,
             color-mix(
                     in srgb,
-                    var(--_themes---site--bg--bg-primary) 80%,
+                    var(--_themes---site--bg--bg-primary) 40%,
                     transparent
                 )
-                40%,
-            transparent 100%
+                0%,
+            color-mix(
+                    in srgb,
+                    var(--_themes---site--bg--bg-primary) 15%,
+                    transparent
+                )
+                30%,
+            transparent 60%
         );
         z-index: 2;
         pointer-events: none;
@@ -135,9 +157,10 @@
         z-index: 3;
         opacity: 0;
         display: none;
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.6);
         height: 100dvh;
-        transition: opacity 0.15s;
+        width: 100vw;
+        transition: opacity 0.3s;
         position: absolute;
         inset: 0%;
         border: none;
@@ -151,23 +174,75 @@
 
     .c-header_drawer {
         position: absolute;
-        inset: 0% 0% 0% 0%;
+        top: 0;
+        right: 0;
+        bottom: 0;
         z-index: 4;
         display: flex;
         flex-direction: column;
         gap: var(--gap--xxl);
         justify-content: center;
-        align-items: center;
-        width: 100vw;
+        align-items: flex-end;
+        box-sizing: border-box;
+        width: 30vw;
+        max-width: 600px;
         height: 100dvh;
         max-height: 100dvh;
         padding: var(--global--margin);
-        transition:
-            transform 0.3s,
-            opacity 0.3s,
-            backdrop-filter 0.3s;
+        background-color: var(--_themes---site--bg--bg-secondary);
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         list-style: none;
         margin: 0;
+    }
+
+    .c-header_edge {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .c-header_edge-shine {
+        position: absolute;
+        left: 0;
+        width: 3px;
+        height: 120px;
+        background: radial-gradient(
+            ellipse at center,
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(255, 255, 255, 0.4) 40%,
+            transparent 100%
+        );
+        filter: blur(0.5px);
+        animation: edgeSweep 7s linear infinite;
+    }
+
+    @keyframes edgeSweep {
+        0% {
+            bottom: -120px;
+            opacity: 0;
+        }
+        2% {
+            opacity: 1;
+        }
+        /* sweep takes ~5s (71% of 7s) */
+        71% {
+            bottom: 100%;
+            opacity: 1;
+        }
+        73% {
+            opacity: 0;
+        }
+        /* pause for ~2s */
+        100% {
+            bottom: -120px;
+            opacity: 0;
+        }
     }
 
     .c-header_marker {
@@ -184,7 +259,7 @@
         gap: 8px;
         flex-flow: column;
         justify-content: center;
-        align-items: center;
+        align-items: flex-end;
         display: flex;
     }
 
@@ -209,14 +284,12 @@
 
     [data-nav-state="closed"] .c-header_drawer {
         pointer-events: none;
-        opacity: 0;
-        backdrop-filter: blur(0px);
+        transform: translateX(100%);
     }
 
     [data-nav-state="open"] .c-header_drawer {
         pointer-events: auto;
-        opacity: 1;
-        backdrop-filter: blur(40px);
+        transform: translateX(0%);
     }
 
     [data-nav-state="open"] .c-header_overlay {
@@ -236,7 +309,7 @@
 
     @media (min-width: 1920px) {
         .c-header_drawer {
-            max-width: none;
+            max-width: 600px;
         }
     }
 
@@ -255,8 +328,8 @@
         }
 
         .c-header_drawer {
-            width: 60vw;
-            max-width: none;
+            width: 70vw;
+            max-width: 600px;
             padding-top: 3rem;
             padding-bottom: 3rem;
         }

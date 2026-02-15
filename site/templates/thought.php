@@ -1,14 +1,14 @@
-<?php snippet('head') ?>
-<?php snippet('header') ?>
+<?php snippet("head"); ?>
+<?php snippet("header"); ?>
 
-<main class="u-layout-vflex main">
+<main class="u-layout-vflex main" data-barba="container" data-barba-namespace="thought">
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
       <article class="thought">
         <header class="thought-header">
           <h1><?= $page->title()->html() ?></h1>
-          <time datetime="<?= $page->date()->toDate('Y-m-d') ?>">
-            <?= $page->date()->toDate('d M Y') ?>
+          <time datetime="<?= $page->date()->toDate("Y-m-d") ?>">
+            <?= $page->date()->toDate("d M Y") ?>
           </time>
         </header>
 
@@ -18,7 +18,6 @@
       </article>
     </div>
   </div>
+<?php snippet("footer"); ?>
 </main>
-
-<?php snippet('footer') ?>
-<?php snippet('scripts') ?>
+<?php snippet("scripts"); ?>

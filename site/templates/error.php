@@ -12,12 +12,11 @@ $errorProps = [
 ];
 ?>
 
-<main class="main">
+<main class="main" data-barba="container" data-barba-namespace="error">
 <l-404 id="<?= $errorId ?>"></l-404>
 <script type="application/json" data-for="<?= $errorId ?>">
 <?= json_encode($errorProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
-</main>
-
 <?php snippet("footer", ["fixed" => true]); ?>
+</main>
 <?php snippet("scripts"); ?>
