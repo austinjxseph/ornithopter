@@ -12,8 +12,12 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Ensure only one MPM is loaded, then enable mod_rewrite
-RUN a2dismod mpm_event && a2enmod mpm_prefork && a2enmod rewrite
+# Force only mpm_prefork (required for mod_php) — remove all other MPMs
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf \
+         /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && a2enmod rewrite
 
 # Set document root to Kirby directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html
