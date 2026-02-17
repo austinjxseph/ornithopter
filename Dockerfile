@@ -26,8 +26,11 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 # Copy Kirby files
 COPY . /var/www/html/
 
-# Set permissions for media and content folders
-RUN chown -R www-data:www-data /var/www/html/media /var/www/html/content
+# Create media directory (generated at runtime by Kirby, not in repo)
+RUN mkdir -p /var/www/html/media
+
+# Set permissions for writable folders
+RUN chown -R www-data:www-data /var/www/html/media /var/www/html/content /var/www/html/site/cache /var/www/html/site/sessions
 
 # Expose port 80
 EXPOSE 80
