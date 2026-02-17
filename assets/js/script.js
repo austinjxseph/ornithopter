@@ -39,6 +39,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Signal ready for components that load later
     window.dispatchEvent(new CustomEvent("lenis-ready"));
+
+    // Refresh Lenis dimensions after Svelte components hydrate
+    // (components add height to the page that Lenis needs to measure)
+    window.addEventListener(
+      "svelte-ready",
+      function () {
+        requestAnimationFrame(function () {
+          lenis.resize();
+          if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+        });
+      },
+      { once: true },
+    );
+
+    // Also refresh after all images have loaded (belt and suspenders)
+    window.addEventListener("load", function () {
+      lenis.resize();
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+    });
   })();
 
   // --- Barba.js page transitions ---
@@ -122,7 +141,10 @@ document.addEventListener("DOMContentLoaded", function () {
           },
 
           after: function () {
-            if (window.lenis) window.lenis.start();
+            if (window.lenis) {
+              window.lenis.start();
+              window.lenis.resize();
+            }
             if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
           },
         },

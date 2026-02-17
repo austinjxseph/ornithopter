@@ -10,12 +10,12 @@
 <a {href} class="c-indexcard">
     <div class="c-indexcard_overlay">
         {#if overlayimage}
-            <img src={overlayimage} alt="" loading="lazy" />
+            <img src={overlayimage} alt="" loading="eager" />
         {/if}
     </div>
     <div class="c-indexcard_bg">
         {#if backgroundimage}
-            <img src={backgroundimage} alt="" loading="lazy" />
+            <img src={backgroundimage} alt="" loading="eager" />
         {/if}
     </div>
     <div class="c-indexcard_text">

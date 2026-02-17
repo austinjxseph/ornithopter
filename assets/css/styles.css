@@ -900,3 +900,51 @@ c-footer {
 .u-line-mask {
     overflow: hidden;
 }
+
+/* Pre-hydration: reserve space for custom elements before Svelte mounts */
+b-img:not(:defined),
+b-fullbleed:not(:defined) {
+    display: block;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+b-header:not(:defined) {
+    display: block;
+    min-height: 40vh;
+    width: 100%;
+}
+
+c-indexcard:not(:defined) {
+    display: block;
+    aspect-ratio: 1;
+    width: 100%;
+}
+
+l-home:not(:defined) {
+    display: block;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+    pointer-events: none;
+}
