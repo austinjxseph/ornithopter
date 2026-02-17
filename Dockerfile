@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # Enable mod_rewrite at build time (MPM fix happens at runtime)
 RUN a2enmod rewrite
 
@@ -25,6 +28,9 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 
 # Copy Kirby files
 COPY . /var/www/html/
+
+# Install PHP dependencies
+RUN cd /var/www/html && composer install --no-dev --optimize-autoloader --no-interaction
 
 # Create media directory (generated at runtime by Kirby, not in repo)
 RUN mkdir -p /var/www/html/media
