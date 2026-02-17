@@ -28,11 +28,13 @@ $heroProps = [
 ];
 ?>
 
-<main class="main" data-barba="container" data-barba-namespace="home">
+<div class="page" data-barba="container" data-barba-namespace="home">
+<main class="main">
 <l-home id="<?= $heroId ?>"></l-home>
 <script type="application/json" data-for="<?= $heroId ?>">
 <?= json_encode($heroProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
-<?php snippet("footer", ["fixed" => true]); ?>
 </main>
+<?php snippet("footer", ["fixed" => true]); ?>
+</div>
 <?php snippet("scripts"); ?>

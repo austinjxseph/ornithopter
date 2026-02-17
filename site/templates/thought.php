@@ -1,7 +1,8 @@
 <?php snippet("head"); ?>
 <?php snippet("header"); ?>
 
-<main class="u-layout-vflex main" data-barba="container" data-barba-namespace="thought">
+<div class="page" data-barba="container" data-barba-namespace="thought">
+<main class="u-layout-vflex main">
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
       <article class="thought">
@@ -18,6 +19,7 @@
       </article>
     </div>
   </div>
-<?php snippet("footer"); ?>
 </main>
+<?php snippet("footer"); ?>
+</div>
 <?php snippet("scripts"); ?>

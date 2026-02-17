@@ -1,7 +1,8 @@
 <?php snippet("head", ["customTitle" => $page->project_title()->value()]); ?>
 <?php snippet("header"); ?>
 
-<main class="u-layout-vflex main" data-barba="container" data-barba-namespace="project">
+<div class="page" data-barba="container" data-barba-namespace="project">
+<main class="u-layout-vflex main">
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
       <?php foreach ($page->blocks()->toBlocks() as $block): ?>
@@ -9,6 +10,7 @@
       <?php endforeach; ?>
     </div>
   </div>
-<?php snippet("footer"); ?>
 </main>
+<?php snippet("footer"); ?>
+</div>
 <?php snippet("scripts"); ?>

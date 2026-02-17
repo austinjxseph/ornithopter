@@ -245,7 +245,7 @@
         flex: 1;
         align-self: stretch;
         height: 100dvh;
-        overflow-y: scroll;
+        overflow: hidden;
     }
 
     @media screen and (max-width: 991px) {

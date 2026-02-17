@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Enable required Apache modules
-RUN a2enmod rewrite headers
+RUN a2enmod rewrite headers expires
 
 # Set document root to Kirby directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html

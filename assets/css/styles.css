@@ -113,12 +113,10 @@ figcaption {
 
 .page {
     position: relative;
-    overscroll-behavior-y: none;
     flex-direction: column;
     align-self: stretch;
     align-items: center;
     width: 100%;
-    max-width: 100vw;
     display: flex;
 }
 
@@ -157,6 +155,8 @@ c-footer {
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
+    max-width: 100vw;
+    overscroll-behavior-y: none;
     display: flex;
 }
 
@@ -928,9 +928,12 @@ l-home:not(:defined) {
 }
 
 /* Lenis smooth scroll */
-html.lenis,
-html.lenis body {
-    height: auto;
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 .lenis.lenis-smooth {

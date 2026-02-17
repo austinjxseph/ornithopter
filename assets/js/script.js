@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // --- Initial load: preloader or immediate reveal ---
-    var mainEl = document.querySelector("main[data-barba='container']");
+    var mainEl = document.querySelector("[data-barba='container']");
     if (mainEl) {
       gsap.set(mainEl, { opacity: 0 });
     }

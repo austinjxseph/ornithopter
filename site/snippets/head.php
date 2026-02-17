@@ -33,6 +33,11 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
 
+  <!-- Preload: preloader images (fetched by Three.js TextureLoader) -->
+  <?php foreach ($site->preloader_images()->toFiles() as $img): ?>
+  <link rel="preload" as="image" href="<?= $img->url() ?>">
+  <?php endforeach; ?>
+
   <!-- Styles -->
   <link rel="stylesheet" href="/assets/css/normalize.css">
   <link rel="stylesheet" href="/assets/css/variables.css">
@@ -40,5 +45,4 @@
   <link rel="stylesheet" href="/assets/css/keyframes.css">
   <link rel="stylesheet" href="/assets/css/svelte.css">
 </head>
-<body class="body">
-<div class="page" data-barba="wrapper">
+<body class="body" data-barba="wrapper">

@@ -40,11 +40,13 @@ $aboutId = "about-" . $page->id();
 $aboutProps = ["images" => $imagesData, "items" => $itemsData];
 ?>
 
-<main class="u-layout-vflex main" data-barba="container" data-barba-namespace="about">
+<div class="page" data-barba="container" data-barba-namespace="about">
+<main class="u-layout-vflex main">
 <l-about id="<?= $aboutId ?>"></l-about>
 <script type="application/json" data-for="<?= $aboutId ?>">
 <?= json_encode($aboutProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
-<?php snippet("footer"); ?>
 </main>
+<?php snippet("footer"); ?>
+</div>
 <?php snippet("scripts"); ?>
