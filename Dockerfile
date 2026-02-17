@@ -1,14 +1,20 @@
 # Kirby CMS Dockerfile for Railway
 FROM php:8.4-apache
 
-# Install GD and other required extensions
+# Install system deps + all PHP extensions Kirby requires
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype-dev \
     libzip-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libonig-dev \
+    libicu-dev \
+    libexif-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install gd zip mbstring dom xml curl intl exif opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
