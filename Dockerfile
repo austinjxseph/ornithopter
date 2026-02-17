@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Enable mod_rewrite at build time (MPM fix happens at runtime)
-RUN a2enmod rewrite
+# Enable required Apache modules
+RUN a2enmod rewrite headers
 
 # Set document root to Kirby directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html
@@ -41,8 +41,8 @@ RUN cd /var/www/html && composer install --no-dev --optimize-autoloader --no-int
 # Create media directory (generated at runtime by Kirby, not in repo)
 RUN mkdir -p /var/www/html/media
 
-# Set permissions for writable folders
-RUN chown -R www-data:www-data /var/www/html/media /var/www/html/content /var/www/html/site/cache /var/www/html/site/sessions
+# Set permissions — www-data needs write access for media, cache, sessions, accounts
+RUN chown -R www-data:www-data /var/www/html
 
 # Fix MPM conflict + set Railway $PORT at runtime, then start Apache
 CMD ["bash", "-lc", "set -eux; a2dismod mpm_event mpm_worker || true; rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* || true; a2enmod mpm_prefork; sed -i \"s/Listen 80/Listen ${PORT:-80}/g\" /etc/apache2/ports.conf; sed -i \"s/*:80/*:${PORT:-80}/g\" /etc/apache2/sites-available/000-default.conf; apache2ctl -t; exec apache2-foreground"]
