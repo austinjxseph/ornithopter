@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (typeof barba === "undefined" || typeof gsap === "undefined") return;
 
     // Listen for Reel canvas clicks — route through Barba instead of window.location
-    document.addEventListener("reel-navigate", function (e) {
+    document.addEventListener("reel:exit", function (e) {
       barba.go(e.detail.url);
     });
 
@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           leave: function (data) {
             if (window.lenis) window.lenis.stop();
-            window.dispatchEvent(new CustomEvent("barba-close-nav"));
+            window.dispatchEvent(new CustomEvent("navigation:exit"));
 
             return new Promise(function (resolve) {
               gsap.to(data.current.container, {

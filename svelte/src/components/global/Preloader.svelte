@@ -165,6 +165,22 @@
         font-style: italic;
     }
 
+    @media screen and (max-width: 991px) {
+        h4 {
+            display: none;
+        }
+
+        .preloader-footer {
+            bottom: 1.5rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .progress-row {
+            width: 100%;
+        }
+    }
+
     .progress-row {
         display: flex;
         align-items: center;
@@ -173,6 +189,7 @@
 
     .progress-bar {
         width: 400px;
+        flex: 1;
         height: 2px;
         background: rgba(255, 255, 255, 0.2);
         position: relative;

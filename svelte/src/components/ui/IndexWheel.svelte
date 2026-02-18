@@ -536,7 +536,7 @@
                 const host = container?.closest("c-indexwheel");
                 if (host) {
                     host.dispatchEvent(
-                        new CustomEvent("activecard", {
+                        new CustomEvent("reel:update", {
                             bubbles: true,
                             detail: {
                                 project: projects[activeProjectIndex],
@@ -552,13 +552,13 @@
 
         animate();
 
-        // Fire initial activecard event
+        // Fire initial reel:update event
         requestAnimationFrame(() => {
             const host = container?.closest("c-indexwheel");
             if (host && projects[0]) {
                 lastActiveIndex = 0;
                 host.dispatchEvent(
-                    new CustomEvent("activecard", {
+                    new CustomEvent("reel:update", {
                         bubbles: true,
                         detail: { project: projects[0], index: 0 },
                     }),

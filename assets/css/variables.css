@@ -240,68 +240,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     font-weight: 400;
-
-    --typeface--primary: "Inter Display", Arial, sans-serif;
-    --typeface--secondary: "EB Garamond Italic", Georgia, serif;
-    --typeface--tertiary: "EB Garamond Italic", Georgia, serif;
-
-    --h1--font-size: var(--_units---abs--8);
-    --h2--font-size: var(--_units---abs--7);
-    --h3--font-size: var(--_units---abs--6);
-    --h4--font-size: var(--_units---abs--3-5);
-    --h5--font-size: var(--_units---abs--3-5);
-    --h6--font-size: var(--_units---abs--3-5);
-    --paragraph--font-size-s: var(--_units---abs--3);
-    --paragraph--font-size-m: var(--_units---abs--3-5);
-    --paragraph--font-size-l: var(--_units---abs--4);
-
-    --h1--line-height: var(--_units---rel--1-1);
-    --h2--line-height: var(--_units---rel--1-2);
-    --h3--line-height: var(--_units---rel--1-4);
-    --h4--line-height: var(--_units---rel--1-4);
-    --h5--line-height: var(--_units---rel--1-4);
-    --h6--line-height: var(--_units---rel--1-4);
-    --paragraph--line-height-s: var(--_units---rel--1-8);
-    --paragraph--line-height-m: var(--_units---rel--1-8);
-    --paragraph--line-height-l: var(--_units---rel--1-4);
-
-    --h1--letter-spacing: var(--_units---rel--0-01);
-    --h2--letter-spacing: var(--_units---rel--0-01);
-    --h3--letter-spacing: var(--_units---rel--0-01);
-    --h4--letter-spacing: var(--_units---rel--0-01);
-    --h5--letter-spacing: var(--_units---rel--0-01);
-    --h6--letter-spacing: var(--_units---rel--0);
-    --paragraph--letter-spacing: var(--_units---rel--0-01);
-
-    --h1--font-family: var(--typeface--primary);
-    --h2--font-family: var(--typeface--secondary);
-    --h3--font-family: var(--typeface--primary);
-    --h4--font-family: var(--typeface--primary);
-    --h5--font-family: var(--typeface--secondary);
-    --h6--font-family: var(--typeface--secondary);
-    --paragraph--font-family: var(--typeface--primary);
-
-    --global--margin: var(--_units---abs--6);
-    --max-width--s: 40rem;
-    --max-width--m: 50rem;
-    --max-width--l: 75rem;
-    --max-width--xxl: 140rem;
-    --max-width--xl: 2000rem;
-
-    --padding--xxs: var(--_units---abs--6);
-    --padding--xs: var(--_units---abs--8);
-    --padding--sm: var(--_units---abs--12);
-    --padding--md: var(--_units---abs--16);
-    --padding--lg: var(--_units---abs--24);
-    --padding--xl: var(--_units---abs--32);
-    --gap--xxs: var(--_units---abs--2);
-    --gap--xs: var(--_units---abs--3);
-    --gap--sm: var(--_units---abs--4);
-    --gap--md: var(--_units---abs--6);
-    --gap--lg: var(--_units---abs--8);
-    --gap--xl: var(--_units---abs--12);
-    --gap--xxl: var(--_units---abs--16);
-    --gap--flex: var(--_units---abs--4);
 }
 
 @media screen and (max-width: 479px) {
@@ -355,7 +293,7 @@ body {
 
         --padding--xxs: var(--_units---abs--6);
         --padding--xs: var(--_units---abs--8);
-        --padding--sm: var(--_units---abs--10);
+        --padding--sm: var(--_units---abs--4);
         --padding--md: var(--_units---abs--12);
         --padding--lg: var(--_units---abs--18);
         --padding--xl: var(--_units---abs--24);

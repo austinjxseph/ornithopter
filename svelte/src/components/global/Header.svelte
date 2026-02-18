@@ -24,8 +24,8 @@
             navState = "closed";
             document.body.style.overflow = "";
         }
-        window.addEventListener("barba-close-nav", closeNav);
-        return () => window.removeEventListener("barba-close-nav", closeNav);
+        window.addEventListener("navigation:exit", closeNav);
+        return () => window.removeEventListener("navigation:exit", closeNav);
     });
 </script>
 

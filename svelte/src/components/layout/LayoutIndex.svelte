@@ -130,9 +130,9 @@
             updateOpacities(continuousPos);
         }
 
-        trackEl?.addEventListener("activecard", onActiveCard);
+        trackEl?.addEventListener("reel:update", onActiveCard);
         return () => {
-            trackEl?.removeEventListener("activecard", onActiveCard);
+            trackEl?.removeEventListener("reel:update", onActiveCard);
             gsap.killTweensOf(innerEl);
             gsap.killTweensOf(itemEls);
         };

@@ -375,7 +375,7 @@
                     const host = container?.closest("c-reel");
                     if (host) {
                         host.dispatchEvent(
-                            new CustomEvent("reel-navigate", {
+                            new CustomEvent("reel:exit", {
                                 bubbles: true,
                                 detail: { url: project.url, project },
                             }),
@@ -551,7 +551,7 @@
                 const host = container?.closest("c-reel");
                 if (host) {
                     host.dispatchEvent(
-                        new CustomEvent("activecard", {
+                        new CustomEvent("reel:update", {
                             bubbles: true,
                             detail: {
                                 project: projects[activeProjectIndex],
@@ -567,13 +567,13 @@
 
         animate();
 
-        // Fire initial activecard event
+        // Fire initial reel:update event
         requestAnimationFrame(() => {
             const host = container?.closest("c-reel");
             if (host && projects[0]) {
                 lastActiveIndex = 0;
                 host.dispatchEvent(
-                    new CustomEvent("activecard", {
+                    new CustomEvent("reel:update", {
                         bubbles: true,
                         detail: { project: projects[0], index: 0 },
                     }),

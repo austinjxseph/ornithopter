@@ -18,7 +18,7 @@
                 style={index === 0 ? `grid-column-start: ${offset}` : ""}
             >
                 {#if item.heading}
-                    <p class="headling">{item.heading}</p>
+                    <p class="heading">{item.heading}</p>
                 {/if}
                 <div class="text-md">
                     {@html item.content}
@@ -52,28 +52,27 @@
         grid-template-columns: repeat(4, 1fr);
     }
 
-    @media screen and (max-width: 991px) {
-        .grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-        }
-    }
-
-    @media screen and (max-width: 767px) {
-        .grid {
-            grid-template-columns: 1fr !important;
-        }
-    }
-
     .col {
         display: flex;
         flex-direction: column;
         gap: var(--gap--xxs);
     }
 
-    .headling {
+    .heading {
         font-size: var(--paragraph--font-size-m);
         line-height: var(--paragraph--line-height-m);
         color: var(--_themes---site--text--text-secondary);
         margin: 0;
+    }
+
+    @media screen and (max-width: 991px) {
+        .grid {
+            grid-template-columns: 1fr !important;
+            gap: var(--gap--xxl);
+        }
+
+        .col {
+            grid-column-start: 1 !important;
+        }
     }
 </style>

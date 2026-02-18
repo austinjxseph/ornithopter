@@ -55,6 +55,10 @@
     }
 
     @media screen and (max-width: 991px) {
+        .header:not(.is-row) {
+            padding-top: var(--padding--md);
+        }
+
         .header.is-row {
             display: flex;
             flex-direction: column;
