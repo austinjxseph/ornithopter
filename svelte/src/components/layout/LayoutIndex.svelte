@@ -307,6 +307,36 @@
         padding-right: 48px;
         position: relative;
         height: 100dvh;
+        isolation: isolate;
+    }
+
+    .track :global(c-strip) {
+        position: relative;
+        z-index: 1;
+    }
+
+    .track::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background:
+            linear-gradient(
+                to right,
+                var(--_themes---site--bg--bg-primary) 0%,
+                transparent 14%
+            ),
+            linear-gradient(
+                to bottom,
+                var(--_themes---site--bg--bg-primary) 0%,
+                transparent 14%
+            ),
+            linear-gradient(
+                to top,
+                var(--_themes---site--bg--bg-primary) 0%,
+                transparent 14%
+            );
     }
 
     @media screen and (max-width: 991px) {
@@ -317,6 +347,10 @@
             padding-right: var(--global--margin);
             padding-left: var(--global--margin);
             overflow: hidden;
+        }
+
+        .track::after {
+            display: none;
         }
     }
 

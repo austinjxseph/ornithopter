@@ -45,7 +45,7 @@
 
     // Strip tilt — recedes hard into Z for perspective warp
     const STRIP_TILT_X = -30 * (Math.PI / 180);
-    const STRIP_OFFSET_Y = -2;
+    const STRIP_OFFSET_Y = 0;
     const STRIP_CURVE_STRENGTH = 2;
     const STRIP_CURVE_EXP = 0.08;
     const STRIP_CURVE_RANGE = CARD_SPACING * 5;
@@ -57,6 +57,7 @@
     const SNAP_LERP = 0.1;
     const SNAP_EPSILON = 0.0015;
     const IDLE_DELAY = 100;
+    const ACTIVE_SWITCH_HYSTERESIS = CARD_SPACING * 0.08;
 
     const HOVER_OPACITY = 0.2;
     const LERP_SPEED = 0.18;
@@ -347,9 +348,39 @@
         let stripVelocity = 0;
         let isSnapping = false;
         let snapTarget = 0;
+        let snapMeshIndex = -1;
         let lastInteractionTime = 0;
         let lastActiveIndex = -1;
+        let lastActiveMeshIndex = -1;
         let touchLastY = 0;
+
+        function wrapY(baseSeatY: number, offset: number): number {
+            return (
+                ((((baseSeatY + offset + halfStrip) % STRIP_LENGTH) +
+                    STRIP_LENGTH) %
+                    STRIP_LENGTH) -
+                halfStrip
+            );
+        }
+
+        function getNearestMesh(offset: number, centreY: number) {
+            let bestIndex = 0;
+            let bestWorldY = 0;
+            let bestDist = Infinity;
+
+            for (let i = 0; i < MESH_COUNT; i++) {
+                const baseSeatY = meshes[i].userData.baseSeatY as number;
+                const worldY = wrapY(baseSeatY, offset);
+                const dist = Math.abs(worldY - centreY);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    bestIndex = i;
+                    bestWorldY = worldY;
+                }
+            }
+
+            return { index: bestIndex, worldY: bestWorldY, dist: bestDist };
+        }
 
         function onWheel(e: WheelEvent) {
             e.preventDefault();
@@ -407,6 +438,12 @@
 
             const now = performance.now();
 
+            // Viewport centre in world Y — used for snap target and active card
+            raycaster.setFromCamera(new Vector2(0, 0), camera);
+            const _r = raycaster.ray;
+            const _t = -_r.origin.z / _r.direction.z;
+            const viewCentreY = _r.origin.y + _t * _r.direction.y;
+
             if (!isSnapping) {
                 stripOffset += stripVelocity;
                 stripVelocity *= FRICTION;
@@ -417,14 +454,9 @@
                 Math.abs(stripVelocity) < SNAP_THRESHOLD &&
                 now - lastInteractionTime > IDLE_DELAY
             ) {
-                raycaster.setFromCamera(new Vector2(0, 0), camera);
-                const _r = raycaster.ray;
-                const _t = -_r.origin.z / _r.direction.z;
-                const snapCentreY = _r.origin.y + _t * _r.direction.y;
-                snapTarget =
-                    Math.round((stripOffset - snapCentreY) / CARD_SPACING) *
-                        CARD_SPACING +
-                    snapCentreY;
+                const nearest = getNearestMesh(stripOffset, viewCentreY);
+                snapMeshIndex = nearest.index;
+                snapTarget = stripOffset + (viewCentreY - nearest.worldY);
                 isSnapping = true;
                 stripVelocity = 0;
             }
@@ -434,6 +466,7 @@
                 if (Math.abs(snapTarget - stripOffset) < SNAP_EPSILON) {
                     stripOffset = snapTarget;
                     isSnapping = false;
+                    snapMeshIndex = -1;
                 }
             }
 
@@ -444,24 +477,12 @@
                 updateHover(lastMouseEvent);
             }
 
-            // Viewport centre in world Y — used for active card and snap target
-            raycaster.setFromCamera(new Vector2(0, 0), camera);
-            const _r = raycaster.ray;
-            const _t = -_r.origin.z / _r.direction.z;
-            const viewCentreY = _r.origin.y + _t * _r.direction.y;
-
             let activeIndex = 0;
             let closestDist = Infinity;
 
             for (let i = 0; i < MESH_COUNT; i++) {
                 const baseSeatY = meshes[i].userData.baseSeatY as number;
-                let worldY = baseSeatY + stripOffset;
-
-                // Wrap along Y
-                worldY =
-                    ((((worldY + halfStrip) % STRIP_LENGTH) + STRIP_LENGTH) %
-                        STRIP_LENGTH) -
-                    halfStrip;
+                const worldY = wrapY(baseSeatY, stripOffset);
                 meshes[i].position.y = worldY;
                 meshes[i].position.z = 0;
                 meshes[i].rotation.x = 0;
@@ -478,6 +499,23 @@
                 const scaleX = 1 - DEPTH_TAPER * taperT;
                 meshes[i].scale.set(scaleX, 1, 1);
             }
+
+            if (isSnapping && snapMeshIndex >= 0) {
+                activeIndex = snapMeshIndex;
+            } else if (lastActiveMeshIndex >= 0) {
+                const lastDist = Math.abs(
+                    (meshes[lastActiveMeshIndex].position.y as number) -
+                        viewCentreY,
+                );
+                if (
+                    activeIndex !== lastActiveMeshIndex &&
+                    closestDist > lastDist - ACTIVE_SWITCH_HYSTERESIS
+                ) {
+                    activeIndex = lastActiveMeshIndex;
+                    closestDist = lastDist;
+                }
+            }
+            lastActiveMeshIndex = activeIndex;
 
             const activeProjectIndex = meshes[activeIndex].userData
                 .projectIndex as number;

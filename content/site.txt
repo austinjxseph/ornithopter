@@ -27,7 +27,7 @@ Header-links:
 
 ----
 
-Preloader-title: <em>Simplicity</em> is the ultimate <em>sophistication</em>.
+Preloader-title: <em>Simplicity is the ultimate sophistication.</em>
 
 ----
 
