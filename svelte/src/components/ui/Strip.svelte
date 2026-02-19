@@ -30,19 +30,25 @@
     } = $props();
 
     // --- Constants ---
-    const CARD_WIDTH = 3.2;
-    const CARD_HEIGHT = 4.2;
+    const CARD_SCALE = 2;
+    const CARD_WIDTH = 3.2 * CARD_SCALE;
+    const CARD_HEIGHT = 4.2 * CARD_SCALE;
     const CARD_GAP = 0.28;
     const CARD_SPACING = CARD_HEIGHT + CARD_GAP;
+    const DEPTH_TAPER = 0.22;
+    const TAPER_RANGE = CARD_SPACING * 4;
 
     const CAMERA_X = 4;
     const CAMERA_Y = 0;
     const CAMERA_Z = 8;
-    const CURVE = 0;
-    const CAMERA_FOV = 90;
+    const CAMERA_FOV = 80;
 
     // Strip tilt — recedes hard into Z for perspective warp
     const STRIP_TILT_X = -30 * (Math.PI / 180);
+    const STRIP_OFFSET_Y = -2;
+    const STRIP_CURVE_STRENGTH = 2;
+    const STRIP_CURVE_EXP = 0.08;
+    const STRIP_CURVE_RANGE = CARD_SPACING * 5;
 
     const WHEEL_SENSITIVITY = 0.004;
     const TOUCH_SENSITIVITY = 0.008;
@@ -65,11 +71,26 @@
     }
 
     const vertexShader = `
+        uniform float uSeatY;
+        uniform float uViewCenterY;
+        uniform float uCurveStrength;
+        uniform float uCurveExp;
+        uniform float uCurveRange;
+
         varying vec2 vUv;
 
         void main() {
             vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+            vec3 pos = position;
+            float stripY = uSeatY + pos.y;
+            float relY = stripY - uViewCenterY;
+            float clampedRelY = clamp(relY, -uCurveRange, uCurveRange);
+            float curveExp = exp(-clampedRelY * uCurveExp);
+
+            pos.z += uCurveStrength * (curveExp - 1.0);
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         }
     `;
 
@@ -147,6 +168,7 @@
 
         const stripGroup = new Group();
         stripGroup.rotation.x = STRIP_TILT_X;
+        stripGroup.position.y = STRIP_OFFSET_Y;
         scene.add(stripGroup);
 
         const textureLoader = new TextureLoader();
@@ -154,7 +176,7 @@
         const meshes: Mesh[] = [];
         const targetOpacities: number[] = [];
 
-        const geometry = new PlaneGeometry(CARD_WIDTH, CARD_HEIGHT, 1, 1);
+        const geometry = new PlaneGeometry(CARD_WIDTH, CARD_HEIGHT, 1, 16);
 
         const cardCount = projects.length;
         const visibleCards = Math.ceil((CAMERA_Z * 2) / CARD_SPACING) + 4;
@@ -191,6 +213,11 @@
                     uPlaneSize: { value: new Vector2(CARD_WIDTH, CARD_HEIGHT) },
                     uImageRes: { value: new Vector2(1, 1) },
                     uOpacity: { value: 1.0 },
+                    uSeatY: { value: baseSeatY },
+                    uViewCenterY: { value: 0.0 },
+                    uCurveStrength: { value: STRIP_CURVE_STRENGTH },
+                    uCurveExp: { value: STRIP_CURVE_EXP },
+                    uCurveRange: { value: STRIP_CURVE_RANGE },
                 },
                 vertexShader,
                 fragmentShader,
@@ -436,14 +463,20 @@
                         STRIP_LENGTH) -
                     halfStrip;
                 meshes[i].position.y = worldY;
-                meshes[i].position.z =
-                    CURVE * (worldY - viewCentreY) * (worldY - viewCentreY);
+                meshes[i].position.z = 0;
+                meshes[i].rotation.x = 0;
+                materials[i].uniforms.uSeatY.value = worldY;
+                materials[i].uniforms.uViewCenterY.value = viewCentreY;
 
                 const dist = Math.abs(worldY - viewCentreY);
                 if (dist < closestDist) {
                     closestDist = dist;
                     activeIndex = i;
                 }
+
+                const taperT = Math.min(dist / TAPER_RANGE, 1);
+                const scaleX = 1 - DEPTH_TAPER * taperT;
+                meshes[i].scale.set(scaleX, 1, 1);
             }
 
             const activeProjectIndex = meshes[activeIndex].userData
