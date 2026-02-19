@@ -100,8 +100,10 @@
         if (!images.length || !container) return;
 
         let renderer: WebGLRenderer;
-        let animationId: number;
+        let animationId = 0;
+        let isAnimating = false;
         let resizeObserver: ResizeObserver | null = null;
+        let disposed = false;
 
         try {
             renderer = new WebGLRenderer({
@@ -126,10 +128,10 @@
         // WebGL context loss handling
         renderer.domElement.addEventListener("webglcontextlost", (e) => {
             e.preventDefault();
-            cancelAnimationFrame(animationId);
+            stopLoop();
         });
         renderer.domElement.addEventListener("webglcontextrestored", () => {
-            animate();
+            if (!disposed && isVisible) startLoop();
         });
 
         const drum = new Group();
@@ -238,6 +240,19 @@
         let isVisible = true;
         let startTime = -1;
 
+        function startLoop() {
+            if (disposed || !isVisible || isAnimating) return;
+            isAnimating = true;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function stopLoop() {
+            if (!isAnimating) return;
+            cancelAnimationFrame(animationId);
+            animationId = 0;
+            isAnimating = false;
+        }
+
         // Ease-in-out cubic — smooth acceleration and deceleration
         function easeInOutCubic(t: number) {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -269,8 +284,10 @@
         }
 
         function animate() {
-            if (!isVisible) return;
-            cancelAnimationFrame(animationId);
+            if (!isVisible || disposed) {
+                isAnimating = false;
+                return;
+            }
             animationId = requestAnimationFrame(animate);
 
             const now = performance.now() / 1000;
@@ -303,18 +320,19 @@
         const intersectionObserver = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting;
-                if (isVisible) animate();
-                else cancelAnimationFrame(animationId);
+                if (isVisible && !disposed) startLoop();
+                else stopLoop();
             },
             { threshold: 0 },
         );
         intersectionObserver.observe(container);
 
-        animate();
+        startLoop();
 
         // --- Cleanup ---
         return () => {
-            cancelAnimationFrame(animationId);
+            disposed = true;
+            stopLoop();
             if (resizeObserver) resizeObserver.disconnect();
             intersectionObserver.disconnect();
 

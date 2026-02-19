@@ -131,7 +131,8 @@
         }
 
         let renderer: WebGLRenderer;
-        let animationId: number;
+        let animationId = 0;
+        let isAnimating = false;
         let resizeObserver: ResizeObserver | null = null;
         let disposed = false;
 
@@ -156,10 +157,10 @@
 
         function onContextLost(e: Event) {
             e.preventDefault();
-            cancelAnimationFrame(animationId);
+            stopLoop();
         }
         function onContextRestored() {
-            if (!disposed) animate();
+            if (!disposed && isVisible) startLoop();
         }
         renderer.domElement.addEventListener("webglcontextlost", onContextLost);
         renderer.domElement.addEventListener(
@@ -422,18 +423,33 @@
         }
 
         let isVisible = true;
+        function startLoop() {
+            if (disposed || !isVisible || isAnimating) return;
+            isAnimating = true;
+            animationId = requestAnimationFrame(animate);
+        }
+        function stopLoop() {
+            if (!isAnimating) return;
+            cancelAnimationFrame(animationId);
+            animationId = 0;
+            isAnimating = false;
+        }
+
         const intersectionObserver = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting;
-                if (isVisible && !disposed) animate();
-                else cancelAnimationFrame(animationId);
+                if (isVisible && !disposed) startLoop();
+                else stopLoop();
             },
             { threshold: 0 },
         );
         intersectionObserver.observe(container);
 
         function animate() {
-            if (disposed || !isVisible) return;
+            if (disposed || !isVisible) {
+                isAnimating = false;
+                return;
+            }
             animationId = requestAnimationFrame(animate);
 
             const now = performance.now();
@@ -557,7 +573,7 @@
             renderer.render(scene, camera);
         }
 
-        animate();
+        startLoop();
 
         requestAnimationFrame(() => {
             const host = container?.closest("c-strip");
@@ -575,7 +591,7 @@
         return () => {
             disposed = true;
             window.removeEventListener("resize", checkMobile);
-            cancelAnimationFrame(animationId);
+            stopLoop();
 
             if (resizeObserver) resizeObserver.disconnect();
             intersectionObserver.disconnect();

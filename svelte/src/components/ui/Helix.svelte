@@ -117,7 +117,8 @@
         const count = images.length;
 
         let renderer: WebGLRenderer;
-        let animationId: number;
+        let animationId = 0;
+        let isAnimating = false;
         let resizeObserver: ResizeObserver | null = null;
         let disposed = false;
 
@@ -144,10 +145,10 @@
         // WebGL context loss handling
         function onContextLost(e: Event) {
             e.preventDefault();
-            cancelAnimationFrame(animationId);
+            stopLoop();
         }
         function onContextRestored() {
-            if (!disposed) animate();
+            if (!disposed && isVisible) startLoop();
         }
         renderer.domElement.addEventListener("webglcontextlost", onContextLost);
         renderer.domElement.addEventListener(
@@ -278,9 +279,24 @@
         let rotationOffset = 0;
         let isVisible = true;
 
-        function animate() {
-            if (!isVisible || disposed) return;
+        function startLoop() {
+            if (disposed || !isVisible || isAnimating) return;
+            isAnimating = true;
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function stopLoop() {
+            if (!isAnimating) return;
             cancelAnimationFrame(animationId);
+            animationId = 0;
+            isAnimating = false;
+        }
+
+        function animate() {
+            if (!isVisible || disposed) {
+                isAnimating = false;
+                return;
+            }
             animationId = requestAnimationFrame(animate);
 
             rotationOffset += ROTATION_SPEED;
@@ -305,19 +321,19 @@
         const intersectionObserver = new IntersectionObserver(
             ([entry]) => {
                 isVisible = entry.isIntersecting;
-                if (isVisible && !disposed) animate();
-                else cancelAnimationFrame(animationId);
+                if (isVisible && !disposed) startLoop();
+                else stopLoop();
             },
             { threshold: 0 },
         );
         intersectionObserver.observe(container);
 
-        animate();
+        startLoop();
 
         // Cleanup
         return () => {
             disposed = true;
-            cancelAnimationFrame(animationId);
+            stopLoop();
             if (resizeObserver) resizeObserver.disconnect();
             intersectionObserver.disconnect();
             container?.removeEventListener("mousemove", onMouseMove);
