@@ -17,6 +17,8 @@
         const gsap = (window as any).gsap;
         if (!gsap) return;
 
+        document.body.style.cursor = "wait";
+
         // Drum timeline: intro(0.6+0.48) + hold(3.0) + outro(0.6+0.48) ≈ 5.16s
         const TOTAL_DURATION = 5.16;
 
@@ -78,6 +80,7 @@
             duration: 0.3,
             ease: "power2.out",
             onStart: () => {
+                document.body.style.cursor = "";
                 // Signal page to start revealing main content (overlaps with fade-out)
                 window.dispatchEvent(new CustomEvent("preloader-done"));
             },
@@ -120,6 +123,11 @@
         inset: 0;
         z-index: 9999;
         pointer-events: none;
+    }
+
+    .preloader,
+    .preloader * {
+        cursor: wait;
     }
 
     .preloader {

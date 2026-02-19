@@ -64,8 +64,11 @@ document.addEventListener("DOMContentLoaded", function () {
   (function initBarba() {
     if (typeof barba === "undefined" || typeof gsap === "undefined") return;
 
-    // Listen for Reel canvas clicks — route through Barba instead of window.location
+    // Listen for canvas component clicks — route through Barba instead of window.location
     document.addEventListener("reel:exit", function (e) {
+      barba.go(e.detail.url);
+    });
+    document.addEventListener("strip:exit", function (e) {
       barba.go(e.detail.url);
     });
 

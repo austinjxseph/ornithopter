@@ -130,9 +130,9 @@
             updateOpacities(continuousPos);
         }
 
-        trackEl?.addEventListener("reel:update", onActiveCard);
+        trackEl?.addEventListener("strip:update", onActiveCard);
         return () => {
-            trackEl?.removeEventListener("reel:update", onActiveCard);
+            trackEl?.removeEventListener("strip:update", onActiveCard);
             gsap.killTweensOf(innerEl);
             gsap.killTweensOf(itemEls);
         };
@@ -187,7 +187,7 @@
                 </div>
 
                 <div class="track" bind:this={trackEl}>
-                    <c-reel id={wheelId}></c-reel>
+                    <c-strip id={wheelId}></c-strip>
                     {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects }).replace(/<\//g, "<\\/")}<\/script>`}
                 </div>
             </div>
