@@ -9,6 +9,8 @@ if (!empty($_SERVER["HTTP_X_FORWARDED_HOST"])) {
     $url = $proto . "://" . $host;
 }
 
+$thumbsDriver = extension_loaded("imagick") ? "imagick" : "gd";
+
 return [
     "debug" => true,
     "yaml.handler" => "symfony",
@@ -52,6 +54,6 @@ return [
         ],
     ],
     "thumbs" => [
-        "driver" => "gd",
+        "driver" => $thumbsDriver,
     ],
 ];

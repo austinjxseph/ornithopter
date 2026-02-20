@@ -5,16 +5,21 @@ FROM php:8.4-apache
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
+    libwebp-dev \
     libfreetype-dev \
+    imagemagick \
+    libmagickwand-dev \
     libzip-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
     libonig-dev \
     libicu-dev \
     libexif-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-configure intl \
     && docker-php-ext-install gd zip mbstring dom xml curl intl exif opcache \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
