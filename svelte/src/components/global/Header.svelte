@@ -11,6 +11,14 @@
 
     let navState = $state("closed");
 
+    function closeNavigation() {
+        navState = "closed";
+        document.body.style.overflow = "";
+        if (window.lenis) {
+            window.lenis.start();
+        }
+    }
+
     function toggleNavigation() {
         navState = navState === "open" ? "closed" : "open";
         document.body.style.overflow = navState === "open" ? "hidden" : "";
@@ -20,59 +28,48 @@
     }
 
     onMount(() => {
-        function closeNav() {
-            navState = "closed";
-            document.body.style.overflow = "";
-        }
-        window.addEventListener("navigation:exit", closeNav);
-        return () => window.removeEventListener("navigation:exit", closeNav);
+        window.addEventListener("navigation:exit", closeNavigation);
+        return () =>
+            window.removeEventListener("navigation:exit", closeNavigation);
     });
 </script>
 
-<header
-    data-nav-state={navState}
-    data-nav-element="navbar"
-    class="c-header_navbar"
->
-    <div class="c-header_vignette"></div>
-    <div class="c-header_inner">
+<header data-nav-state={navState} data-nav-element="navbar" class="navbar">
+    <div class="vignette"></div>
+    <div class="inner">
         <button
             data-nav-element="overlay"
             aria-hidden="true"
-            class="c-header_overlay"
-            onclick={toggleNavigation}
+            class="overlay"
+            onclick={closeNavigation}
         ></button>
 
-        <a href={rootpath} aria-label="Go Back Home" class="c-header_logo">
+        <a href={rootpath} aria-label="Go Back Home" class="logo">
             Austin Joseph
         </a>
 
-        <ul role="list" class="c-header_drawer">
-            <div class="c-header_edge">
-                <div class="c-header_edge-shine"></div>
+        <ul role="list" class="drawer" onclick={closeNavigation}>
+            <div class="edge">
+                <div class="edge-shine"></div>
             </div>
-            <li class="c-header_links">
+            <li class="links">
                 {#each links as link}
-                    <a href={link.href} class="c-header_link">
+                    <a href={link.href} class="link">
                         <h3>{link.label}</h3>
                     </a>
                 {/each}
             </li>
         </ul>
 
-        <button
-            data-nav-element="menu"
-            class="c-header_menu"
-            onclick={toggleNavigation}
-        >
-            <div class="c-header_marker"></div>
+        <button data-nav-element="menu" class="menu" onclick={toggleNavigation}>
+            <div class="marker"></div>
             <div>Menu</div>
         </button>
     </div>
 </header>
 
 <style>
-    .c-header_vignette {
+    .vignette {
         position: absolute;
         inset: 0;
         height: 12vh;
@@ -96,7 +93,7 @@
         pointer-events: none;
     }
 
-    .c-header_navbar {
+    .navbar {
         z-index: 3;
         padding: 1rem var(--global--margin);
         color: var(--_themes---site--text--text-primary);
@@ -111,7 +108,7 @@
         flex-direction: column;
     }
 
-    .c-header_inner {
+    .inner {
         max-width: var(--max-width--xl);
         grid-column-gap: 16px;
         grid-row-gap: 16px;
@@ -128,7 +125,7 @@
         display: grid;
     }
 
-    .c-header_link {
+    .link {
         grid-column-gap: 4px;
         grid-row-gap: 4px;
         flex-flow: row;
@@ -145,34 +142,38 @@
         letter-spacing: -0.02em;
     }
 
-    .c-header_links:hover .c-header_link {
+    .links:hover .link {
         opacity: 0.2;
     }
 
-    .c-header_links:hover .c-header_link:hover {
+    .links:hover .link:hover {
         opacity: 1;
     }
 
-    .c-header_overlay {
+    .overlay {
         z-index: 3;
         opacity: 0;
-        display: none;
-        background-color: rgba(0, 0, 0, 0.6);
+        visibility: hidden;
+        pointer-events: none;
+        display: block;
+        background-color: rgba(0, 0, 0, 0.78);
         height: 100dvh;
         width: 100vw;
-        transition: opacity 0.3s;
+        transition:
+            opacity 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53),
+            visibility 0s linear 0.2s;
         position: absolute;
         inset: 0%;
         border: none;
         cursor: pointer;
     }
 
-    .c-header_logo {
+    .logo {
         z-index: 5;
         position: relative;
     }
 
-    .c-header_drawer {
+    .drawer {
         position: absolute;
         top: 0;
         right: 0;
@@ -185,31 +186,49 @@
         align-items: flex-end;
         box-sizing: border-box;
         width: 30vw;
-        max-width: 400px;
+        max-width: 600px;
         height: 100dvh;
         max-height: 100dvh;
         padding: var(--global--margin);
-        background-color: var(--_themes---site--bg--bg-secondary);
-        transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        background: linear-gradient(
+            to left,
+            var(--_themes---site--bg--bg-primary) 0%,
+            color-mix(
+                    in srgb,
+                    var(--_themes---site--bg--bg-primary) 84%,
+                    transparent
+                )
+                24%,
+            color-mix(
+                    in srgb,
+                    var(--_themes---site--bg--bg-primary) 44%,
+                    transparent
+                )
+                54%,
+            transparent 100%
+        );
+        opacity: 0;
+        visibility: hidden;
+        transition:
+            opacity 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53),
+            visibility 0s linear 0.2s;
         list-style: none;
         margin: 0;
     }
 
-    .c-header_edge {
+    .edge {
         position: absolute;
         top: 0;
         bottom: 0;
-        left: 0;
-        width: 1px;
-        background: rgba(255, 255, 255, 0.08);
+        right: 0;
+        width: 3px;
         overflow: hidden;
         pointer-events: none;
     }
 
-    .c-header_edge-shine {
+    .edge-shine {
         position: absolute;
-        left: 0;
+        right: 0;
         width: 3px;
         height: 120px;
         background: radial-gradient(
@@ -245,7 +264,7 @@
         }
     }
 
-    .c-header_marker {
+    .marker {
         background-color: #fff;
         border-radius: 24px;
         width: 18px;
@@ -255,7 +274,7 @@
             background-color 0.15s;
     }
 
-    .c-header_links {
+    .links {
         gap: 8px;
         flex-flow: column;
         justify-content: center;
@@ -263,7 +282,7 @@
         display: flex;
     }
 
-    .c-header_menu {
+    .menu {
         background-color: transparent;
         position: relative;
         grid-column-gap: 0.75rem;
@@ -282,37 +301,47 @@
         z-index: 9;
     }
 
-    [data-nav-state="closed"] .c-header_drawer {
+    [data-nav-state="closed"] .drawer {
         pointer-events: none;
-        transform: translateX(100%);
+        opacity: 0;
+        visibility: hidden;
     }
 
-    [data-nav-state="open"] .c-header_drawer {
+    [data-nav-state="open"] .drawer {
         pointer-events: auto;
-        transform: translateX(0%);
+        opacity: 1;
+        visibility: visible;
+        transition-timing-function:
+            cubic-bezier(0.25, 0.46, 0.45, 0.94), linear;
+        transition-delay: 0s, 0s;
     }
 
-    [data-nav-state="open"] .c-header_overlay {
+    [data-nav-state="open"] .overlay {
         opacity: 100%;
-        display: block;
+        visibility: visible;
+        pointer-events: auto;
+        transition-timing-function:
+            cubic-bezier(0.25, 0.46, 0.45, 0.94), linear;
+        transition-delay: 0s, 0s;
     }
 
-    [data-nav-state="closed"] .c-header_overlay {
+    [data-nav-state="closed"] .overlay {
         opacity: 0%;
-        display: none;
+        visibility: hidden;
+        pointer-events: none;
     }
 
-    [data-nav-state="open"] .c-header_marker {
+    [data-nav-state="open"] .marker {
         width: 6px;
         background-color: #e83452;
     }
 
     @media screen and (max-width: 991px) {
-        .c-header_navbar {
+        .navbar {
             font-size: var(--paragraph--font-size-s);
         }
 
-        .c-header_inner {
+        .inner {
             flex-flow: row;
             justify-content: space-between;
             align-items: center;
@@ -321,7 +350,7 @@
             display: flex;
         }
 
-        .c-header_drawer {
+        .drawer {
             width: 70vw;
             max-width: 600px;
             padding-top: 3rem;

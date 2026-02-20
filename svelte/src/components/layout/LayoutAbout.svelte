@@ -34,6 +34,8 @@
                 {/if}
             </div>
 
+            <div class="col-spacer" aria-hidden="true"></div>
+
             <div class="col-body">
                 {#each items as item, i}
                     {@const blockId = `ab-${item.type}-${i}`}
@@ -60,25 +62,11 @@
         min-height: 100vh;
     }
 
-    @media screen and (max-width: 991px) {
-        .ab {
-            padding-left: 0px;
-            padding-right: 0px;
-        }
-    }
-
     .l-inner {
         width: 100%;
         gap: var(--gap--xxl);
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media screen and (max-width: 991px) {
-        .l-inner {
-            grid-template-columns: 1fr;
-            gap: var(--gap--xxl);
-        }
     }
 
     /* Left column - sticky star wheel */
@@ -91,17 +79,10 @@
         aspect-ratio: 1;
     }
 
-    @media screen and (max-width: 991px) {
-        .col-img {
-            position: relative;
-            top: auto;
-            aspect-ratio: 4 / 3;
-        }
-    }
-
-    /* Right column - Content */
-    .col-body :global(b-header) {
-        max-width: 800px;
+    .col-spacer {
+        display: none;
+        min-height: 1px;
+        min-width: 1px;
     }
 
     .col-body :global(.text-md p strong) {
@@ -114,5 +95,23 @@
         flex: 1;
         min-height: 1px;
         min-width: 1px;
+    }
+
+    @media screen and (max-width: 991px) {
+        .ab {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .l-inner {
+            grid-template-columns: 1fr;
+            gap: var(--gap--xxl);
+        }
+
+        .col-img {
+            position: relative;
+            top: auto;
+            aspect-ratio: 4 / 3;
+        }
     }
 </style>

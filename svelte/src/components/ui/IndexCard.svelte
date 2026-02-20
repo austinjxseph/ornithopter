@@ -7,19 +7,19 @@
     } = $props();
 </script>
 
-<a {href} class="c-indexcard">
-    <div class="c-indexcard_overlay">
+<a {href} class="indexcard">
+    <div class="overlay">
         {#if overlayimage}
             <img src={overlayimage} alt="" loading="eager" />
         {/if}
     </div>
-    <div class="c-indexcard_bg">
+    <div class="bg">
         {#if backgroundimage}
             <img src={backgroundimage} alt="" loading="eager" />
         {/if}
     </div>
-    <div class="c-indexcard_text">
-        <div class="c-indexcard_heading">
+    <div class="text">
+        <div class="heading">
             <h4>{title}</h4>
         </div>
     </div>
@@ -33,7 +33,7 @@
         align-self: stretch;
     }
 
-    .c-indexcard {
+    .indexcard {
         aspect-ratio: 1;
         object-fit: cover;
         flex-flow: column;
@@ -48,13 +48,13 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-indexcard {
+        .indexcard {
             min-height: 100vw;
             overflow: clip;
         }
     }
 
-    .c-indexcard_bg {
+    .bg {
         position: absolute;
         left: 0;
         right: 0;
@@ -64,26 +64,26 @@
         width: 100%;
     }
 
-    .c-indexcard_bg img {
+    .bg img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .c-indexcard_overlay {
+    .overlay {
         z-index: 2;
         aspect-ratio: 1;
         height: 100%;
         position: absolute;
     }
 
-    .c-indexcard_overlay img {
+    .overlay img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .c-indexcard_text {
+    .text {
         z-index: 2;
         aspect-ratio: 1;
         justify-content: space-between;
@@ -95,19 +95,19 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-indexcard_text {
+        .text {
             padding: 0.5rem;
         }
     }
 
-    .c-indexcard_heading {
+    .heading {
         max-width: 20rem;
         display: flex;
         flex-direction: column;
     }
 
     @media screen and (max-width: 991px) {
-        .c-indexcard_heading {
+        .heading {
             max-width: none;
         }
     }

@@ -31,27 +31,27 @@
     });
 </script>
 
-<footer class="c-footer" class:abs={fixed}>
-    <div class="c-footer_vignette"></div>
-    <div class="c-footer_component">
-        <div class="c-footer_inner">
-            <div class="c-footer_row copyright">
+<footer class="footer" class:abs={fixed}>
+    <div class="vignette"></div>
+    <div class="component">
+        <div class="inner">
+            <div class="row copyright">
                 <div class="u-text-secondary">
                     <div class="text-sm">
                         © <span>{currentYear}</span> Austin Joseph.
                     </div>
                 </div>
             </div>
-            <div class="c-footer_location">
-                <span class="c-footer_location-label">London, England</span>
-                <span class="c-footer_location-time">[{time}]</span>
+            <div class="location">
+                <span class="location-label">London, England</span>
+                <span class="location-time">[{time}]</span>
             </div>
-            <ul role="list" class="c-footer_row">
+            <ul role="list" class="row">
                 {#each links as link}
                     <li>
                         <a
                             href={link.href}
-                            class="c-footer_link"
+                            class="link"
                             title={link.label}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -75,7 +75,7 @@
 </footer>
 
 <style>
-    .c-footer {
+    .footer {
         flex-flow: column;
         justify-content: center;
         align-self: stretch;
@@ -85,19 +85,19 @@
         width: 100%;
     }
 
-    .c-footer.abs {
+    .footer.abs {
         position: fixed;
         inset: auto 0% 0%;
         z-index: 10;
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer.abs {
+        .footer.abs {
             position: relative;
         }
     }
 
-    .c-footer_vignette {
+    .vignette {
         position: absolute;
         inset: 0;
         min-height: 10vh;
@@ -116,7 +116,7 @@
         pointer-events: none;
     }
 
-    .c-footer_component {
+    .component {
         padding: 1.2rem var(--global--margin);
         flex-flow: column;
         justify-content: center;
@@ -126,7 +126,7 @@
         position: relative;
     }
 
-    .c-footer_inner {
+    .inner {
         max-width: var(--max-width--xl);
         width: 100%;
         margin-left: auto;
@@ -138,13 +138,13 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer_inner {
+        .inner {
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
     }
 
-    .c-footer_row {
+    .row {
         grid-column-gap: 0.75rem;
         grid-row-gap: 0.75rem;
         flex-flow: row;
@@ -157,13 +157,13 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer_row {
+        .row {
             padding-left: 0;
         }
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer_row.copyright {
+        .row.copyright {
             grid-column-gap: 0.25rem;
             grid-row-gap: 0.25rem;
             flex-flow: column;
@@ -172,11 +172,11 @@
         }
     }
 
-    .c-footer_row:last-child {
+    .row:last-child {
         justify-content: flex-end;
     }
 
-    .c-footer_location {
+    .location {
         display: flex;
         flex-flow: row;
         align-items: center;
@@ -184,14 +184,14 @@
         gap: 0.5rem;
     }
 
-    .c-footer_location-label {
+    .location-label {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
         color: var(--_themes---site--text--text-primary);
     }
 
-    .c-footer_location-time {
+    .location-time {
         font-family: var(--typeface--primary);
         font-size: var(--paragraph--font-size-s);
         line-height: var(--paragraph--line-height-s);
@@ -199,12 +199,12 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-footer_location {
+        .location {
             display: none;
         }
     }
 
-    .c-footer_link {
+    .link {
         display: block;
         position: relative;
         overflow: hidden;

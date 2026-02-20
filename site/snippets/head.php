@@ -9,7 +9,7 @@
   ?>
 
   <title><?= $page->customTitle ??
-      $page->title() ?> | <?= $site->title() ?></title>
+      $page->title() ?> — <?= $site->title() ?></title>
 
   <?php if ($page->meta_description()->isNotEmpty()): ?>
     <meta name="description" content="<?= $page->meta_description()->html() ?>">

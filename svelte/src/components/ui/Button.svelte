@@ -2,25 +2,25 @@
     let { href = "#", label = "Button", active = false } = $props();
 </script>
 
-<div class="c-button {active ? 'c-button_active' : ''}">
-    <div class="c-button_motion">
-        <div class="c-button_glow"></div>
-        <div class="c-button_mask">
-            <div class="c-button_cone"></div>
+<div class="button {active ? 'button-active' : ''}">
+    <div class="motion">
+        <div class="glow"></div>
+        <div class="mask">
+            <div class="cone"></div>
         </div>
     </div>
-    <div class="c-button_orb">
-        <div class="c-button_border"></div>
+    <div class="orb">
+        <div class="border"></div>
     </div>
-    <a {href} class="c-button_wrapper">
-        <div class="c-button_label">
+    <a {href} class="wrapper">
+        <div class="label">
             {label}
         </div>
     </a>
 </div>
 
 <style>
-    .c-button {
+    .button {
         grid-column-gap: 1rem;
         grid-row-gap: 1rem;
         background-color: var(--_themes---site--bg--bg-primary);
@@ -38,7 +38,7 @@
         overflow: hidden;
     }
 
-    .c-button.c-button_active:hover {
+    .button.button-active:hover {
         background-image: radial-gradient(
             circle closest-corner at 50% 50%,
             var(--_themes---site--bg--bg-primary),
@@ -49,12 +49,12 @@
         border-color: #fff9;
     }
 
-    .c-button_active .c-button_motion,
-    .c-button_active .c-button_orb {
+    .button-active .motion,
+    .button-active .orb {
         opacity: 1;
     }
 
-    .c-button_motion {
+    .motion {
         opacity: 0;
         width: 100%;
         transition: opacity 1s;
@@ -65,7 +65,7 @@
         pointer-events: none;
     }
 
-    .c-button_motion * {
+    .motion * {
         height: 100%;
         left: 0;
         position: absolute;
@@ -73,7 +73,7 @@
         width: 100%;
     }
 
-    .c-button_glow {
+    .glow {
         opacity: 0.12;
         filter: blur(8px);
         animation: borderTurn 2.5s infinite linear;
@@ -89,7 +89,7 @@
         background-size: cover;
     }
 
-    .c-button_mask {
+    .mask {
         opacity: 1;
         -webkit-mask: url("data:image/svg+xml,url('data:image/svg+xml,%253Csvg width='28' height='24' viewBox='0 0 28 24' fill='none' xmlns='http://www.w3.org/2000/svg'%253E%253Crect width='28' height='24' fill='black'/%253E%253C/svg%253E%250A');");
         mask: url("data:image/svg+xml,url('data:image/svg+xml,%253Csvg width='28' height='24' viewBox='0 0 28 24' fill='none' xmlns='http://www.w3.org/2000/svg'%253E%253Crect width='28' height='24' fill='black'/%253E%253C/svg%253E%250A');");
@@ -98,7 +98,7 @@
         mask-size: auto;
     }
 
-    .c-button_cone {
+    .cone {
         opacity: 1;
         animation: borderTurn 2.5s infinite linear;
         background-image: conic-gradient(
@@ -113,7 +113,7 @@
         background-size: cover;
     }
 
-    .c-button_orb {
+    .orb {
         opacity: 0;
         border-radius: 62.5rem;
         width: 100%;
@@ -137,7 +137,7 @@
         pointer-events: none;
     }
 
-    .c-button_border {
+    .border {
         opacity: 1;
         width: 100%;
         position: absolute;
@@ -157,21 +157,21 @@
         background-size: cover;
     }
 
-    .c-button_motion:before,
-    .c-button_border:before {
+    .motion:before,
+    .border:before {
         content: "";
         float: left;
         padding-top: 100%;
     }
 
-    .c-button_motion:after,
-    .c-button_border:after {
+    .motion:after,
+    .border:after {
         clear: both;
         content: "";
         display: block;
     }
 
-    .c-button_wrapper {
+    .wrapper {
         z-index: 1;
         color: #fff;
         letter-spacing: -0.01em;
@@ -184,7 +184,7 @@
         display: inline-block;
     }
 
-    .c-button_label {
+    .label {
         z-index: 2;
         color: #0000;
         -webkit-text-fill-color: transparent;
@@ -196,7 +196,7 @@
     }
 
     @media screen and (max-width: 991px) {
-        .c-button {
+        .button {
             color: var(--_themes---site--text--text-primary);
             font-size: var(--paragraph--font-size-m);
         }
