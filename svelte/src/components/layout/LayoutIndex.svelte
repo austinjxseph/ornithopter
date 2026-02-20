@@ -23,7 +23,7 @@
     let trackEl: HTMLDivElement;
     let slotRoot: HTMLElement;
 
-    const wheelId = "indexwheel-" + Math.random().toString(36).slice(2, 8);
+    const stripId = "strip-" + Math.random().toString(36).slice(2, 8);
 
     // Slot config
     const ROW_HEIGHT = 32;
@@ -187,8 +187,8 @@
                 </div>
 
                 <div class="track" bind:this={trackEl}>
-                    <c-strip id={wheelId}></c-strip>
-                    {@html `<script type="application/json" data-for="${wheelId}">${JSON.stringify({ projects }).replace(/<\//g, "<\\/")}<\/script>`}
+                    <c-strip id={stripId}></c-strip>
+                    {@html `<script type="application/json" data-for="${stripId}">${JSON.stringify({ projects }).replace(/<\//g, "<\\/")}<\/script>`}
                 </div>
             </div>
         </div>

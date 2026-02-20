@@ -665,6 +665,7 @@
         width: 100%;
         height: 100%;
         position: relative;
+        background: var(--_themes---site--bg--bg-primary, #020508);
     }
 
     .canvas-container :global(canvas) {
