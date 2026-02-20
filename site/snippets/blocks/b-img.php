@@ -28,7 +28,8 @@ if (empty($images)) {
     }
 }
 
-$blockId = "b-img-" . $block->id();
+$blockNamespace = $blockNamespace ?? "blk";
+$blockId = $blockNamespace . "-" . $block->id();
 $props = [
     "images" => $images,
     "spacing" => $block->spacing()->value() ?: "stack",

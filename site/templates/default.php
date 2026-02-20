@@ -6,7 +6,10 @@
   <div class="u-layout-vflex inner">
     <div class="u-layout-vflex body">
       <?php foreach ($page->blocks()->toBlocks() as $block): ?>
-        <?php snippet("blocks/" . $block->type(), ["block" => $block]); ?>
+        <?php snippet("blocks/" . $block->type(), [
+            "block" => $block,
+            "blockNamespace" => "df",
+        ]); ?>
       <?php endforeach; ?>
     </div>
   </div>

@@ -197,7 +197,7 @@
 
 <style>
     /* Host element - make custom element stretch full width */
-    :global(l-home) {
+    :global(l-index) {
         display: block;
         width: 100%;
         flex: 1;

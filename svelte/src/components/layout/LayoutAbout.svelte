@@ -1,5 +1,6 @@
 <script lang="ts">
     type HeaderItem = {
+        id: string;
         type: "b-header";
         title: string;
         description: string;
@@ -7,6 +8,7 @@
     };
 
     type TextItem = {
+        id: string;
         type: "b-text";
         columns: string;
         items: Array<{ heading?: string; content: string }>;
@@ -28,7 +30,7 @@
         <div class="l-inner">
             <div class="col-img">
                 {#if images.length}
-                    {@const helixId = `ab-helix-${Math.random().toString(36).slice(2, 8)}`}
+                    {@const helixId = "ab-helix"}
                     <c-helix id={helixId}></c-helix>
                     {@html `<script type="application/json" data-for="${helixId}">${JSON.stringify({ images })}<\/script>`}
                 {/if}
@@ -37,8 +39,8 @@
             <div class="col-spacer" aria-hidden="true"></div>
 
             <div class="col-body">
-                {#each items as item, i}
-                    {@const blockId = `ab-${item.type}-${i}`}
+                {#each items as item}
+                    {@const blockId = `ab-${item.id}`}
                     {#if item.type === "b-header"}
                         <b-header id={blockId}></b-header>
                         {@html `<script type="application/json" data-for="${blockId}">${JSON.stringify({ title: item.title, description: item.description, layout: item.layout })}<\/script>`}

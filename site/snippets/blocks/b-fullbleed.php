@@ -1,7 +1,8 @@
 <?php
 $file = $block->image()->toFile();
 
-$blockId = "b-fullbleed-" . $block->id();
+$blockNamespace = $blockNamespace ?? "blk";
+$blockId = $blockNamespace . "-" . $block->id();
 $props = [
     "image" => $file?->url() ?? "",
     "alt" => $file?->alt()->value() ?? "",

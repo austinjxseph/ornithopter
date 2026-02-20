@@ -17,7 +17,7 @@ $props = [
 ];
 ?>
 
-<c-header id="site-header"></c-header>
-<script type="application/json" data-for="site-header">
+<c-header id="header"></c-header>
+<script type="application/json" data-for="header">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

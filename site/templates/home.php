@@ -15,8 +15,8 @@ foreach ($page->featured_projects()->toPages() as $project) {
             $project->thumbnail_overlay()->toFile()?->url() ?? "",
     ];
 }
-$heroId = "hero-" . $page->id();
-$heroProps = [
+$indexId = "index";
+$indexProps = [
     "eyebrow" => $page->hero_eyebrow()->value(),
     "title" => strip_tags(
         (string) $page->hero_title()->kti(),
@@ -28,11 +28,11 @@ $heroProps = [
 ];
 ?>
 
-<div class="page" data-barba="container" data-barba-namespace="home">
+<div class="page" data-barba="container" data-barba-namespace="Index">
 <main class="main">
-<l-home id="<?= $heroId ?>"></l-home>
-<script type="application/json" data-for="<?= $heroId ?>">
-<?= json_encode($heroProps, JSON_UNESCAPED_SLASHES) ?>
+<l-index id="<?= $indexId ?>"></l-index>
+<script type="application/json" data-for="<?= $indexId ?>">
+<?= json_encode($indexProps, JSON_UNESCAPED_SLASHES) ?>
 </script>
 </main>
 <?php snippet("footer", ["fixed" => true]); ?>

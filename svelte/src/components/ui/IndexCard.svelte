@@ -1,18 +1,8 @@
 <script lang="ts">
-    let {
-        href = "#",
-        title = "",
-        backgroundimage = "",
-        overlayimage = "",
-    } = $props();
+    let { href = "#", title = "", backgroundimage = "" } = $props();
 </script>
 
 <a {href} class="indexcard">
-    <div class="overlay">
-        {#if overlayimage}
-            <img src={overlayimage} alt="" loading="eager" />
-        {/if}
-    </div>
     <div class="bg">
         {#if backgroundimage}
             <img src={backgroundimage} alt="" loading="eager" />
@@ -65,19 +55,6 @@
     }
 
     .bg img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .overlay {
-        z-index: 2;
-        aspect-ratio: 1;
-        height: 100%;
-        position: absolute;
-    }
-
-    .overlay img {
         width: 100%;
         height: 100%;
         object-fit: cover;

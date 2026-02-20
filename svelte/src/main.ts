@@ -40,7 +40,7 @@ registerSvelteElement("c-footer", Footer, ["fixed", "links"]);
 registerSvelteElement("c-preloader", Preloader, ["title", "images"]);
 
 // Register layout components
-registerSvelteElement("l-home", LayoutIndex, [
+registerSvelteElement("l-index", LayoutIndex, [
   "eyebrow",
   "title",
   "buttonlabel",

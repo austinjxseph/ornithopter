@@ -7,7 +7,8 @@ foreach ($block->items()->toStructure() as $item) {
     ];
 }
 
-$blockId = "b-grid-" . $block->id();
+$blockNamespace = $blockNamespace ?? "blk";
+$blockId = $blockNamespace . "-" . $block->id();
 $props = [
     "columns" => $block->columns()->value() ?: "4",
     "items" => $items,

@@ -16,7 +16,7 @@ $props = [
 ];
 ?>
 
-<c-footer id="site-footer"></c-footer>
-<script type="application/json" data-for="site-footer">
+<c-footer id="footer"></c-footer>
+<script type="application/json" data-for="footer">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

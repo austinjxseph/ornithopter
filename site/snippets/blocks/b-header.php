@@ -1,5 +1,6 @@
 <?php
-$blockId = "b-header-" . $block->id();
+$blockNamespace = $blockNamespace ?? "blk";
+$blockId = $blockNamespace . "-" . $block->id();
 $props = [
     "title" => (string) $block->title()->kt(),
     "description" => (string) $block->description()->kt(),

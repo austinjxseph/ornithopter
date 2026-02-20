@@ -13,7 +13,7 @@ $props = [
 ];
 ?>
 
-<c-preloader id="site-preloader"></c-preloader>
-<script type="application/json" data-for="site-preloader">
+<c-preloader id="preloader"></c-preloader>
+<script type="application/json" data-for="preloader">
 <?= json_encode($props, JSON_UNESCAPED_SLASHES) ?>
 </script>

@@ -6,6 +6,7 @@ $itemsData = [];
 foreach ($page->blocks()->toBlocks() as $block) {
     if ($block->type() === "b-header") {
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-header",
             "title" => (string) $block->title()->kt(),
             "description" => (string) $block->description()->kt(),
@@ -21,6 +22,7 @@ foreach ($page->blocks()->toBlocks() as $block) {
             ];
         }
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-text",
             "columns" => $block->columns()->value() ?: "4",
             "items" => $textItems,
@@ -51,6 +53,7 @@ foreach ($page->blocks()->toBlocks() as $block) {
             }
         }
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-img",
             "images" => $images,
             "spacing" => $block->spacing()->value() ?: "stack",
@@ -64,6 +67,7 @@ foreach ($page->blocks()->toBlocks() as $block) {
             ];
         }
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-grid",
             "columns" => $block->columns()->value() ?: "4",
             "items" => $gridItems,

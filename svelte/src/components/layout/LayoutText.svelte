@@ -1,5 +1,6 @@
 <script lang="ts">
     type HeaderItem = {
+        id: string;
         type: "b-header";
         title: string;
         description: string;
@@ -7,18 +8,21 @@
     };
 
     type TextItem = {
+        id: string;
         type: "b-text";
         columns: string;
         items: Array<{ heading?: string; content: string }>;
     };
 
     type ImageItem = {
+        id: string;
         type: "b-img";
         spacing: string;
         images: Array<{ url: string; alt?: string; caption?: string }>;
     };
 
     type GridItem = {
+        id: string;
         type: "b-grid";
         columns: string;
         items: Array<{ heading?: string; description: string }>;
@@ -35,8 +39,8 @@
             <div class="col-spacer" aria-hidden="true"></div>
 
             <div class="col-body">
-                {#each items as item, i}
-                    {@const blockId = `tx-${item.type}-${i}`}
+                {#each items as item}
+                    {@const blockId = `tx-${item.id}`}
                     {#if item.type === "b-header"}
                         <b-header id={blockId}></b-header>
                         {@html `<script type="application/json" data-for="${blockId}">${JSON.stringify({ title: item.title, description: item.description, layout: item.layout })}<\/script>`}

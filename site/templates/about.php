@@ -15,6 +15,7 @@ $itemsData = [];
 foreach ($page->about_items()->toBlocks() as $block) {
     if ($block->type() === "b-header") {
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-header",
             "title" => (string) $block->title()->kt(),
             "description" => (string) $block->description()->kt(),
@@ -30,13 +31,14 @@ foreach ($page->about_items()->toBlocks() as $block) {
             ];
         }
         $itemsData[] = [
+            "id" => $block->id(),
             "type" => "b-text",
             "columns" => $block->columns()->value() ?: "4",
             "items" => $textItems,
         ];
     }
 }
-$aboutId = "about-" . $page->id();
+$aboutId = "about";
 $aboutProps = ["images" => $imagesData, "items" => $itemsData];
 ?>
 
