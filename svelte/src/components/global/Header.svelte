@@ -48,10 +48,13 @@
             Austin Joseph
         </a>
 
-        <ul role="list" class="drawer" onclick={closeNavigation}>
-            <div class="edge">
-                <div class="edge-shine"></div>
-            </div>
+        <ul role="list" class="drawer">
+            <button
+                type="button"
+                class="drawer-close-hit"
+                aria-label="Close navigation"
+                onclick={closeNavigation}
+            ></button>
             <li class="links">
                 {#each links as link}
                     <a href={link.href} class="link">
@@ -216,52 +219,14 @@
         margin: 0;
     }
 
-    .edge {
+    .drawer-close-hit {
         position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: 3px;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
-    .edge-shine {
-        position: absolute;
-        right: 0;
-        width: 3px;
-        height: 120px;
-        background: radial-gradient(
-            ellipse at center,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(255, 255, 255, 0.4) 40%,
-            transparent 100%
-        );
-        filter: blur(0.5px);
-        animation: edgeSweep 7s linear infinite;
-    }
-
-    @keyframes edgeSweep {
-        0% {
-            bottom: -120px;
-            opacity: 0;
-        }
-        2% {
-            opacity: 1;
-        }
-        /* sweep takes ~5s (71% of 7s) */
-        71% {
-            bottom: 100%;
-            opacity: 1;
-        }
-        73% {
-            opacity: 0;
-        }
-        /* pause for ~2s */
-        100% {
-            bottom: -120px;
-            opacity: 0;
-        }
+        inset: 0;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        z-index: 0;
+        cursor: pointer;
     }
 
     .marker {
@@ -280,6 +245,8 @@
         justify-content: center;
         align-items: flex-end;
         display: flex;
+        position: relative;
+        z-index: 1;
     }
 
     .menu {
