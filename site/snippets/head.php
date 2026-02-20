@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <?php
+  $favicon = $site->favicon()->toFile();
+  $ogImage = $page->meta_image()->toFile() ?? $site->og_image()->toFile();
+  ?>
 
   <title><?= $page->customTitle ??
       $page->title() ?> | <?= $site->title() ?></title>
@@ -23,15 +27,20 @@
       ->or($site->description())
       ->html() ?>">
   <meta property="og:type" content="website">
-  <?php if ($page->meta_image()->toFile()): ?>
-    <meta property="og:image" content="<?= $page
-        ->meta_image()
-        ->toFile()
-        ->url() ?>">
+  <?php if ($ogImage): ?>
+    <meta property="og:image" content="<?= $ogImage->url() ?>">
   <?php endif; ?>
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
+  <?php if ($ogImage): ?>
+    <meta name="twitter:image" content="<?= $ogImage->url() ?>">
+  <?php endif; ?>
+
+  <?php if ($favicon): ?>
+    <link rel="icon" href="<?= $favicon->url() ?>">
+    <link rel="apple-touch-icon" href="<?= $favicon->url() ?>">
+  <?php endif; ?>
 
   <!-- Preload: preloader images (fetched by Three.js TextureLoader) -->
   <?php foreach ($site->preloader_images()->toFiles() as $img): ?>

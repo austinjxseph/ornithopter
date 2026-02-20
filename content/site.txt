@@ -2,6 +2,14 @@ Title: Austin Joseph
 
 ----
 
+Favicon: - 'file://9e4whahtmpib73fs'
+
+----
+
+Og-image: []
+
+----
+
 Description: Design Engineer focused on brand and web, obsessed with building experiences bridging engineering and design.
 
 ----
@@ -24,19 +32,6 @@ Header-links:
   link_label: Colophon
   link_page:
     - 'page://hwgashwlqgh07zqn'
-
-----
-
-Preloader-title: <em>Simplicity is the ultimate sophistication.</em>
-
-----
-
-Preloader-images:
-
-- 'file://fiiyeu0xko8bc9gu'
-- 'file://viyg10fzn3jz3pay'
-- 'file://f5k9q37ujqo2i7mj'
-- 'file://kp4martauregcpov'
 
 ----
 
@@ -67,6 +62,19 @@ Footer-links:
     - 'file://phw1204mt6a23qts'
   link_label: GitHub
   link_href: 'https://github.com/austinjxseph'
+
+----
+
+Preloader-title: <em>Simplicity is the ultimate sophistication.</em>
+
+----
+
+Preloader-images:
+
+- 'file://fiiyeu0xko8bc9gu'
+- 'file://viyg10fzn3jz3pay'
+- 'file://f5k9q37ujqo2i7mj'
+- 'file://kp4martauregcpov'
 
 ----
 

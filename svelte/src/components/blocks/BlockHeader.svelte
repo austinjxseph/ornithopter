@@ -38,7 +38,7 @@
         align-self: stretch;
         padding-left: var(--global--margin);
         padding-right: var(--global--margin);
-        padding-top: var(--padding--xl);
+        padding-top: var(--padding--md);
         padding-bottom: var(--padding--md);
     }
 

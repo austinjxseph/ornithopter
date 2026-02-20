@@ -185,7 +185,7 @@
         align-items: flex-end;
         box-sizing: border-box;
         width: 30vw;
-        max-width: 600px;
+        max-width: 400px;
         height: 100dvh;
         max-height: 100dvh;
         padding: var(--global--margin);
@@ -305,12 +305,6 @@
     [data-nav-state="open"] .c-header_marker {
         width: 6px;
         background-color: #e83452;
-    }
-
-    @media (min-width: 1920px) {
-        .c-header_drawer {
-            max-width: 600px;
-        }
     }
 
     @media screen and (max-width: 991px) {

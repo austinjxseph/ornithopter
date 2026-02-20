@@ -1,0 +1,21 @@
+Title: Colophon
+
+----
+
+Blocks: [{"content":{"layout":"column","title":"<p><em>Colophon</em></p>","description":"<p>This site has been in the making for a little under 2 years at this point. I spent almost a year trying new visual routes, exploring what worked, attempting to define my personal brand better, and figuring out what the 'compass' was. Ultimately, I decided that for a creative, a portfolio is a little more than a means to a credential — it should express what they are underneath and stay true to their ethos. So, here it is — my little Corner on the Interweb. ™\u2028\u2028<br><br>I'm a believer in minimalism, the Unix Philosophy, and craft in the little things. I've attempted to reflect a modicum of the same in the design of this site, and my wider presence online; maybe it's all an elaborate hoax.</p>"},"id":"ece9c28f-1897-4508-87ed-60ce8b04d473","isHidden":false,"type":"b-header"},{"content":{"columns":"2","items":[{"heading":"Typefaces","content":"<p>The typefaces are used are Inter Display by <a href=\"https://rsms.me/\">https://rsms.me/</a> and EB Garamond (I’m an aficionado of the latter). All mock-ups used are from Mockup Studio.</p>"},{"heading":"Technologies","content":"<p>This site is built using Svelte, ThreeJS and KirbyCMS.<br>Hosted in the EU using Railway. <br>Privacy-friendly analytics using Umami.</p>"}]},"id":"c5465724-0898-4881-a794-67dc2f642b6d","isHidden":false,"type":"b-text"},{"content":{"columns":"1","items":[{"heading":"A few people who've influenced my work in design & technology","content":"<p>Samuel Higginson\u2028<br>Linus Rogge\u2028<br>Anton Stallbörger\u2028<br>Maximilian Berndt\u2028<br>Nicolas Solerieu\u2028<br>Ana Howard\u2028<br>Isa Pinheiro\u2028<br>Marie Codina\u2028<br>Nicolas Garro\u2029<br>Emil Kowalksi\u2029<br>Rauno Frieberg</p>"}]},"id":"ad60f8dc-c9d9-49dc-befe-f9f4e9d5f754","isHidden":false,"type":"b-text"}]
+
+----
+
+Meta-title: 
+
+----
+
+Meta-description: 
+
+----
+
+Meta-image: []
+
+----
+
+Uuid: hwgashwlqgh07zqn

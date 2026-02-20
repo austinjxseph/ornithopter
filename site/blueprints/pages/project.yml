@@ -38,14 +38,12 @@ columns:
           name:
             type: text
             label: Name
-            help: Short name for cards
             required: true
             width: 1/2
 
           project_title:
             type: text
             label: Title
-            help: Full title for detail page
             required: true
             width: 1/2
 
@@ -68,35 +66,13 @@ columns:
               - Social Media
               - DevOps
 
-          showcase:
-            type: toggle
-            label: Featured
-            default: true
-            width: 1/2
-
           published:
             type: date
             label: Published
             width: 1/2
-
-      # Images
-      images:
-        type: fields
-        label: Images
-        fields:
           thumbnail_base:
             type: files
             label: Thumbnail (Base Layer)
-            help: Background image for project card
-            max: 1
-            width: 1/2
-            uploads:
-              template: image
-
-          thumbnail_overlay:
-            type: files
-            label: Thumbnail (Overlay Layer)
-            help: Foreground image for project card
             max: 1
             width: 1/2
             uploads:
@@ -110,7 +86,6 @@ columns:
           meta_title:
             type: text
             label: Page Title
-            help: Leave empty to use project title
 
           meta_description:
             type: textarea
@@ -119,7 +94,7 @@ columns:
 
           meta_image:
             type: files
-            label: Opengraph Image
+            label: OpenGraph Image
             max: 1
             uploads:
               template: image

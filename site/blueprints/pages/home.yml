@@ -13,13 +13,11 @@ columns:
         label: Heading
         marks:
           - italic
-        help: Use italic for accent text (e.g. "design engineer")
 
       hero_eyebrow:
         type: text
         label: Eyebrow
         default: Available for freelance work
-        help: Small text above the main heading
 
       hero_button_label:
         type: text
@@ -41,7 +39,6 @@ columns:
           featured_projects:
             type: pages
             label: Projects
-            help: Select and order projects to display
             multiple: true
             query: site.find('projects').children.listed
             max: 6

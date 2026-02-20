@@ -1,108 +1,139 @@
-# Site blueprint - Dashboard layout
-# Two-column layout with settings on left, projects on right
-
-columns:
-  # Left column: Global settings (1/3 width)
-  - width: 1/3
-    sections:
-      # Main pages
-      pages:
-        type: pages
-        label: Pages
-        create: default
-        info: "{{ page.template }}"
-        templates:
-          - home
-          - about
-          - default
-
-      # Site Settings
-      site_settings:
-        type: fields
-        label: Site Settings
-        fields:
-          title:
-            type: text
-            label: Site Title
-            required: true
-
-          description:
-            type: textarea
-            label: Meta Description
-            help: Used for SEO
-
-      # Header
-      header:
-        type: fields
-        label: Header
-        fields:
-          header_links:
-            type: structure
-            label: Header
+tabs:
+  dashboard:
+    label: Dashboard
+    columns:
+      - width: 1/3
+        sections:
+          site_settings:
+            type: fields
+            label: Site Settings
             fields:
-              link_label:
-                type: text
-                label: Label
-                required: true
-                width: 1/2
-              link_page:
-                type: pages
-                label: Page
-                required: true
-                width: 1/2
-                max: 1
-
-      # Preloader
-      preloader:
-        type: fields
-        label: Preloader
-        fields:
-          preloader_title:
-            type: writer
-            label: Preloader Title
-            inline: true
-            marks:
-              - italic
-              - bold
-          preloader_images:
-            type: files
-            label: Preloader Images
-            uploads:
-              template: image
-
-      # Footer
-      footer:
-        type: fields
-        label: Footer
-        fields:
-          footer_links:
-            type: structure
-            label: Footer
-            fields:
-              link_icon:
+              favicon:
                 type: files
-                label: Icon
+                label: Favicon
+                width: 1/2
                 max: 1
                 uploads:
                   template: image
-              link_label:
+              og_image:
+                type: files
+                label: Open Graph Image
+                width: 1/2
+                max: 1
+                uploads:
+                  template: image
+              title:
                 type: text
-                label: Label
+                label: Site Title
                 required: true
-                width: 1/2
-              link_href:
-                type: link
-                label: Link
-                required: true
-                width: 1/2
-                options:
-                  - url
-                  - page
-                  - email
-                  - tel
+              description:
+                type: textarea
+                label: Meta Description
+      - width: 2/3
+        sections:
+          pages:
+            type: pages
+            label: Pages
+            create: default
+            info: "{{ page.template }}"
+            templates:
+              - home
+              - about
+              - default
+              - text
+            layout: cards
+            size: small
+          pages_divider:
+            type: fields
+            label: false
+            fields:
+              pages_divider_line:
+                type: line
+                label: false
+          projects: sections/projects
+          projects_divider:
+            type: fields
+            label: false
+            fields:
+              projects_divider_line:
+                type: line
+                label: false
+          thoughts: sections/thoughts
 
-  # Right column: Projects & Thoughts (2/3 width)
-  - width: 2/3
-    sections:
-      projects: sections/projects
-      thoughts: sections/thoughts
+  globals:
+    label: Globals
+    columns:
+      - width: 1/3
+        sections:
+          header:
+            type: fields
+            label: Header
+            fields:
+              header_links:
+                type: structure
+                label: Header
+                fields:
+                  link_label:
+                    type: text
+                    label: Label
+                    required: true
+                    width: 1/2
+                  link_page:
+                    type: pages
+                    label: Page
+                    required: true
+                    width: 1/2
+                    max: 1
+
+          footer:
+            type: fields
+            label: Footer
+            fields:
+              footer_links:
+                type: structure
+                label: Footer
+                fields:
+                  link_icon:
+                    type: files
+                    label: Icon
+                    max: 1
+                    uploads:
+                      template: image
+                  link_label:
+                    type: text
+                    label: Label
+                    required: true
+                    width: 1/2
+                  link_href:
+                    type: link
+                    label: Link
+                    required: true
+                    width: 1/2
+                    options:
+                      - url
+                      - page
+                      - email
+                      - tel
+      - width: 2/3
+        sections:
+          preloader:
+            type: fields
+            label: Preloader
+            fields:
+              preloader_title:
+                type: writer
+                label: Title
+                inline: true
+                marks:
+                  - italic
+                  - bold
+              preloader_images:
+                type: files
+                label: Slides
+                layout: cards
+                size: small
+                image:
+                  cover: true
+                  ratio: 1/1
+                uploads:
+                  template: image

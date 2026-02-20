@@ -15,6 +15,7 @@ import Preloader from "./components/global/Preloader.svelte";
 // Layout components
 import LayoutIndex from "./components/layout/LayoutIndex.svelte";
 import LayoutAbout from "./components/layout/LayoutAbout.svelte";
+import LayoutText from "./components/layout/LayoutText.svelte";
 import Layout404 from "./components/layout/Layout404.svelte";
 
 // UI components
@@ -77,6 +78,7 @@ registerSvelteElement("b-fullbleed", BlockFullBleed, [
 ]);
 
 registerSvelteElement("l-about", LayoutAbout, ["images", "items"]);
+registerSvelteElement("l-text", LayoutText, ["items"]);
 
 registerSvelteElement("l-404", Layout404, [
   "title",

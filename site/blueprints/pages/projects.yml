@@ -6,7 +6,7 @@ options:
   delete: false
 
 columns:
-  - width: 1/1
+  - width: 1/3
     sections:
       drafts:
         type: pages
@@ -14,17 +14,23 @@ columns:
         status: draft
         template: project
         sortBy: sort asc
+        layout: cards
+        size: medium
         info: "{{ page.tags }}"
         image:
           cover: true
           ratio: 1/1
 
+  - width: 2/3
+    sections:
       listed:
         type: pages
         label: Published Projects
         status: listed
         template: project
         sortBy: sort asc
+        layout: cards
+        size: medium
         info: "{{ page.tags }}"
         image:
           cover: true

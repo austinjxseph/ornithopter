@@ -6,7 +6,7 @@ options:
   delete: false
 
 columns:
-  - width: 1/1
+  - width: 1/3
     sections:
       drafts:
         type: pages
@@ -14,12 +14,18 @@ columns:
         status: draft
         template: thought
         sortBy: date desc
+        layout: cards
+        size: medium
         info: "{{ page.date.toDate('d M Y') }}"
 
+  - width: 2/3
+    sections:
       listed:
         type: pages
         label: Published
         status: listed
         template: thought
         sortBy: date desc
+        layout: cards
+        size: medium
         info: "{{ page.date.toDate('d M Y') }}"

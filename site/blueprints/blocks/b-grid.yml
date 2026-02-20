@@ -1,4 +1,4 @@
-name: Numbered Grid
+name: Grid Block
 icon: list-numbers
 preview: fields
 
@@ -21,7 +21,6 @@ fields:
       heading:
         type: text
         label: Heading
-        help: Leave empty to auto-number
       description:
         type: writer
         label: Description

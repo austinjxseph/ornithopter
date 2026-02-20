@@ -7,7 +7,6 @@ columns:
         type: files
         label: Images
         multiple: true
-        help: Images used as planes in the star wheel
 
       about_items:
         type: blocks
@@ -30,6 +29,6 @@ columns:
 
       meta_image:
         type: files
-        label: Opengraph Image
+        label: OpenGraph Image
         multiple: false
         max: 1

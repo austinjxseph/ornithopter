@@ -1,4 +1,4 @@
-name: Full Bleed Image
+name: Full Bleed Block
 icon: crop
 preview: image
 
@@ -14,4 +14,3 @@ fields:
   caption:
     type: text
     label: Caption
-    placeholder: Optional image caption
