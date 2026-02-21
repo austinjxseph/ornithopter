@@ -6,7 +6,7 @@ Favicon: - 'file://9e4whahtmpib73fs'
 
 ----
 
-Og-image: []
+Og-image: - 'file://xfhpxfwkikbo3kfv'
 
 ----
 
