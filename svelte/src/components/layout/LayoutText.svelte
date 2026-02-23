@@ -84,17 +84,13 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-    @media screen and (min-width: 1600px) {
+    @media screen and (min-width: 1729px) {
         .l-inner {
             grid-template-columns: repeat(3, 1fr);
         }
 
         .col-spacer {
             grid-column: span 2;
-        }
-
-        .col-body {
-            grid-column: span 1;
         }
     }
 

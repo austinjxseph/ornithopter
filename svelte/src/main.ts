@@ -17,6 +17,7 @@ import LayoutIndex from "./components/layout/LayoutIndex.svelte";
 import LayoutAbout from "./components/layout/LayoutAbout.svelte";
 import LayoutText from "./components/layout/LayoutText.svelte";
 import Layout404 from "./components/layout/Layout404.svelte";
+import LayoutHolding from "./components/layout/LayoutHolding.svelte";
 
 // UI components
 import Button from "./components/ui/Button.svelte";
@@ -42,6 +43,7 @@ registerSvelteElement("c-preloader", Preloader, ["title", "images"]);
 // Register layout components
 registerSvelteElement("l-index", LayoutIndex, [
   "eyebrow",
+  "availabilitystatus",
   "title",
   "buttonlabel",
   "buttonhref",
@@ -81,6 +83,13 @@ registerSvelteElement("l-about", LayoutAbout, ["images", "items"]);
 registerSvelteElement("l-text", LayoutText, ["items"]);
 
 registerSvelteElement("l-404", Layout404, [
+  "title",
+  "message",
+  "buttonlabel",
+  "buttonhref",
+]);
+
+registerSvelteElement("l-holding", LayoutHolding, [
   "title",
   "message",
   "buttonlabel",

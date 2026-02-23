@@ -3,12 +3,14 @@
 
     let {
         eyebrow = "Available for freelance work",
+        availabilitystatus = "available",
         title = "",
         buttonlabel = "Get in touch",
         buttonhref = "#",
         projects = [],
     }: {
         eyebrow?: string;
+        availabilitystatus?: "available" | "on_hold" | "not_accepting";
         title?: string;
         buttonlabel?: string;
         buttonhref?: string;
@@ -30,6 +32,15 @@
     const TOP_OFFSET = ROW_HEIGHT; // push active row below the top fade zone
     const TWEEN_DURATION = 0.35;
     const cardCount = $derived(projects.length);
+    const normalizedAvailabilityStatus = $derived.by(() => {
+        if (
+            availabilitystatus === "on_hold" ||
+            availabilitystatus === "not_accepting"
+        ) {
+            return availabilitystatus;
+        }
+        return "available";
+    });
     // 3 copies for infinite scroll runway
     const slotItems = $derived(
         Array.from({ length: 3 }, () => projects).flat(),
@@ -171,7 +182,9 @@
                         {/if}
                         <div class="heading">
                             <div class="eyebrow">
-                                <div class="marker"></div>
+                                <div
+                                    class={`marker is-${normalizedAvailabilityStatus}`}
+                                ></div>
                                 <div class="eyebrow-text">{eyebrow}</div>
                             </div>
                             <h1>
@@ -444,6 +457,14 @@
         border-radius: 4px;
         width: 8px;
         height: 4px;
+    }
+
+    .marker.is-on_hold {
+        background-color: #ff8a00;
+    }
+
+    .marker.is-not_accepting {
+        background-color: #e83452;
     }
 
     /* Heading container - row 3, aligned to bottom */

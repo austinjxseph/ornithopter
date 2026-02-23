@@ -4,7 +4,7 @@
 <?php
 $errorId = "error-page";
 $errorProps = [
-    "title" => "404",
+    "title" => "page not found.",
     "message" =>
         "Page not found. Nor enough will to make this page look remotely interesting. One day I'll pick this up and slap a gorgeous shader in here. But if you're still reading this, that day probably hasn't come around yet.",
     "buttonlabel" => "Go back Home",

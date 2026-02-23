@@ -18,6 +18,10 @@ foreach ($page->featured_projects()->toPages() as $project) {
 $indexId = "index";
 $indexProps = [
     "eyebrow" => $page->hero_eyebrow()->value(),
+    "availabilitystatus" => $page
+        ->hero_availability_status()
+        ->or("available")
+        ->value(),
     "title" => strip_tags(
         (string) $page->hero_title()->kti(),
         "<em><i><span><strong><b>",

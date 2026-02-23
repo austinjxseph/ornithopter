@@ -1,7 +1,7 @@
 <script lang="ts">
     let {
-        title = "page not found.",
-        message = "",
+        title = "coming soon.",
+        message = "Still in progress. One day I'll stop overthinking it, ship something minimal, and pretend it was always the plan - but not today.",
         buttonlabel = "Go back Home",
         buttonhref = "/",
     }: {

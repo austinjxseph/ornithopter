@@ -77,6 +77,10 @@
         max-width: 36rem;
     }
 
+    .is-row .text {
+        grid-column: span 2;
+    }
+
     @media screen and (max-width: 991px) {
         .is-row .heading {
             max-width: none;

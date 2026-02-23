@@ -19,6 +19,15 @@ columns:
         label: Eyebrow
         default: Available for freelance work
 
+      hero_availability_status:
+        type: select
+        label: Availability Status
+        default: available
+        options:
+          available: Available
+          on_hold: On Hold
+          not_accepting: Not Accepting
+
       hero_button_label:
         type: text
         label: Button Label
