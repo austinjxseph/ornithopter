@@ -71,10 +71,11 @@ Preloader-title: <em>Simplicity is the ultimate sophistication.</em>
 
 Preloader-images:
 
-- 'file://fiiyeu0xko8bc9gu'
-- 'file://viyg10fzn3jz3pay'
-- 'file://f5k9q37ujqo2i7mj'
-- 'file://kp4martauregcpov'
+- 'file://qhebn8uxstuhozgc'
+- 'file://x2dds18k7atjjfkl'
+- 'file://7ththr7t2sh2ot3h'
+- 'file://blsq09aahu88yxoe'
+- 'file://cyr0wrny4hhnpmgo'
 
 ----
 
