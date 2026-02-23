@@ -81,6 +81,20 @@
         grid-column: span 2;
     }
 
+    @media screen and (min-width: 1729px) {
+        .header.is-row {
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .is-row .heading {
+            grid-column: span 3;
+        }
+
+        .is-row .text {
+            grid-column: span 2;
+        }
+    }
+
     @media screen and (max-width: 991px) {
         .is-row .heading {
             max-width: none;

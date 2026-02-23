@@ -4,7 +4,7 @@
 <?php
 $holdingId = "holding-page";
 $holdingProps = [
-    "title" => $page->title()->or("coming soon.")->value(),
+    "title" => "coming soon.",
     "message" => $page
         ->message()
         ->or(

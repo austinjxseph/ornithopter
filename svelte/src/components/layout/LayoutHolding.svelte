@@ -1,11 +1,9 @@
 <script lang="ts">
     let {
-        title = "coming soon.",
         message = "Still in progress. One day I'll stop overthinking it, ship something minimal, and pretend it was always the plan - but not today.",
         buttonlabel = "Go back Home",
         buttonhref = "/",
     }: {
-        title?: string;
         message?: string;
         buttonlabel?: string;
         buttonhref?: string;
@@ -17,7 +15,7 @@
         <div class="inner">
             <div class="heading">
                 <div class="title">
-                    <h1>{title}</h1>
+                    <h1>coming soon.</h1>
                 </div>
                 {#if message}
                     <div class="message">
