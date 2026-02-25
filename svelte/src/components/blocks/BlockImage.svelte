@@ -18,7 +18,6 @@
                             <img
                                 src={item.url}
                                 alt={item.alt || ""}
-                                loading="lazy"
                             />
                         {/if}
                     </div>

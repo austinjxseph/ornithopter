@@ -6,7 +6,7 @@
     <figure class="figure">
         <div class="img-wrap">
             {#if image}
-                <img src={image} {alt} loading="lazy" />
+                <img src={image} {alt} />
             {/if}
         </div>
         {#if caption}

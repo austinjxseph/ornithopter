@@ -205,9 +205,22 @@
     }
 
     .link {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
+        width: 24px;
+        height: 24px;
         overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .link img {
+        width: 24px;
+        height: 24px;
+        max-width: 24px;
+        max-height: 24px;
+        display: block;
     }
 
     .u-text-secondary {
