@@ -29,6 +29,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Enable required Apache modules
 RUN a2enmod rewrite headers expires
 
+# Tune MPM prefork to handle more concurrent connections
+COPY apache-mpm.conf /etc/apache2/conf-available/mpm-tuning.conf
+RUN a2enconf mpm-tuning
+
 # Set document root to Kirby directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
